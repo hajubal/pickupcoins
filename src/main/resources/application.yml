@@ -1,0 +1,30 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #print console
+        show_sql: true
+        format_sql: true
+        #JPQL query view
+        use_sql_comments: true
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:~/coins
+    driver-class-name: org.h2.Driver
+    name: sa
+
+logging:
+  level:
+    com.hajubal.sitealarm: debug
+    org:
+      springframework: info
+      hibernate:
+        #print logger
+        SQL: debug
+        #parameter mapping (p6spy-spring-boot-starter)
+        type: trace
