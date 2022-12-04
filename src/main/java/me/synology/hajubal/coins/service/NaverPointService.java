@@ -27,17 +27,13 @@ public class NaverPointService {
         HttpHeaders headers = new HttpHeaders();
         RestTemplate restTemplate = new RestTemplate();
 
-        urlRepository.findAll().forEach(url -> {
-            cookieRepository.findAll().forEach(data -> {
-                headers.clear();
-                headers.add("Cookie", data.getCookie());
+        urlRepository.findAll().forEach(url -> cookieRepository.findAll().forEach(data -> {
+            headers.clear();
+            headers.add("Cookie", data.getCookie());
 
-                ResponseEntity<String> response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
 
-                System.out.println("response.getBody() = " + response.getBody());
-            });
-        });
-
-
+            log.info("response: {} ", response);
+        }));
     }
 }

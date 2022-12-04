@@ -2,6 +2,7 @@ package me.synology.hajubal.coins;
 
 import jakarta.annotation.PostConstruct;
 import me.synology.hajubal.coins.entity.CookieData;
+import me.synology.hajubal.coins.entity.SiteData;
 import me.synology.hajubal.coins.entity.UrlData;
 import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
@@ -34,9 +35,9 @@ public class InitData {
 
         cookieRepository.save(cookieData);
 
-        UrlData urlData = UrlData.builder().id(1l).url("https://campaign2-api.naver.com/click-point/?eventId=cr_2022120103_2212_1_1109").build();
+        siteRepository.save(SiteData.builder().id(1l).name("클리앙").url("https://www.clien.net/service/board/jirum").build());
 
-        urlRepository.save(urlData);
+        urlRepository.save(UrlData.builder().id(1l).url("https://campaign2-api.naver.com/click-point/?eventId=cr_2022120103_2212_1_1109").build());
 
         naverPointService.savePoint();
     }
