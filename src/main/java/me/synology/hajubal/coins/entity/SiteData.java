@@ -15,5 +15,7 @@ public class SiteData {
 
     private String name;
 
+    private String domain;
+
     private String url;
 }

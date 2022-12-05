@@ -24,12 +24,15 @@ class WebCrawlerTest {
 
         Document document = Jsoup.connect("https://www.clien.net/service/board/jirum").get();
 
+        //게시판 목록 tag
         document.select("span.list_subject").forEach(element -> {
+            //게시글 제목
             String title = element.attr("title");
 
             log.info("title: {}", title);
 
             if(title.contains("네이버")) {
+                //게시글 상세 링크
                 String href = element.select("a[data-role=list-title-text]").attr("href");
 
                 log.info("add url: {}", href);
@@ -40,7 +43,7 @@ class WebCrawlerTest {
 
         Set<String> pointUrl = new HashSet<>();
 
-        pointPostUrl.stream().forEach(url -> {
+        pointPostUrl.forEach(url -> {
             Document postDocument;
 
             try {
@@ -49,8 +52,9 @@ class WebCrawlerTest {
                 throw new RuntimeException(e);
             }
 
-            postDocument.select("div.post_article a").forEach(atag -> {
-                String pointHref = atag.attr("href");
+            //게시글 내용에 링크
+            postDocument.select("div.post_article a").forEach(aTag -> {
+                String pointHref = aTag.attr("href");
 
                 if(pointHref.contains("campaign2-api.naver.com")) {
                     pointUrl.add(pointHref);
@@ -58,6 +62,6 @@ class WebCrawlerTest {
             });
         });
 
-        pointUrl.stream().forEach(System.out::println);
+        pointUrl.forEach(System.out::println);
     }
 }

@@ -1,9 +1,8 @@
 package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.CookieData;
 import me.synology.hajubal.coins.respository.CookieRepository;
-import me.synology.hajubal.coins.respository.UrlRepository;
+import me.synology.hajubal.coins.respository.PointUrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,13 +20,13 @@ public class NaverPointService {
     private CookieRepository cookieRepository;
 
     @Autowired
-    private UrlRepository urlRepository;
+    private PointUrlRepository pointUrlRepository;
 
     public void savePoint() {
         HttpHeaders headers = new HttpHeaders();
         RestTemplate restTemplate = new RestTemplate();
 
-        urlRepository.findAll().forEach(url -> cookieRepository.findAll().forEach(data -> {
+        pointUrlRepository.findAll().forEach(url -> cookieRepository.findAll().forEach(data -> {
             headers.clear();
             headers.add("Cookie", data.getCookie());
 
