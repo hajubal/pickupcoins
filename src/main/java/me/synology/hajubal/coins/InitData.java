@@ -34,9 +34,9 @@ public class InitData {
 
         cookieRepository.save(cookieData);
 
-        siteRepository.save(SiteData.builder().id(1l).name("클리앙").url("https://www.clien.net/service/board/jirum").build());
+        siteRepository.save(SiteData.builder().name("클리앙").url("https://www.clien.net/service/board/jirum").build());
 
-        pointUrlRepository.save(PointUrlData.builder().id(1l).url("https://campaign2-api.naver.com/click-point/?eventId=cr_2022120103_2212_1_1109").build());
+        pointUrlRepository.save(PointUrlData.builder().url("https://campaign2-api.naver.com/click-point/?eventId=cr_2022120103_2212_1_1109").build());
 
         naverPointService.savePoint();
     }

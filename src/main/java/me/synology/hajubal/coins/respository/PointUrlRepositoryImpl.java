@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -14,7 +15,17 @@ public class PointUrlRepositoryImpl implements PointUrlRepository {
 
     @Override
     public void save(PointUrlData pointUrlData) {
-        data.put(pointUrlData.getId(), pointUrlData);
+        Optional<Long> max = data.keySet().stream().max(Long::compareTo);
+
+        Long id = 0l;
+
+        if(max.isPresent()) {
+            id = max.get() + 1l;
+        }
+
+        pointUrlData.setId(id);
+
+        data.put(id, pointUrlData);
     }
 
     @Override
@@ -23,7 +34,7 @@ public class PointUrlRepositoryImpl implements PointUrlRepository {
     }
 
     @Override
-    public PointUrlData findByUrl(String url) {
-        return data.values().stream().filter(pointUrlData -> pointUrlData.getUrl().equals(url)).findFirst().orElseThrow(new IllegalArgumentException("Not found point url data."));
+    public Optional<PointUrlData> findByUrl(String url) {
+        return data.values().stream().filter(pointUrlData -> pointUrlData.getUrl().equals(url)).findFirst();
     }
 }
