@@ -1,14 +1,13 @@
 package me.synology.hajubal.coins.respository;
 
-import me.synology.hajubal.coins.entity.CookieData;
+import me.synology.hajubal.coins.entity.UserCookie;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface CookieRepository {
-    Optional<CookieData> findById(Long id);
+@Repository
+public interface CookieRepository extends JpaRepository<UserCookie, Long> {
 
-    List<CookieData> findAll();
-
-    void save(CookieData cookieData);
+    Optional<UserCookie> findByCookie(String cookie);
 }

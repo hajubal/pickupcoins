@@ -23,11 +23,10 @@ class PickUpCoinsApplicationTests {
 	void filereadTest() {
 		CharBuffer buffer = CharBuffer.allocate(10000);
 
-
 		try (FileReader fileReader = new FileReader("C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\tmp\\cookie.txt")){
 			fileReader.read(buffer);
 
-			System.out.println(">>>"+buffer);
+			System.out.println(">>>"+new String(buffer.array()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

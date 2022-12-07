@@ -23,7 +23,6 @@ public class NaverPointService {
     @Autowired
     private PointUrlRepository pointUrlRepository;
 
-    @Scheduled(cron = "* 1 * * * *")
     public void savePoint() {
         HttpHeaders headers = new HttpHeaders();
         RestTemplate restTemplate = new RestTemplate();

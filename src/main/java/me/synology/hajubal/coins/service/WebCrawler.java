@@ -1,8 +1,8 @@
 package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.PointUrlData;
-import me.synology.hajubal.coins.entity.SiteData;
+import me.synology.hajubal.coins.entity.PointUrl;
+import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import org.jsoup.Jsoup;
@@ -11,7 +11,6 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,11 +34,10 @@ public class WebCrawler {
     /**
      * 사이트에 포함된 포인트 url 수집
      */
-    @Scheduled(cron = "* 1 * * * *")
     public void crawling() {
-        List<SiteData> siteDataList = siteRepository.findAll();
+        List<Site> siteList = siteRepository.findAll();
 
-        siteDataList.forEach(site -> {
+        siteList.forEach(site -> {
             String siteUrl = site.getUrl();
 
             Set<String> pointPostUrl = new HashSet<>();
@@ -93,7 +91,7 @@ public class WebCrawler {
 
             pointUrl.forEach(url -> {
                 if(pointUrlRepository.findByUrl(url).isEmpty()) {
-                    pointUrlRepository.save(PointUrlData.builder()
+                    pointUrlRepository.save(PointUrl.builder()
                             .url(url)
                             .name(url)
                             .build());
@@ -130,8 +128,6 @@ public class WebCrawler {
                     } catch (IOException e) {
                         log.error(e.getMessage(), e.getCause());
                     }
-
-                    return;
                 }
             }
         });

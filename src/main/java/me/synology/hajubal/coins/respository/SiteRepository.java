@@ -1,12 +1,13 @@
 package me.synology.hajubal.coins.respository;
 
-import me.synology.hajubal.coins.entity.SiteData;
+import me.synology.hajubal.coins.entity.Site;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface SiteRepository {
+@Repository
+public interface SiteRepository extends JpaRepository<Site, Long> {
 
-    void save(SiteData siteData);
-
-    List<SiteData> findAll();
+    Optional<Site> findByName(String name);
 }

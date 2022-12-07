@@ -1,7 +1,7 @@
 spring:
+  profiles:
+    active: local
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         #print console
@@ -9,18 +9,9 @@ spring:
         format_sql: true
         #JPQL query view
         use_sql_comments: true
-  h2:
-    console:
-      enabled: true
-
-  datasource:
-    url: jdbc:h2:~/coins
-    driver-class-name: org.h2.Driver
-    name: sa
-
 logging:
   level:
-    com.hajubal.sitealarm: debug
+    me.synology.hajubal.coins: debug
     org:
       springframework: info
       hibernate:
