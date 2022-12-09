@@ -19,13 +19,15 @@ public class Schedulers {
     @Autowired
     private NaverPointService naverPointService;
 
-    @Scheduled(cron = "* 1 * * * *")
+    @Scheduled(cron = "10 * * * * *")
     public void webCrawlerScheduler() {
+        log.info("Call webCrawlerScheduler.");
         webCrawler.crawling();
     }
 
-    @Scheduled(cron = "* 1 * * * *")
+    @Scheduled(cron = "10 * * * * *")
     public void pointScheduler() {
+        log.info("Call pointScheduler.");
         naverPointService.savePoint();
     }
 }

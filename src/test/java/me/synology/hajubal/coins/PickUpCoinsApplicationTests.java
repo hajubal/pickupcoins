@@ -4,9 +4,14 @@ import me.synology.hajubal.coins.service.PointService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.StreamUtils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 @SpringBootTest
 class PickUpCoinsApplicationTests {
@@ -20,16 +25,13 @@ class PickUpCoinsApplicationTests {
 	}
 
 	@Test
-	void filereadTest() {
+	void fileReadTest() throws IOException {
 		CharBuffer buffer = CharBuffer.allocate(10000);
 
-		try (FileReader fileReader = new FileReader("C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\tmp\\cookie.txt")){
-			fileReader.read(buffer);
+		String data = StreamUtils.copyToString(new FileInputStream("C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\tmp\\cookie.txt"), Charset.defaultCharset());
 
-			System.out.println(">>>"+new String(buffer.array()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		System.out.println(">>>" + data);
+
 	}
 
 

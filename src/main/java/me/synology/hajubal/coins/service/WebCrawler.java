@@ -28,7 +28,7 @@ public class WebCrawler {
     @Autowired
     private PointUrlRepository pointUrlRepository;
 
-    @Autowired
+    //@Autowired
     private SlackService sendMessage;
 
     /**

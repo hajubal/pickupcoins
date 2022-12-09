@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
   jpa:
     properties:
       hibernate:
@@ -19,3 +19,7 @@ logging:
         SQL: debug
         #parameter mapping (p6spy-spring-boot-starter)
         type: trace
+
+slack:
+  webhook:
+    url: https://hooks.slack.com/services/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

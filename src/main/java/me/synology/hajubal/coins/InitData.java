@@ -11,9 +11,13 @@ import me.synology.hajubal.coins.service.NaverPointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 @Profile({"!test"})
 @Slf4j
@@ -27,18 +31,8 @@ public class InitData {
     private SiteRepository siteRepository;
 
     @PostConstruct
-    public void init() {
-        CharBuffer buffer = CharBuffer.allocate(10000);
-
-        try (FileReader fileReader = new FileReader("C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\tmp\\cookie.txt")){
-            fileReader.read(buffer);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-
-            throw new RuntimeException(e);
-        }
-
-        String cookie = new String(buffer.compact().array());
+    public void init() throws IOException {
+        String cookie = StreamUtils.copyToString(new FileInputStream("C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\tmp\\cookie.txt"), Charset.defaultCharset());
 
         System.out.println("cookie = " + cookie);
 
