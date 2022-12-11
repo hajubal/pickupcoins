@@ -9,6 +9,4 @@ import java.util.List;
 @Repository
 public interface PointUrlRepository extends JpaRepository<PointUrl, Long> {
     List<PointUrl> findByUrl(String url);
-
-    List<PointUrl> findByCalledNull();
 }

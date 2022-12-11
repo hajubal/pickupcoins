@@ -4,34 +4,41 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.respository.CookieRepository;
+import me.synology.hajubal.coins.respository.UserCookieRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
 public class InitData {
 
     @Autowired
-    private CookieRepository cookieRepository;
+    private UserCookieRepository userCookieRepository;
 
     @Autowired
     private SiteRepository siteRepository;
 
     @Value("${naver.cookie}")
-    private String naverCookie;
+    private List<String> naverCookie;
 
     @PostConstruct
     public void init() {
-        UserCookie userCookie = UserCookie.builder().siteName("naver").cookie(naverCookie).build();
+        naverCookie.forEach(cookie -> {
+            String[] token = cookie.split(":");
 
-        if(cookieRepository.findByCookie(naverCookie).isEmpty()) {
-            cookieRepository.save(userCookie);
-        }
+            UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).build();
+
+            if(userCookieRepository.findByCookie(cookie).isEmpty()) {
+                log.info("save cookie. name: {}", token[0]);
+
+                userCookieRepository.save(userCookie);
+            }
+        });
 
         if(siteRepository.findByName("클리앙").isEmpty()) {
             siteRepository.save(Site.builder().name("클리앙").domain("https://www.clien.net").url("https://www.clien.net/service/board/jirum").build());
