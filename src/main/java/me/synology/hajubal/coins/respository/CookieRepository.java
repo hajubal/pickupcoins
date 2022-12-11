@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface CookieRepository extends JpaRepository<UserCookie, Long> {
 
     Optional<UserCookie> findByCookie(String cookie);
+
+    Optional<UserCookie> findBySiteName(String siteName);
 }

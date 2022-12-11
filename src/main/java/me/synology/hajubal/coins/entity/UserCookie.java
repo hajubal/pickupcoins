@@ -16,6 +16,8 @@ public class UserCookie {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String siteName;
+
     @Column(length = 4000)
     private String cookie;
 }

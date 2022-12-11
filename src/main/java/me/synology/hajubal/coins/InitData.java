@@ -2,24 +2,16 @@ package me.synology.hajubal.coins;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.entity.Site;
+import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.service.NaverPointService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 
-@Profile({"!test"})
 @Slf4j
 @Component
 public class InitData {
@@ -30,20 +22,23 @@ public class InitData {
     @Autowired
     private SiteRepository siteRepository;
 
+    @Value("${naver.cookie}")
+    private String naverCookie;
+
     @PostConstruct
-    public void init() throws IOException {
-        String cookie = StreamUtils.copyToString(new FileInputStream("C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\tmp\\cookie.txt"), Charset.defaultCharset());
+    public void init() {
+        UserCookie userCookie = UserCookie.builder().siteName("naver").cookie(naverCookie).build();
 
-        System.out.println("cookie = " + cookie);
-
-        UserCookie userCookie = UserCookie.builder().cookie(cookie).build();
-
-        if(cookieRepository.findByCookie(cookie).isEmpty()) {
+        if(cookieRepository.findByCookie(naverCookie).isEmpty()) {
             cookieRepository.save(userCookie);
         }
 
         if(siteRepository.findByName("클리앙").isEmpty()) {
-            siteRepository.save(Site.builder().name("클리앙").url("https://www.clien.net/service/board/jirum").build());
+            siteRepository.save(Site.builder().name("클리앙").domain("https://www.clien.net").url("https://www.clien.net/service/board/jirum").build());
+        }
+
+        if(siteRepository.findByName("루리웹").isEmpty()) {
+            siteRepository.save(Site.builder().name("루리웹").domain("https://m.ruliweb.com").url("https://m.ruliweb.com/ps/board/1020").build());
         }
     }
 }

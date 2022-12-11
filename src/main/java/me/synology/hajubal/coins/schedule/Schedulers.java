@@ -5,29 +5,34 @@ import me.synology.hajubal.coins.service.NaverPointService;
 import me.synology.hajubal.coins.service.WebCrawler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
-@EnableAsync
+@EnableScheduling
 @Component
 public class Schedulers {
 
     @Autowired
-    private WebCrawler webCrawler;
+    private List<WebCrawler> webCrawlers;
 
     @Autowired
     private NaverPointService naverPointService;
 
-    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void webCrawlerScheduler() {
         log.info("Call webCrawlerScheduler.");
-        webCrawler.crawling();
+
+        webCrawlers.forEach(WebCrawler::crawling);
     }
 
-    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void pointScheduler() {
         log.info("Call pointScheduler.");
+
         naverPointService.savePoint();
     }
 }

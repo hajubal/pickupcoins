@@ -236,3 +236,4 @@ $RECYCLE.BIN/
 *.lnk
 
 application-dev.yml
+application-test.yml
