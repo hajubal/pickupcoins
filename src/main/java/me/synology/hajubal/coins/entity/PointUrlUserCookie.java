@@ -1,9 +1,6 @@
 package me.synology.hajubal.coins.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-public class PointUrlCallHistory extends BaseTimeEntity {
+public class PointUrlUserCookie extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,4 +19,7 @@ public class PointUrlCallHistory extends BaseTimeEntity {
     private String pointUrl;
 
     private String userName;
+
+    @ManyToOne
+    private UserCookie userCookie;
 }

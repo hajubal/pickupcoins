@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,4 +24,7 @@ public class UserCookie extends BaseTimeEntity {
 
     @Column(length = 4000)
     private String cookie;
+
+    @OneToMany(mappedBy = "userCookie")
+    private List<PointUrlUserCookie> pointUrlUserCookie;
 }

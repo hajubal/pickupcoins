@@ -2,9 +2,9 @@ package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.PointUrlCallHistory;
+import me.synology.hajubal.coins.entity.PointUrlUserCookie;
 import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.respository.PointUrlCallHistoryRepository;
+import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class NaverPointService {
     private PointUrlRepository pointUrlRepository;
 
     @Autowired
-    private PointUrlCallHistoryRepository pointUrlCallHistoryRepository;
+    private PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
     @Transactional
     public void savePoint() {
@@ -46,7 +46,7 @@ public class NaverPointService {
             List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
 
             for (UserCookie userCookie: userCookies) {
-                if(!pointUrlCallHistoryRepository.findByPointUrlAndUserName(url.getUrl(), userCookie.getUserName()).isEmpty()) continue;
+                if(!pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isEmpty()) continue;
 
                 headers.clear();
                 headers.add("Cookie", userCookie.getCookie());
@@ -63,10 +63,10 @@ public class NaverPointService {
                     throw new RuntimeException(e);
                 }
 
-                PointUrlCallHistory pointUrlCallHistory = PointUrlCallHistory.builder().pointUrl(url.getUrl())
+                PointUrlUserCookie pointUrlUserCookie = PointUrlUserCookie.builder().pointUrl(url.getUrl())
                         .userName(userCookie.getUserName()).build();
 
-                pointUrlCallHistoryRepository.save(pointUrlCallHistory);
+                pointUrlUserCookieRepository.save(pointUrlUserCookie);
             }
         });
     }
