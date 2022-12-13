@@ -33,7 +33,7 @@ public class InitData {
 
             UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).build();
 
-            if(userCookieRepository.findByCookie(cookie).isEmpty()) {
+            if(userCookieRepository.findByCookie(userCookie.getCookie()).isEmpty()) {
                 log.info("save cookie. name: {}", token[0]);
 
                 userCookieRepository.save(userCookie);
