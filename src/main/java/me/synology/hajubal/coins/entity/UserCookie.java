@@ -18,8 +18,10 @@ public class UserCookie extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String userName;
 
+    @Column(unique = true)
     private String siteName;
 
     @Column(length = 4000)

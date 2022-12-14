@@ -13,4 +13,6 @@ public interface UserCookieRepository extends JpaRepository<UserCookie, Long> {
     Optional<UserCookie> findByCookie(String cookie);
 
     List<UserCookie> findBySiteName(String siteName);
+
+    Optional<UserCookie> findByUserNameAndSiteName(String userName, String siteName);
 }

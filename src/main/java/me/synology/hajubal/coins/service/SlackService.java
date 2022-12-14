@@ -25,12 +25,10 @@ public class SlackService {
      * @param message
      * @throws IOException
      */
-    public WebhookResponse sendMessage(String message) throws IOException {
+    public WebhookResponse sendMessage(String message) {
         Slack slack = Slack.getInstance();
         //ApiTestResponse response = slack.methods().apiTest(r -> r.foo("bar"));
         //System.out.println(response);
-
-        System.out.println(">>>>>>>>>>>>>>>>>>>>"+webhookUrl);
 
         if(webhookUrl == null) {
             throw new RuntimeException("webhookUrl not set.");
@@ -38,7 +36,12 @@ public class SlackService {
 
         Payload payload = Payload.builder().text(message).build();
 
-        WebhookResponse webhookResponse = slack.send(webhookUrl, payload);
+        WebhookResponse webhookResponse = null;
+        try {
+            webhookResponse = slack.send(webhookUrl, payload);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         log.info(webhookResponse.toString());
 

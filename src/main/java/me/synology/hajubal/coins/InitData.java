@@ -6,6 +6,7 @@ import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
+import me.synology.hajubal.coins.service.NaverPointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,8 @@ public class InitData {
                 log.info("save cookie. name: {}", token[0]);
 
                 userCookieRepository.save(userCookie);
+
+                NaverPointService.loginUser(userCookie.getUserName());
             }
         });
 
