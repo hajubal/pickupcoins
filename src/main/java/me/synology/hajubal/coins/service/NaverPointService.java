@@ -63,9 +63,8 @@ public class NaverPointService {
         HttpHeaders headers = new HttpHeaders();
         RestTemplate restTemplate = new RestTemplate();
 
+        //TODO point site url 별로 구분해서 조회
         List<PointUrl> pointUrls = pointUrlRepository.findAll();
-
-        log.info("pointUrls count: {}", pointUrls.size());
 
         pointUrls.forEach(url -> {
             List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
@@ -77,6 +76,8 @@ public class NaverPointService {
 
                 //TODO 쿼리 한번에 데이터를 가져오도록 수정.
                 if(!pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isEmpty()) continue;
+
+                log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
                 headers.clear();
                 headers.add("Cookie", userCookie.getCookie());
@@ -98,8 +99,6 @@ public class NaverPointService {
                 }
 
                 log.debug("response: {} ", response);
-
-                log.info("call point url. user name: {}", userCookie.getUserName());
 
                 try {
                     Thread.sleep(100L);
