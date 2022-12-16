@@ -4,12 +4,13 @@ import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class MainController {
 
     @Autowired
@@ -21,7 +22,9 @@ public class MainController {
     }
 
     @PostMapping("/updateCookie")
-    public void userCookieUpdate(CookieUpdateDto cookieUpdateDto) {
+    public String userCookieUpdate(CookieUpdateDto cookieUpdateDto) {
         userCookieService.updateUserCookie(cookieUpdateDto);
+
+        return "index";
     }
 }

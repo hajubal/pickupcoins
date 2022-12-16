@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
   jpa:
     properties:
       hibernate:
@@ -16,6 +16,9 @@ logging:
       springframework: info
       hibernate:
         #print logger
-        #SQL: debug
+        SQL: debug
         #parameter mapping (p6spy-spring-boot-starter)
         type: trace
+      apache:
+        coyote:
+          http11: debug

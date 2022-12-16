@@ -28,6 +28,7 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'com.slack.api:slack-api-client:1.27.1'
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'mysql:mysql-connector-java:8.0.30'
@@ -48,82 +49,40 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-//서버 접속 정보
-remotes {
-	dockerServer {
-		host = 'hajubal.synology.me'
-		user = project.SSH_ID
-		password = project.SSH_PW
-		port = Integer.valueOf(project.SSH_PORT)
-	}
-}
-
-//도커 서버에 이미지 생성 및 컨테이너 실행
-task dockerDeploy(dependsOn: build) {
+task dev {
 	doLast {
-		println ssh.version
-		ssh.run {
-			session(remotes.dockerServer) {
-				def command
-				def imageName = "${project.name}:${project.version}"
-				def containerName = "${project.name}"
-				def buildPath = "${project.buildDir.getAbsolutePath()}\\libs"
-				def jarName = "${jar.getArchiveBaseName().get()}-${jar.getArchiveVersion().get()}.jar"
-				def from = "${buildPath}\\${jarName}"
-				def to = "/home/docke/service/${project.name}"
-				def hostPort = "40000"
-				def containerPort = "8080"
-				def dockerFile = "${project.file("Dockerfile")}"
+		def path = "${project.buildDir.getAbsolutePath()}\\lib\\${jar.archiveName}"
+		def dir = fileTree(dir: 'build').getDir()
+		def dockerFile = "${project.file("Dockerfile")}"
+		def buildPath = fileTree(dir: 'build').getDir()
 
-				command = 'docker version'
-				println "\n\$ ${command}"
-				execute(command){r->println r}
+		println path
+		println dir
+		println dockerFile
+		println buildPath
 
-				command = "ls ${to}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
+		def archiveNamePath = "${bootJar.archiveFile.get().asFile}"
+		println 'archiveNamePath: ' + archiveNamePath
 
-				//프로젝트 폴더 삭제 후 재생성
-				command = "rm -r ${to}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
+		def archiveName = "${bootJar.archiveName}"
+		println 'archiveName: ' + archiveName
 
-				command = "mkdir ${to}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
+		def archiveFileName = "${jar.archiveFileName.get()}"
+		println 'archiveFileName: ' + archiveFileName
 
-				//프로젝트 폴더에 jar 파일 복사
-				println "\n\$ put from:${from}, into: ${to}/${containerName}.jar"
-				put from: from, into: to + "/" + containerName + ".jar"
+		def archiveBaseName = "${jar.archiveBaseName.get()}"
+		println 'archiveBaseName: ' + archiveBaseName
 
-				//프로젝트 폴더에 Dockerfile 복사
-				println "\n\$ put from: ${dockerFile}, into: ${to}"
-				put from: dockerFile, into: to
+		def archiveExtension = "${jar.archiveExtension.get()}"
+		println 'archiveExtension: ' + archiveExtension
 
-				//기존 컨테이너 중지/삭제
-				command = "docker stop ${containerName}"
-				println "\n\$ ${command}"
-				execute(command, ignoreError: true){r->println r}
+		println ">>>>> ${jar.archiveFile.get().asFile.getAbsolutePath()}"
 
-				command = "docker rm ${containerName}"
-				println "\n\$ ${command}"
-				execute(command, ignoreError: true){r->println r}
 
-				//이번에 생성되는 이미지 명으로 이미 생성된 이미지 삭제
-				command = "docker rmi ${imageName}"
-				println "\n\$ ${command}"
-				execute(command, ignoreError: true){r->println r}
-
-				//Dockerfile 실행
-				command = "docker build ${to} -t ${imageName}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
-
-				//신규 이미지로 컨테이너 생성/실행
-				command = "docker run -d -p ${hostPort}:${containerPort} --name ${containerName} ${imageName}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
-			}
-		}
+		println 'host: ' + project.SSH_HOST
+		println 'id: ' + project.SSH_ID
+		println 'pw: ' + project.SSH_PW
+		println 'port: ' + Integer.valueOf(project.SSH_PORT)
 	}
 }
+

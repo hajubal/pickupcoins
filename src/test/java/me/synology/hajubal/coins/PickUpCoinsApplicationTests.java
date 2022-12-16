@@ -24,7 +24,7 @@ class PickUpCoinsApplicationTests {
 		pointService.run();
 	}
 
-	@Test
+	//@Test
 	void fileReadTest() throws IOException {
 		CharBuffer buffer = CharBuffer.allocate(10000);
 

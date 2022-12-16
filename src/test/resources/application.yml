@@ -5,3 +5,13 @@ spring:
 logging:
   level:
     me.synology.hajubal.coins: debug
+    org:
+      springframework: info
+      hibernate:
+        #print logger
+        SQL: debug
+        #parameter mapping (p6spy-spring-boot-starter)
+        type: trace
+      apache:
+        coyote:
+          http11: debug
