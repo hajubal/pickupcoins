@@ -4,15 +4,13 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.respository.UserCookieRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
-import me.synology.hajubal.coins.service.NaverPointService;
+import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Component
@@ -32,14 +30,12 @@ public class InitData {
         naverCookie.forEach(cookie -> {
             String[] token = cookie.split(":");
 
-            UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).build();
+            UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).isValid(Boolean.TRUE).build();
 
             if(userCookieRepository.findByCookie(userCookie.getCookie()).isEmpty()) {
                 log.info("save cookie. name: {}", token[0]);
 
                 userCookieRepository.save(userCookie);
-
-                NaverPointService.loginUser(userCookie.getUserName());
             }
         });
 

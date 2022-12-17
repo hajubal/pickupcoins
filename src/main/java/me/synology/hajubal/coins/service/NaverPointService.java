@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.PointUrlUserCookie;
 import me.synology.hajubal.coins.entity.UserCookie;
+import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.http.HttpMethod.GET;
 
@@ -38,26 +36,6 @@ public class NaverPointService {
     @Autowired
     private SlackService slackService;
 
-    //cookie usernamedl 로그인 유효 여부
-    private static final Map<String, Boolean> userAuth = new ConcurrentHashMap<>();
-
-    /**
-     * 로그인한 사용자
-     * @param userName
-     */
-    public static void loginUser(String userName) {
-        userAuth.put(userName, Boolean.TRUE);
-    }
-
-    /**
-     * 로그인이 풀린 사용자
-     *
-     * @param userName
-     */
-    public static void logoutUser(String userName) {
-        userAuth.put(userName, Boolean.FALSE);
-    }
-
     @Transactional
     public void savePoint() {
         HttpHeaders headers = new HttpHeaders();
@@ -70,7 +48,8 @@ public class NaverPointService {
             List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
 
             for (UserCookie userCookie: userCookies) {
-                if(!userAuth.get(userCookie.getUserName())) {
+                if(!userCookie.getIsValid()) {
+                    log.info("[{}] 사용자, 로그인이 풀려 point url 호출하지 않음", userCookie.getUserName());
                     continue;
                 }
 
@@ -86,19 +65,23 @@ public class NaverPointService {
                 ResponseEntity<String> response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
 
                 if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
-                    logoutUser(userCookie.getUserName());
+                    userCookie.setIsValid(Boolean.FALSE);
 
                     log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
-                    slackService.sendMessage("로그인 풀림.");
-                } else if(response.getBody().contains("클릭적립은 캠페인당 1회만 적립됩니다.")) {
-                    log.info("클릭적립은 캠페인당 1회만 적립됩니다.");
-
-                    pointUrlUserCookieRepository.save(PointUrlUserCookie.builder().pointUrl(url.getUrl())
-                            .userName(userCookie.getUserName()).build());
+                    slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
                 }
 
-                log.debug("response: {} ", response);
+                pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
+                        .pointUrl(url.getUrl())
+                        .userName(userCookie.getUserName())
+                        .userCookie(userCookie)
+                        .responseHeader(response.getHeaders().toString())
+                        .responseBody(response.getBody())
+                        .responseStatusCode(response.getStatusCode().value())
+                        .build());
+
+                log.debug("response: {} ", response.getBody());
 
                 try {
                     Thread.sleep(100L);

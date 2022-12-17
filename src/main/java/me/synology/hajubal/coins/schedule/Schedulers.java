@@ -22,14 +22,14 @@ public class Schedulers {
     @Autowired
     private NaverPointService naverPointService;
 
-    @Scheduled(cron = "0 */2 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void webCrawlerScheduler() {
         log.info("Call webCrawlerScheduler.");
 
         webCrawlers.forEach(WebCrawler::crawling);
     }
 
-    @Scheduled(cron = "0 */2 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void pointScheduler() {
         log.info("Call pointScheduler.");
 

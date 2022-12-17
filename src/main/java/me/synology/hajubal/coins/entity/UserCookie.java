@@ -18,14 +18,17 @@ public class UserCookie extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String userName;
 
-    @Column
+    @Column(nullable = false)
     private String siteName;
 
-    @Column(length = 4000)
+    @Column(length = 1000)
     private String cookie;
+
+    @Column(nullable = false)
+    private Boolean isValid;
 
     @OneToMany(mappedBy = "userCookie")
     private List<PointUrlUserCookie> pointUrlUserCookie;
