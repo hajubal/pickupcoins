@@ -27,8 +27,7 @@ public class UserCookie extends BaseTimeEntity {
     @Column(length = 1000)
     private String cookie;
 
-    @Column(nullable = false)
-    private Boolean isValid;
+    private int isValid;
 
     @OneToMany(mappedBy = "userCookie")
     private List<PointUrlUserCookie> pointUrlUserCookie;

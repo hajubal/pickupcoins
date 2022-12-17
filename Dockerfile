@@ -9,4 +9,4 @@ RUN mkdir /logs
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/pickupcoins-1.0.0.jar"]
+ENTRYPOINT ["java", "-jar", "/pickupcoins-1.0.0.jar", "--spring.profiles.active=dev"]

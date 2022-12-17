@@ -48,7 +48,7 @@ public class NaverPointService {
             List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
 
             for (UserCookie userCookie: userCookies) {
-                if(!userCookie.getIsValid()) {
+                if(userCookie.getIsValid() == 0) {
                     log.info("[{}] 사용자, 로그인이 풀려 point url 호출하지 않음", userCookie.getUserName());
                     continue;
                 }
@@ -65,7 +65,7 @@ public class NaverPointService {
                 ResponseEntity<String> response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
 
                 if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
-                    userCookie.setIsValid(Boolean.FALSE);
+                    userCookie.setIsValid(0);
 
                     log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
