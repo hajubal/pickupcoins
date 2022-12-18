@@ -72,6 +72,12 @@ public class NaverPointService {
                     slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
                 }
 
+                //cookie session값 갱신
+                if(response.getHeaders().containsKey("cookie")) {
+                    log.info("cookie 갱신 user: {}", userCookie.getUserName());
+                    userCookie.setCookie(response.getHeaders().getFirst("cookie"));
+                }
+
                 pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
                         .pointUrl(url.getUrl())
                         .userName(userCookie.getUserName())

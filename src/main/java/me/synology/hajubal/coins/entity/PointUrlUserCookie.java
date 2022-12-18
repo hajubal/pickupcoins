@@ -22,10 +22,10 @@ public class PointUrlUserCookie extends BaseTimeEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String responseBody;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String responseHeader;
 
     private int responseStatusCode;

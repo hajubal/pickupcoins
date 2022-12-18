@@ -24,7 +24,7 @@ public class UserCookie extends BaseTimeEntity {
     @Column(nullable = false)
     private String siteName;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String cookie;
 
     private int isValid;
