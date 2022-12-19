@@ -9,3 +9,11 @@ spring:
     url: jdbc:h2:~/coins
     driver-class-name: org.h2.Driver
     username: sa
+
+slack:
+  webhook:
+    url: https://hooks.slack.com/services/1/2/3
+
+naver:
+  cookie: ha:NID_AUT=186; NID_SES=AAABsmU=,
+    park:NID_AUT=186; NID_SES=AAABsmU=,

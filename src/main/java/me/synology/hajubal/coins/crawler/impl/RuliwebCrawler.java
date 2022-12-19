@@ -1,12 +1,12 @@
-package me.synology.hajubal.coins.service;
+package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.PointUrl;
+import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.Site;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,49 +15,43 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 루리웹 사이트 핫딜 게시판
+ */
 @Slf4j
 @Component
-public class ClienWebCrawler implements WebCrawler {
+public class RuliwebCrawler implements WebCrawler {
 
     @Autowired
     private SiteRepository siteRepository;
 
-    @Autowired
-    private PointUrlRepository pointUrlRepository;
-
-    @Autowired
-    private SlackService sendMessage;
-
     /**
      * 사이트에 포함된 포인트 url 수집
+     *
+     * @return point url set
      */
     @Transactional
     @Override
-    public void crawling() {
-        Site site = siteRepository.findByName("클리앙").orElseThrow(() -> new IllegalArgumentException("Not found site name. 클리앙"));
+    public Set<String> crawling() {
+        Site site = siteRepository.findByName("루리웹").orElseThrow(() -> new IllegalArgumentException("Not found site name. 루리웹"));
 
-        String siteUrl = site.getUrl();
-
-        Set<String> pointPostUrl = new HashSet<>();
-
-        Document document;
+        Document document = null;
 
         try {
-            document = Jsoup.connect(siteUrl).get();
+            document = Jsoup.connect(site.getUrl()).get();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        //게시판 목록 tag
-        document.select("span.list_subject").forEach(element -> {
-            //게시글 제목
-            String title = element.attr("title");
+        Set<String> pointPostUrl = new HashSet<>();
 
-//            log.info("title: {}", title);
+        Elements select = document.select("div.list_content>a.subject_link.deco");
 
-            if(title.contains("네이버")) {
-                //게시글 상세 링크
-                String href = element.select("a[data-role=list-title-text]").attr("href");
+        select.forEach(action -> {
+            String text = action.text();
+
+            if(text.contains("네이버")) {
+                String href = action.attr("href");
 
                 log.debug("add url: {}", href);
 
@@ -78,7 +72,7 @@ public class ClienWebCrawler implements WebCrawler {
             }
 
             //게시글 내용에 링크
-            postDocument.select("div.post_article a").forEach(aTag -> {
+            postDocument.select(".board_main_view a").forEach(aTag -> {
                 String pointHref = aTag.attr("href");
 
                 if(pointHref.contains("campaign2-api.naver.com")) {
@@ -89,15 +83,6 @@ public class ClienWebCrawler implements WebCrawler {
             });
         });
 
-        pointUrl.forEach(url -> {
-            if(pointUrlRepository.findByUrl(url).isEmpty()) {
-                log.info("save point url: {}", url);
-
-                pointUrlRepository.save(PointUrl.builder()
-                        .url(url)
-                        .name(url)
-                        .build());
-            }
-        });
+        return pointUrl;
     }
 }

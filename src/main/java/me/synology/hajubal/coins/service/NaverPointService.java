@@ -19,6 +19,9 @@ import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
 
+/**
+ * naver point url에 접속하여 point를 적립하는 로직
+ */
 @Slf4j
 @Transactional(readOnly = true)
 @Service
@@ -54,7 +57,8 @@ public class NaverPointService {
                 }
 
                 //TODO 쿼리 한번에 데이터를 가져오도록 수정.
-                if(!pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isEmpty()) continue;
+                //이미 접속한 URL인 경우 제외
+                if(pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isPresent()) continue;
 
                 log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
