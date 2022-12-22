@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class MainController {
@@ -28,14 +27,23 @@ public class MainController {
     @Autowired
     private PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
-    @GetMapping("/")
+    @GetMapping({"/", "/dashboard"})
     public String index(Model model) {
 
         List<PointUrlUserCookie> all = pointUrlUserCookieRepository.findAll();
 
         model.addAttribute("items", all);
 
-        return "index";
+        return "dashboard";
+    }
+
+    @GetMapping("/users")
+    public String userCookies(Model model) {
+        List<UserCookie> list = userCookieRepository.findAll();
+
+        model.addAttribute("items", list);
+
+        return "users";
     }
 
     @GetMapping("/updateCookie/{userId}")
