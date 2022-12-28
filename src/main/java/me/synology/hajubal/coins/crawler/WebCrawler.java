@@ -8,4 +8,5 @@ public interface WebCrawler {
      */
     Set<String> crawling();
 
+    String siteName();
 }

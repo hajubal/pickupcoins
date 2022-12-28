@@ -85,4 +85,9 @@ public class RuliwebCrawler implements WebCrawler {
 
         return pointUrl;
     }
+
+    @Override
+    public String siteName() {
+        return "Ruliweb";
+    }
 }

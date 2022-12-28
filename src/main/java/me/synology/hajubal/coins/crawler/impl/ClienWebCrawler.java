@@ -85,4 +85,9 @@ public class ClienWebCrawler implements WebCrawler {
 
         return pointUrl;
     }
+
+    @Override
+    public String siteName() {
+        return "Clien";
+    }
 }

@@ -35,7 +35,7 @@ public class Schedulers {
                     log.info("save point url: {}", pointUrl);
 
                     pointUrlRepository.save(PointUrl.builder()
-                            .url(pointUrl)
+                            .url(webCrawlers.siteName())
                             .name(pointUrl)
                             .build());
                 }
