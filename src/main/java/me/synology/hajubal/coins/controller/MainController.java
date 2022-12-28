@@ -1,9 +1,14 @@
 package me.synology.hajubal.coins.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
+import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.PointUrlUserCookie;
+import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
+import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
+import me.synology.hajubal.coins.respository.SiteRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +32,56 @@ public class MainController {
     @Autowired
     private PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
-    @GetMapping({"/", "/dashboard"})
-    public String index(Model model) {
+    @Autowired
+    private SiteRepository siteRepository;
+
+    @Autowired
+    private PointUrlRepository pointUrlRepository;
+
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashBoard(Model model, HttpServletRequest request) {
 
         List<PointUrlUserCookie> all = pointUrlUserCookieRepository.findAll();
 
         model.addAttribute("items", all);
+        model.addAttribute("request", request);
 
         return "dashboard";
     }
 
     @GetMapping("/users")
-    public String userCookies(Model model) {
+    public String userCookies(Model model, HttpServletRequest request) {
         List<UserCookie> list = userCookieRepository.findAll();
 
         model.addAttribute("items", list);
+        model.addAttribute("request", request);
 
         return "users";
+    }
+
+    @GetMapping("/sites")
+    public String sites(Model model, HttpServletRequest request) {
+        List<Site> list = siteRepository.findAll();
+
+        model.addAttribute("items", list);
+        model.addAttribute("request", request);
+
+        return "sites";
+    }
+
+    @GetMapping("/pointurl")
+    public String pointurl(Model model, HttpServletRequest request) {
+        List<PointUrl> list = pointUrlRepository.findAll();
+
+        model.addAttribute("items", list);
+        model.addAttribute("request", request);
+
+        return "pointurl";
     }
 
     @GetMapping("/updateCookie/{userId}")
