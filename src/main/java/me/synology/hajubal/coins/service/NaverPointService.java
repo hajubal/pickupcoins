@@ -60,6 +60,7 @@ public class NaverPointService {
                 //이미 접속한 URL인 경우 제외
                 if(pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isPresent()) continue;
 
+                log.info("Url: {}", url);
                 log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
                 headers.clear();

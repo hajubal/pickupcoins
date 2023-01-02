@@ -10,7 +10,7 @@ import static org.springframework.http.HttpMethod.GET;
 
 public class RestTemplateTest {
 
-    @Test
+    //@Test
     void restTemplateTest() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

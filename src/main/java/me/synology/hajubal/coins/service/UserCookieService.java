@@ -16,10 +16,10 @@ public class UserCookieService {
     @Autowired
     private UserCookieRepository userCookieRepository;
 
-    public void updateUserCookie(CookieUpdateDto cookieUpdateDto) {
+    public void updateUserCookie(Long userId, CookieUpdateDto cookieUpdateDto) {
         log.info("cookieUpdateDto: {}", cookieUpdateDto);
 
-        UserCookie userCookie = userCookieRepository.findByUserNameAndSiteName(cookieUpdateDto.getUserName(), cookieUpdateDto.getSiteName())
+        UserCookie userCookie = userCookieRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Not found user"));
 
         userCookie.setCookie(cookieUpdateDto.getCookie());

@@ -85,19 +85,20 @@ public class MainController {
     }
 
     @GetMapping("/updateCookie/{userId}")
-    public String updateCookieView(@PathVariable Long userId, Model model) {
+    public String updateCookieView(@PathVariable Long userId, Model model, HttpServletRequest request) {
 
         UserCookie userCookie = userCookieRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Not found user."));
 
         model.addAttribute("userCookie", userCookie);
+        model.addAttribute("request", request);
 
         return "cookieDetail";
     }
 
-    @PostMapping("/updateCookie")
-    public String userCookieUpdate(CookieUpdateDto cookieUpdateDto) {
-        userCookieService.updateUserCookie(cookieUpdateDto);
+    @PostMapping("/updateCookie/{userId}")
+    public String userCookieUpdate(@PathVariable Long userId, CookieUpdateDto cookieUpdateDto) {
+        userCookieService.updateUserCookie(userId, cookieUpdateDto);
 
-        return "cookieDetail";
+        return "redirect:/updateCookie/" + userId;
     }
 }

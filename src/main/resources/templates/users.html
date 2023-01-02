@@ -20,7 +20,7 @@
           </thead>
           <tbody>
             <tr th:each="item : ${items}">
-              <td th:text="${item.id}">id</td>
+              <td><a th:href="@{/updateCookie/{id}(id=${item.id})}" th:text="${item.id}">id</a></td>
               <td th:text="${item.userName}">userName</td>
               <td th:text="${item.siteName}">siteName</td>
               <!--<td th:text="${item.cookie}">cookie</td>-->
