@@ -10,6 +10,11 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
 
+  security:
+    user:
+      name: test
+      password: test
+
 slack:
   webhook:
     url: https://hooks.slack.com/services/1/2/3

@@ -22,6 +22,7 @@
         <input type="text" class="form-control" id="cookie" name="cookie" th:value="${userCookie.cookie}">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
     </form>
   </div>
 </main>
