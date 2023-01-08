@@ -31,13 +31,10 @@ public class Schedulers {
         log.info("Call webCrawlerScheduler.");
 
         webCrawlers.forEach(webCrawlers -> webCrawlers.crawling().forEach(pointUrl -> {
-                if(pointUrlRepository.findByUrl(pointUrl).isEmpty()) {
+                if(pointUrlRepository.findByUrl(pointUrl.getUrl()).isEmpty()) {
                     log.info("save point url: {}", pointUrl);
 
-                    pointUrlRepository.save(PointUrl.builder()
-                            .url(webCrawlers.siteName())
-                            .name(pointUrl)
-                            .build());
+                    pointUrlRepository.save(pointUrl);
                 }
         }));
     }

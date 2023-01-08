@@ -2,6 +2,8 @@ package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.WebCrawler;
+import me.synology.hajubal.coins.entity.POINT_URL_TYPE;
+import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import org.jsoup.Jsoup;
@@ -28,7 +30,7 @@ public class ClienWebCrawler implements WebCrawler {
      */
     @Transactional
     @Override
-    public Set<String> crawling() {
+    public Set<PointUrl> crawling() {
         Site site = siteRepository.findByName("클리앙").orElseThrow(() -> new IllegalArgumentException("Not found site name. 클리앙"));
 
         String siteUrl = site.getUrl();
@@ -60,7 +62,7 @@ public class ClienWebCrawler implements WebCrawler {
         });
 
         //포인트 url
-        Set<String> pointUrl = new HashSet<>();
+        Set<PointUrl> pointUrl = new HashSet<>();
 
         pointPostUrl.forEach(url -> {
             Document postDocument;
@@ -76,9 +78,13 @@ public class ClienWebCrawler implements WebCrawler {
                 String pointHref = aTag.attr("href");
 
                 if(pointHref.contains("campaign2-api.naver.com")) {
-                    log.debug("point url: {}", pointHref);
+                    log.debug("Naver point url: {}", pointHref);
 
-                    pointUrl.add(pointHref);
+                    pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.NAVER).url(pointHref).name("naver").build());
+                } else if(pointHref.contains("ofw.adison.co/u/naverpay")) {
+                    log.debug("Adison naver point url: {}", pointHref);
+
+                    pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.OFW_NAVER).url(pointHref).name("naver").build());
                 }
             });
         });

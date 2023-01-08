@@ -22,4 +22,8 @@ public class PointUrl extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String url;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private POINT_URL_TYPE pointUrlType;
 }
