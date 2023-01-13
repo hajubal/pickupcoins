@@ -27,6 +27,11 @@ public class UserCookie extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String cookie;
 
+    /**
+     * 유효 여부
+     * 1: valid
+     * 0: invalid
+     */
     private int isValid;
 
     @OneToMany(mappedBy = "userCookie")

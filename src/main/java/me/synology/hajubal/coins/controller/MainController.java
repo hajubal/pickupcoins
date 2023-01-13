@@ -1,6 +1,7 @@
 package me.synology.hajubal.coins.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import me.synology.hajubal.coins.controller.dto.CookieInsertDto;
 import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.PointUrlUserCookie;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -98,6 +100,22 @@ public class MainController {
     @PostMapping("/updateCookie/{userId}")
     public String userCookieUpdate(@PathVariable Long userId, CookieUpdateDto cookieUpdateDto) {
         userCookieService.updateUserCookie(userId, cookieUpdateDto);
+
+        return "redirect:/updateCookie/" + userId;
+    }
+
+    @GetMapping("/insertCookie")
+    public String insertCookieView(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
+        model.addAttribute("userCookie", new CookieInsertDto());
+
+        return "inserCookie";
+    }
+
+    @PostMapping("/insertCookie")
+    public String insertCookie(@ModelAttribute CookieInsertDto cookieInsertDto) {
+
+        Long userId = userCookieService.insertUserCookie(cookieInsertDto);
 
         return "redirect:/updateCookie/" + userId;
     }

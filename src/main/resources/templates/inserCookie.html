@@ -1,0 +1,30 @@
+<!doctype html>
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::main})}" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">사용자</h1>
+  </div>
+  <h2>쿠키 추가</h2>
+  <div class="table-responsive">
+    <form th:action="@{/insertCookie}" method="post">
+      <div class="mb-3">
+        <label for="userName" class="form-label">user name</label>
+        <input type="text" class="form-control" id="userName" name="userName" th:value="${userCookie.userName}">
+      </div>
+      <div class="mb-3">
+        <label for="siteName" class="form-label">site name</label>
+        <input type="text" class="form-control" id="siteName" name="siteName" th:value="${userCookie.siteName}">
+      </div>
+      <div class="mb-3">
+        <label for="cookie" class="form-label">cookie</label>
+        <input type="text" class="form-control" id="cookie" name="cookie" th:value="${userCookie.cookie}">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
+    </form>
+  </div>
+</main>
+</body>
+</html>
