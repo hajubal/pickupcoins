@@ -119,4 +119,10 @@ public class MainController {
 
         return "redirect:/updateCookie/" + userId;
     }
+
+    @GetMapping("/crawlering")
+    public String crawling() {
+        return "";
+    }
+
 }

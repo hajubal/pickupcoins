@@ -2,7 +2,7 @@ package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.WebCrawler;
-import me.synology.hajubal.coins.entity.POINT_URL_TYPE;
+import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.respository.SiteRepository;

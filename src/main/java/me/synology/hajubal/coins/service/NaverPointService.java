@@ -48,17 +48,18 @@ public class NaverPointService {
         List<PointUrl> pointUrls = pointUrlRepository.findAll();
 
         pointUrls.forEach(url -> {
+            //사용자 cookie 목록
             List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
 
             for (UserCookie userCookie: userCookies) {
                 if(userCookie.getIsValid() == 0) {
-                    log.info("[{}] 사용자, 로그인이 풀려 point url 호출하지 않음", userCookie.getUserName());
+                    log.warn("[{}] 사용자, 로그인이 풀려 point url 호출하지 않음", userCookie.getUserName());
                     continue;
                 }
 
                 //TODO 쿼리 한번에 데이터를 가져오도록 수정.
                 //이미 접속한 URL인 경우 제외
-                if(pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isPresent()) continue;
+                if(!url.getPermanent() && pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isPresent()) continue;
 
                 log.info("Url: {}", url);
                 log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());

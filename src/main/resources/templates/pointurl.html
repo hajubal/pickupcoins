@@ -13,6 +13,7 @@
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Site Name</th>
+              <th scope="col">Permanent</th>
               <th scope="col">URL</th>
               <th scope="col">Create Date</th>
             </tr>
@@ -21,6 +22,7 @@
             <tr th:each="item : ${items}">
               <td th:text="${item.id}">id</td>
               <td th:text="${item.name}">site name</td>
+              <td th:text="${item.permanent}">permanent</td>
               <td th:text="${item.url}">url</td>
               <td th:text="${item.createdDate}">create date</td>
             </tr>
