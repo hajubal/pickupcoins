@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert @DynamicUpdate
 @Data
 @Entity
 public class UserCookie extends BaseTimeEntity {
@@ -29,10 +32,9 @@ public class UserCookie extends BaseTimeEntity {
 
     /**
      * 유효 여부
-     * 1: valid
-     * 0: invalid
      */
-    private int isValid;
+    @Column(columnDefinition = "boolean default true")
+    private Boolean isValid;
 
     @OneToMany(mappedBy = "userCookie")
     private List<PointUrlUserCookie> pointUrlUserCookie;

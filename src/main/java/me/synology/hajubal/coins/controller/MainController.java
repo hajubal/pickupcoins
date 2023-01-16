@@ -11,14 +11,13 @@ import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
+import me.synology.hajubal.coins.schedule.Schedulers;
 import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +38,9 @@ public class MainController {
 
     @Autowired
     private PointUrlRepository pointUrlRepository;
+
+    @Autowired
+    private Schedulers schedulers;
 
     @GetMapping("/")
     public String index() {
@@ -120,9 +122,17 @@ public class MainController {
         return "redirect:/updateCookie/" + userId;
     }
 
-    @GetMapping("/crawlering")
+    @GetMapping("/crawling")
     public String crawling() {
-        return "";
+        schedulers.webCrawlerScheduler();
+
+        return "redirect:/pointurl";
     }
 
+    @GetMapping("/savePoint")
+    public String savePoint() {
+        schedulers.pointScheduler();
+
+        return "redirect:/pointurl";
+    }
 }

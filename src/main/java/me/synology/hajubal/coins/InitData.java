@@ -30,7 +30,7 @@ public class InitData {
         naverCookie.forEach(cookie -> {
             String[] token = cookie.split(":");
 
-            UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).isValid(1).build();
+            UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).isValid(true).build();
 
             if(userCookieRepository.findByCookie(userCookie.getCookie()).isEmpty()) {
                 log.info("save cookie. name: {}", token[0]);

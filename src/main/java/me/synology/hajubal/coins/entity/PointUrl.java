@@ -6,11 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@DynamicInsert @DynamicUpdate
 @Entity
 public class PointUrl extends BaseTimeEntity {
 
@@ -31,6 +34,6 @@ public class PointUrl extends BaseTimeEntity {
     /**
      * 계속 사용되는 포인트 url 여부
      */
-    @Column
-    private Boolean permanent = Boolean.FALSE;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean permanent;
 }
