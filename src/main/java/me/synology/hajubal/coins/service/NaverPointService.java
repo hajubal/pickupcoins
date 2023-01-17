@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -70,7 +71,15 @@ public class NaverPointService {
                 headers.add("Cookie", userCookie.getCookie());
                 headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 
-                ResponseEntity<String> response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
+                ResponseEntity<String> response = null;
+
+                try {
+                    response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
+                } catch (HttpClientErrorException e) {
+                    log.error(e.getMessage(), e);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
 
                 if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
                     userCookie.setIsValid(false);
@@ -86,6 +95,7 @@ public class NaverPointService {
                     userCookie.setCookie(response.getHeaders().getFirst("cookie"));
                 }
 
+                //사용자 별 호출 url 정보 저장
                 pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
                         .pointUrl(url.getUrl())
                         .userName(userCookie.getUserName())
