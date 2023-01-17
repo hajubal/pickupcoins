@@ -84,7 +84,7 @@ public class ClienWebCrawler implements WebCrawler {
                 } else if(pointHref.contains("ofw.adison.co/u/naverpay")) {
                     log.debug("Adison naver point url: {}", pointHref);
 
-                    pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.OFW_NAVER).url(pointHref).name("naver").build());
+                    pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.OFW_NAVER).url(pointHref).name("adison").build());
                 }
             });
         });
