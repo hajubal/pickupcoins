@@ -16,19 +16,8 @@ public class PointUrlUserCookie extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String pointUrl;
-
-    @Column(nullable = false)
-    private String userName;
-
-    @Column(columnDefinition = "TEXT")
-    private String responseBody;
-
-    @Column(columnDefinition = "TEXT")
-    private String responseHeader;
-
-    private int responseStatusCode;
+    @ManyToOne
+    private PointUrl pointUrl;
 
     @ManyToOne
     private UserCookie userCookie;

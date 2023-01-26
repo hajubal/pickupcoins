@@ -2,8 +2,10 @@ package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.PointUrl;
+import me.synology.hajubal.coins.entity.PointUrlCallLog;
 import me.synology.hajubal.coins.entity.PointUrlUserCookie;
 import me.synology.hajubal.coins.entity.UserCookie;
+import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
@@ -36,6 +38,9 @@ public class NaverPointService {
 
     @Autowired
     private PointUrlUserCookieRepository pointUrlUserCookieRepository;
+
+    @Autowired
+    private PointUrlCallLogRepository pointUrlCallLogRepository;
 
     @Autowired
     private SlackService slackService;
@@ -97,13 +102,22 @@ public class NaverPointService {
 
                 //사용자 별 호출 url 정보 저장
                 pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
-                        .pointUrl(url.getUrl())
-                        .userName(userCookie.getUserName())
-                        .userCookie(userCookie)
-                        .responseHeader(response.getHeaders().toString())
-                        .responseBody(response.getBody())
-                        .responseStatusCode(response.getStatusCode().value())
+                                        .pointUrl(url)
+                                        .userCookie(userCookie)
                         .build());
+
+                //호출 log
+                pointUrlCallLogRepository.save(PointUrlCallLog.builder()
+                        .cookie(userCookie.getCookie())
+                                .responseBody(response.getBody())
+                                .responseHeader(response.getHeaders().toString())
+                                .responseStatusCode(response.getStatusCode().value())
+                                .siteName(userCookie.getSiteName())
+                                .userName(userCookie.getUserName())
+                                .cookie(userCookie.getCookie())
+                                .pointUrl(url.getUrl())
+                        .build()
+                );
 
                 log.debug("response: {} ", response.getBody());
 

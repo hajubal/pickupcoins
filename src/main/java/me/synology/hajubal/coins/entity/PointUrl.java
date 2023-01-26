@@ -9,6 +9,8 @@ import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,4 +38,7 @@ public class PointUrl extends BaseTimeEntity {
      */
     @Column(columnDefinition = "boolean default false")
     private Boolean permanent;
+
+    @OneToMany(mappedBy = "pointUrl")
+    private List<PointUrlUserCookie> pointUrlUserCookies;
 }
