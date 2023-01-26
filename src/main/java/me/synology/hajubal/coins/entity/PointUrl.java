@@ -1,10 +1,7 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -39,6 +36,7 @@ public class PointUrl extends BaseTimeEntity {
     @Column(columnDefinition = "boolean default false")
     private Boolean permanent;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "pointUrl")
     private List<PointUrlUserCookie> pointUrlUserCookies;
 }

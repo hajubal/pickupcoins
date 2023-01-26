@@ -3,18 +3,11 @@ package me.synology.hajubal.coins.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import me.synology.hajubal.coins.controller.dto.CookieInsertDto;
 import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
-import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.PointUrlUserCookie;
-import me.synology.hajubal.coins.entity.Site;
-import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
-import me.synology.hajubal.coins.respository.SiteRepository;
-import me.synology.hajubal.coins.respository.UserCookieRepository;
+import me.synology.hajubal.coins.entity.*;
+import me.synology.hajubal.coins.respository.*;
 import me.synology.hajubal.coins.schedule.Schedulers;
 import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +31,9 @@ public class MainController {
 
     @Autowired
     private PointUrlRepository pointUrlRepository;
+
+    @Autowired
+    private PointUrlCallLogRepository pointUrlCallLogRepository;
 
     @Autowired
     private Schedulers schedulers;
@@ -111,7 +107,7 @@ public class MainController {
         model.addAttribute("request", request);
         model.addAttribute("userCookie", new CookieInsertDto());
 
-        return "inserCookie";
+        return "insertCookie";
     }
 
     @PostMapping("/insertCookie")
@@ -134,5 +130,15 @@ public class MainController {
         schedulers.pointScheduler();
 
         return "redirect:/pointurl";
+    }
+
+    @GetMapping("/savePointLog")
+    public String savePointLog(Model model, HttpServletRequest request) {
+
+        List<PointUrlCallLog> list = pointUrlCallLogRepository.findAll();
+        model.addAttribute("items", list);
+        model.addAttribute("request", request);
+
+        return "pointLog";
     }
 }

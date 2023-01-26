@@ -61,6 +61,12 @@
               포인트 URL
             </a>
           </li>
+          <li class="nav-item">
+            <a th:classappend="${request.requestURI.equals('/savePointLog')} ? 'active' : ''" class="nav-link" href="/savePointLog">
+              <span data-feather="bar-chart-2" class="align-text-bottom"></span>
+              포인트 로그
+            </a>
+          </li>
           <!--
           <li class="nav-item">
             <a class="nav-link" href="#">

@@ -67,7 +67,7 @@ public class NaverPointService {
 
                 //TODO 쿼리 한번에 데이터를 가져오도록 수정.
                 //이미 접속한 URL인 경우 제외
-                if(!url.getPermanent() && pointUrlUserCookieRepository.findByPointUrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isPresent()) continue;
+                if(!url.getPermanent() && pointUrlUserCookieRepository.findByPointUrl_UrlAndUserCookieUserName(url.getUrl(), userCookie.getUserName()).isPresent()) continue;
 
                 log.info("Url: {}", url);
                 log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());

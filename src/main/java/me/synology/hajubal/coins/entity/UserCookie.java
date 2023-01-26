@@ -1,10 +1,7 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -36,6 +33,7 @@ public class UserCookie extends BaseTimeEntity {
     @Column(columnDefinition = "boolean default true")
     private Boolean isValid;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "userCookie")
     private List<PointUrlUserCookie> pointUrlUserCookie;
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PointUrlUserCookieRepository extends JpaRepository<PointUrlUserCookie, Long> {
 
-    Optional<PointUrlUserCookie> findByPointUrlAndUserCookieUserName(String pointUrl, String userName);
+    Optional<PointUrlUserCookie> findByPointUrl_UrlAndUserCookieUserName(String pointUrl, String userName);
 }
