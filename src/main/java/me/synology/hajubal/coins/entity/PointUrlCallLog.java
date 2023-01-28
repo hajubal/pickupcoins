@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @Data
 @Entity
-public class PointUrlCallLog {
+public class PointUrlCallLog extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
