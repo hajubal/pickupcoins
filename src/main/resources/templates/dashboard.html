@@ -13,15 +13,15 @@
             <tr>
               <th scope="col">ID</th>
               <th scope="col">User Name</th>
-              <th scope="col">Status Code</th>
+              <th scope="col">Point</th>
               <th scope="col">Date</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="item : ${items}">
               <td th:text="${item.id}">id</td>
-              <td th:text="${item.userName}">userName</td>
-              <td th:text="${item.responseStatusCode}">status code</td>
+              <td th:text="${item.userCookie.userName}">user name</td>
+              <td th:text="${item.point}">point</td>
               <td th:text="${item.createdDate}">create date</td>
             </tr>
           </tbody>

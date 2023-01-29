@@ -36,4 +36,7 @@ public class UserCookie extends BaseTimeEntity {
     @ToString.Exclude
     @OneToMany(mappedBy = "userCookie")
     private List<PointUrlUserCookie> pointUrlUserCookie;
+
+    @OneToOne
+    private SavedPoint savedPoint;
 }

@@ -1,14 +1,8 @@
 package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.PointUrlCallLog;
-import me.synology.hajubal.coins.entity.PointUrlUserCookie;
-import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
-import me.synology.hajubal.coins.respository.UserCookieRepository;
+import me.synology.hajubal.coins.entity.*;
+import me.synology.hajubal.coins.respository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,23 +37,22 @@ public class NaverPointService {
     private PointUrlCallLogRepository pointUrlCallLogRepository;
 
     @Autowired
+    private SavedPointRepository savedPointRepository;
+
+    @Autowired
     private SlackService slackService;
 
     @Transactional
     public void savePoint() {
-        HttpHeaders headers = new HttpHeaders();
-        RestTemplate restTemplate = new RestTemplate();
-
         //TODO point site url 별로 구분해서 조회
         List<PointUrl> pointUrls = pointUrlRepository.findAll();
 
         pointUrls.forEach(url -> {
             //사용자 cookie 목록
-            List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
 
             log.info("url: {}", url);
 
-            for (UserCookie userCookie: userCookies) {
+            for (UserCookie userCookie: userCookieRepository.findBySiteName("naver")) {
                 if(!userCookie.getIsValid()) {
                     log.warn("[{}] 사용자, 로그인이 풀려 point url 호출하지 않음", userCookie.getUserName());
                     continue;
@@ -72,16 +65,14 @@ public class NaverPointService {
                 log.info("Url: {}", url);
                 log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
-                headers.clear();
+                HttpHeaders headers = new HttpHeaders();
                 headers.add("Cookie", userCookie.getCookie());
                 headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 
                 ResponseEntity<String> response = null;
 
                 try {
-                    response = restTemplate.exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
-                } catch (HttpClientErrorException e) {
-                    log.error(e.getMessage(), e);
+                    response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -93,7 +84,10 @@ public class NaverPointService {
 
                     slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
                 } else if(response.getBody().contains("적립되었습니다.")) {
-
+                    savedPointRepository.save(SavedPoint.builder()
+                                    .point("코드 수정 필요")
+                                    .userCookie(userCookie)
+                            .build());
                 }
 
                 //cookie session값 갱신

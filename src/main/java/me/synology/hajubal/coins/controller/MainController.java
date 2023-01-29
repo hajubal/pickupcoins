@@ -38,6 +38,9 @@ public class MainController {
     @Autowired
     private Schedulers schedulers;
 
+    @Autowired
+    private SavedPointRepository savedPointRepository;
+
     @GetMapping("/")
     public String index() {
         return "redirect:/dashboard";
@@ -46,7 +49,7 @@ public class MainController {
     @GetMapping("/dashboard")
     public String dashBoard(Model model, HttpServletRequest request) {
 
-        List<PointUrlUserCookie> all = pointUrlUserCookieRepository.findAll();
+        List<SavedPoint> all = savedPointRepository.findAll();
 
         model.addAttribute("items", all);
         model.addAttribute("request", request);
