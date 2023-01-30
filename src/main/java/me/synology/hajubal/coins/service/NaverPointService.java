@@ -44,8 +44,7 @@ public class NaverPointService {
 
     @Transactional
     public void savePoint() {
-        //TODO point site url 별로 구분해서 조회
-        List<PointUrl> pointUrls = pointUrlRepository.findAll();
+        List<PointUrl> pointUrls = pointUrlRepository.findByName("naver");
 
         pointUrls.forEach(url -> {
             //사용자 cookie 목록
@@ -69,53 +68,51 @@ public class NaverPointService {
                 headers.add("Cookie", userCookie.getCookie());
                 headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 
-                ResponseEntity<String> response = null;
-
                 try {
-                    response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
+                    ResponseEntity<String> response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(headers), String.class);
+
+                    if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
+                        userCookie.setIsValid(false);
+
+                        log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
+
+                        slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
+                    } else if(response.getBody().contains("적립되었습니다.")) {
+                        savedPointRepository.save(SavedPoint.builder()
+                                        .point("코드 수정 필요")
+                                        .userCookie(userCookie)
+                                .build());
+                    }
+
+                    //cookie session값 갱신
+                    if(response.getHeaders().containsKey("cookie")) {
+                        log.info("cookie 갱신 user: {}", userCookie.getUserName());
+                        userCookie.setCookie(response.getHeaders().getFirst("cookie"));
+                    }
+
+                    //사용자 별 호출 url 정보 저장
+                    pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
+                                            .pointUrl(url)
+                                            .userCookie(userCookie)
+                            .build());
+
+                    //호출 log
+                    pointUrlCallLogRepository.save(PointUrlCallLog.builder()
+                            .cookie(userCookie.getCookie())
+                                    .responseBody(response.getBody())
+                                    .responseHeader(response.getHeaders().toString())
+                                    .responseStatusCode(response.getStatusCode().value())
+                                    .siteName(userCookie.getSiteName())
+                                    .userName(userCookie.getUserName())
+                                    .cookie(userCookie.getCookie())
+                                    .pointUrl(url.getUrl())
+                            .build()
+                    );
+
+                    log.debug("response: {} ", response.getBody());
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
-
-                if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
-                    userCookie.setIsValid(false);
-
-                    log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
-
-                    slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
-                } else if(response.getBody().contains("적립되었습니다.")) {
-                    savedPointRepository.save(SavedPoint.builder()
-                                    .point("코드 수정 필요")
-                                    .userCookie(userCookie)
-                            .build());
-                }
-
-                //cookie session값 갱신
-                if(response.getHeaders().containsKey("cookie")) {
-                    log.info("cookie 갱신 user: {}", userCookie.getUserName());
-                    userCookie.setCookie(response.getHeaders().getFirst("cookie"));
-                }
-
-                //사용자 별 호출 url 정보 저장
-                pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
-                                        .pointUrl(url)
-                                        .userCookie(userCookie)
-                        .build());
-
-                //호출 log
-                pointUrlCallLogRepository.save(PointUrlCallLog.builder()
-                        .cookie(userCookie.getCookie())
-                                .responseBody(response.getBody())
-                                .responseHeader(response.getHeaders().toString())
-                                .responseStatusCode(response.getStatusCode().value())
-                                .siteName(userCookie.getSiteName())
-                                .userName(userCookie.getUserName())
-                                .cookie(userCookie.getCookie())
-                                .pointUrl(url.getUrl())
-                        .build()
-                );
-
-                log.debug("response: {} ", response.getBody());
 
                 try {
                     Thread.sleep(100L);

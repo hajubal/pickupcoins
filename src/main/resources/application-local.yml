@@ -15,6 +15,10 @@ spring:
       name: test
       password: test
 
+logging:
+  file:
+    path: d:/logs
+
 slack:
   webhook:
     url: https://hooks.slack.com/services/1/2/3

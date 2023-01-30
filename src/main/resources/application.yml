@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: coin
   profiles:
     active: local
   jpa:

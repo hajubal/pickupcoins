@@ -10,4 +10,6 @@ public class CookieUpdateDto {
     private String siteName;
 
     private String cookie;
+
+    private Boolean isValid;
 }

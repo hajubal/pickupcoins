@@ -45,7 +45,7 @@ public class AdisonService {
 //        RestTemplate restTemplate = new RestTemplate();
 //
 //        //TODO point site url 별로 구분해서 조회
-//        List<PointUrl> pointUrls = pointUrlRepository.findAll();
+//        List<PointUrl> pointUrls = pointUrlRepository.findByName("adison");
 //
 //        pointUrls.forEach(url -> {
 //            List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");

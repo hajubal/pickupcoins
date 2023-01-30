@@ -21,6 +21,10 @@
         <label for="cookie" class="form-label">cookie</label>
         <input type="text" class="form-control" id="cookie" name="cookie" th:value="${userCookie.cookie}">
       </div>
+      <div class="mb-3">
+        <label for="isValid" class="form-label">isValid</label>
+        <input type="text" class="form-control" id="isValid" name="isValid" th:value="${userCookie.isValid}">
+      </div>
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
     </form>

@@ -31,6 +31,7 @@ public class UserCookieService {
                 .orElseThrow(() -> new IllegalArgumentException("Not found user"));
 
         userCookie.setCookie(cookieUpdateDto.getCookie());
+        userCookie.setIsValid(cookieUpdateDto.getIsValid());
     }
 
     /**

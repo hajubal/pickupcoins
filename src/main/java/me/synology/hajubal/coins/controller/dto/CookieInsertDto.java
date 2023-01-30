@@ -11,11 +11,14 @@ public class CookieInsertDto {
 
     private String cookie;
 
+    private Boolean isValid;
+
     public UserCookie toEntity() {
         return UserCookie.builder()
                 .userName(userName)
                 .siteName(siteName)
                 .cookie(cookie)
+                .isValid(isValid)
                 .build();
     }
 }
