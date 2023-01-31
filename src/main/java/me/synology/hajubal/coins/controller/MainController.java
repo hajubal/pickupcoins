@@ -10,6 +10,7 @@ import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -136,9 +137,17 @@ public class MainController {
     }
 
     @GetMapping("/savePointLog")
-    public String savePointLog(Model model, HttpServletRequest request) {
+    public String savePointLog(Model model, HttpServletRequest request, @RequestParam(name = "userName", required = false) String userName) {
 
-        List<PointUrlCallLog> list = pointUrlCallLogRepository.findAll();
+        List<PointUrlCallLog> list;
+
+        if(StringUtils.hasText(userName)) {
+            list = pointUrlCallLogRepository.findByUserName(userName);
+        } else {
+            list = pointUrlCallLogRepository.findAll();
+        }
+
+        model.addAttribute("userName", userName);
         model.addAttribute("items", list);
         model.addAttribute("request", request);
 
