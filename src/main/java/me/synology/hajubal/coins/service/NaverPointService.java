@@ -77,7 +77,7 @@ public class NaverPointService {
                         log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
                         slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
-                    } else if(response.getBody().contains("적립되었습니다.")) {
+                    } else if(response.getBody().contains("적립")) {
                         savedPointRepository.save(SavedPoint.builder()
                                         .point("코드 수정 필요")
                                         .userCookie(userCookie)
