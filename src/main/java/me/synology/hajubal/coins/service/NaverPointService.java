@@ -5,13 +5,11 @@ import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.NullableUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -47,7 +45,6 @@ public class NaverPointService {
     /**
      * 포인트 저장 로직
      */
-    @Transactional
     public void savePoint() {
         List<PointUrl> pointUrls = pointUrlRepository.findByName("naver");
 
@@ -82,46 +79,51 @@ public class NaverPointService {
                 return;
             }
 
-            log.info("call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
+            log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
-            try {
-                ResponseEntity<String> response = getResponseEntity(url, userCookie);
+            ResponseEntity<String> response = exchange(url, userCookie);
 
-                //사용자 별 호출 url 정보 저장
-                pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
-                        .pointUrl(url)
-                        .userCookie(userCookie)
-                        .build());
+            log.debug("Response body: {} ", response.getBody());
+            
+            saveLog(url, userCookie, response);
 
-                //호출 log
-                pointUrlCallLogRepository.save(PointUrlCallLog.builder()
-                        .cookie(userCookie.getCookie())
-                        .responseBody(response.getBody())
-                        .responseHeader(response.getHeaders().toString())
-                        .responseStatusCode(response.getStatusCode().value())
-                        .siteName(userCookie.getSiteName())
-                        .userName(userCookie.getUserName())
-                        .cookie(userCookie.getCookie())
-                        .pointUrl(url.getUrl())
-                        .build()
-                );
-
-                log.debug("response: {} ", response.getBody());
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-
-            try {
-                Thread.sleep(100L);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            delay(100l);
         });
     }
 
+    private static void delay(long delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Transactional
+    protected void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
+        //사용자 별 호출 url 정보 저장
+        pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
+                .pointUrl(url)
+                .userCookie(userCookie)
+                .build());
+
+        //호출 log
+        pointUrlCallLogRepository.save(PointUrlCallLog.builder()
+                .cookie(userCookie.getCookie())
+                .responseBody(response.getBody())
+                .responseHeader(response.getHeaders().toString())
+                .responseStatusCode(response.getStatusCode().value())
+                .siteName(userCookie.getSiteName())
+                .userName(userCookie.getUserName())
+                .cookie(userCookie.getCookie())
+                .pointUrl(url.getUrl())
+                .build()
+        );
+    }
+
     @NotNull
-    private ResponseEntity<String> getResponseEntity(PointUrl url, UserCookie userCookie) {
-        ResponseEntity<String> response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(getHeaders(userCookie)), String.class);
+    private ResponseEntity<String> exchange(PointUrl url, UserCookie userCookie) {
+        ResponseEntity<String> response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(buildHeader(userCookie)), String.class);
 
         if(response.getBody() == null) {
             return ResponseEntity.noContent().build();
@@ -134,10 +136,7 @@ public class NaverPointService {
 
             slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
         } else if(response.getBody().contains("적립")) {
-            savedPointRepository.save(SavedPoint.builder()
-                    .point("코드 수정 필요")
-                    .userCookie(userCookie)
-                    .build());
+            savePointLog(userCookie);
         }
 
         //cookie session값 갱신
@@ -149,11 +148,20 @@ public class NaverPointService {
         return response;
     }
 
+    @Transactional
+    protected void savePointLog(UserCookie userCookie) {
+        savedPointRepository.save(SavedPoint.builder()
+                .point("코드 수정 필요")
+                .userCookie(userCookie)
+                .build());
+    }
+
     @NotNull
-    private static HttpHeaders getHeaders(UserCookie userCookie) {
+    private static HttpHeaders buildHeader(UserCookie userCookie) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie", userCookie.getCookie());
         headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
         return headers;
     }
+
 }
