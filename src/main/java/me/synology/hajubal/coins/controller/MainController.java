@@ -1,6 +1,7 @@
 package me.synology.hajubal.coins.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.CookieInsertDto;
 import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
 import me.synology.hajubal.coins.entity.*;
@@ -11,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @Controller
 public class MainController {
 
@@ -122,6 +126,36 @@ public class MainController {
         return "redirect:/updateCookie/" + userId;
     }
 
+    @GetMapping("/insertCookie2")
+    public String insertCookieView2(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
+        model.addAttribute("userCookie", new CookieInsertDto());
+
+        return "insertCookie2";
+    }
+
+    @PostMapping("/insertCookie2")
+    public String insertCookie(Model model, HttpServletRequest request
+            , @Validated @ModelAttribute("item") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
+        model.addAttribute("request", request);
+
+        //특정 필드 예외가 아닌 전체 예외
+        if (!cookieInsertDto.getIsValid()) {
+            bindingResult.reject("valid", new Object[]{Boolean.TRUE,
+                    cookieInsertDto.getIsValid()}, null);
+        }
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "insertCookie2";
+        }
+
+        Long userId = userCookieService.insertUserCookie(cookieInsertDto);
+
+        return "redirect:/updateCookie/" + userId;
+    }
+
+
     @GetMapping("/crawling")
     public String crawling() {
         schedulers.webCrawlerScheduler();
@@ -141,7 +175,7 @@ public class MainController {
 
         List<PointUrlCallLog> list;
 
-        if(StringUtils.hasText(userName)) {
+        if (StringUtils.hasText(userName)) {
             list = pointUrlCallLogRepository.findByUserName(userName);
         } else {
             list = pointUrlCallLogRepository.findAll();
