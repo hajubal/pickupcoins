@@ -11,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
@@ -41,6 +44,9 @@ public class NaverPointService {
 
     @Autowired
     private SlackService slackService;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     /**
      * 포인트 저장 로직
@@ -81,13 +87,8 @@ public class NaverPointService {
 
             log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
-            ResponseEntity<String> response = exchange(url, userCookie);
-
-            log.debug("Response body: {} ", response.getBody());
-            
-            saveLog(url, userCookie, response);
-
-            delay(100l);
+            //exchange(url, userCookie);
+            webClientExchange(url, userCookie);
         });
     }
 
@@ -121,31 +122,73 @@ public class NaverPointService {
         );
     }
 
-    @NotNull
-    private ResponseEntity<String> exchange(PointUrl url, UserCookie userCookie) {
-        ResponseEntity<String> response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(buildHeader(userCookie)), String.class);
+//    private void exchange(PointUrl url, UserCookie userCookie) {
+//        ResponseEntity<String> response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(buildHeader(userCookie)), String.class);
+//
+//        if(response.getBody() == null) {
+//            return;
+//        }
+//
+//        if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
+//            userCookie.setIsValid(false);
+//
+//            log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
+//
+//            slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
+//        } else if(response.getBody().contains("적립")) {
+//            savePointLog(userCookie);
+//        }
+//
+//        //cookie session값 갱신
+//        if(response.getHeaders().containsKey("cookie")) {
+//            log.info("cookie 갱신 user: {}", userCookie.getUserName());
+//            userCookie.setCookie(response.getHeaders().getFirst("cookie"));
+//        }
+//
+//        log.debug("Response body: {} ", response.getBody());
+//
+//        saveLog(url, userCookie, response);
+//
+//        delay(100L);
+//    }
 
-        if(response.getBody() == null) {
-            return ResponseEntity.noContent().build();
-        }
+    private void webClientExchange(PointUrl url, UserCookie userCookie) {
+        WebClient webClient = webClientBuilder.build();
+        Mono<ResponseEntity<String>> entityMono = webClient
+                .get()
+                .uri(URI.create(url.getUrl()))
+                .headers(httpHeaders -> buildHeader(userCookie))
+                .retrieve()
+                .toEntity(String.class)
+        ;
 
-        if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
-            userCookie.setIsValid(false);
+        entityMono.subscribe(response -> {
+            if(response == null || response.getBody() == null) {
+                return;
+            }
 
-            log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
+            if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
+                userCookie.setIsValid(false);
 
-            slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
-        } else if(response.getBody().contains("적립")) {
-            savePointLog(userCookie);
-        }
+                log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
-        //cookie session값 갱신
-        if(response.getHeaders().containsKey("cookie")) {
-            log.info("cookie 갱신 user: {}", userCookie.getUserName());
-            userCookie.setCookie(response.getHeaders().getFirst("cookie"));
-        }
+                slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
+            } else if(response.getBody().contains("적립")) {
+                savePointLog(userCookie);
+            }
 
-        return response;
+            //cookie session값 갱신
+            if(response.getHeaders().containsKey("cookie")) {
+                log.info("cookie 갱신 user: {}", userCookie.getUserName());
+                userCookie.setCookie(response.getHeaders().getFirst("cookie"));
+            }
+
+            log.debug("Response body: {} ", response.getBody());
+
+            saveLog(url, userCookie, response);
+
+            delay(100L);
+        });
     }
 
     @Transactional
