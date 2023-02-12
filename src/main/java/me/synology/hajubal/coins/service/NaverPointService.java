@@ -5,19 +5,15 @@ import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.List;
-
-import static org.springframework.http.HttpMethod.GET;
 
 /**
  * naver point url에 접속하여 point를 적립하는 로직
@@ -88,7 +84,7 @@ public class NaverPointService {
             log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
             //exchange(url, userCookie);
-            webClientExchange(url, userCookie);
+            exchange(url, userCookie);
         });
     }
 
@@ -122,42 +118,12 @@ public class NaverPointService {
         );
     }
 
-//    private void exchange(PointUrl url, UserCookie userCookie) {
-//        ResponseEntity<String> response =  new RestTemplate().exchange(url.getUrl(), GET, new HttpEntity<String>(buildHeader(userCookie)), String.class);
-//
-//        if(response.getBody() == null) {
-//            return;
-//        }
-//
-//        if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
-//            userCookie.setIsValid(false);
-//
-//            log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
-//
-//            slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
-//        } else if(response.getBody().contains("적립")) {
-//            savePointLog(userCookie);
-//        }
-//
-//        //cookie session값 갱신
-//        if(response.getHeaders().containsKey("cookie")) {
-//            log.info("cookie 갱신 user: {}", userCookie.getUserName());
-//            userCookie.setCookie(response.getHeaders().getFirst("cookie"));
-//        }
-//
-//        log.debug("Response body: {} ", response.getBody());
-//
-//        saveLog(url, userCookie, response);
-//
-//        delay(100L);
-//    }
-
-    private void webClientExchange(PointUrl url, UserCookie userCookie) {
+    private void exchange(PointUrl url, UserCookie userCookie) {
         WebClient webClient = webClientBuilder.build();
         Mono<ResponseEntity<String>> entityMono = webClient
                 .get()
                 .uri(URI.create(url.getUrl()))
-                .headers(httpHeaders -> buildHeader(userCookie))
+                .headers(httpHeaders -> setHeaders(httpHeaders, userCookie))
                 .retrieve()
                 .toEntity(String.class)
         ;
@@ -189,6 +155,10 @@ public class NaverPointService {
 
             delay(100L);
         });
+
+        entityMono.doOnError(throwable -> {
+            log.error(throwable.getMessage(), throwable.getCause());
+        });
     }
 
     @Transactional
@@ -199,12 +169,9 @@ public class NaverPointService {
                 .build());
     }
 
-    @NotNull
-    private static HttpHeaders buildHeader(UserCookie userCookie) {
-        HttpHeaders headers = new HttpHeaders();
+    private void setHeaders(HttpHeaders headers, UserCookie userCookie) {
         headers.add("Cookie", userCookie.getCookie());
         headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
-        return headers;
     }
 
 }
