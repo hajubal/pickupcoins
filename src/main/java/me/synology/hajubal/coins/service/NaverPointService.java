@@ -1,10 +1,9 @@
 package me.synology.hajubal.coins.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.*;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,47 +17,38 @@ import java.util.List;
 /**
  * naver point url에 접속하여 point를 적립하는 로직
  */
+@RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
 @Service
 public class NaverPointService {
 
-    @Autowired
-    private UserCookieRepository userCookieRepository;
+    private final UserCookieRepository userCookieRepository;
 
-    @Autowired
-    private PointUrlRepository pointUrlRepository;
+    private final PointUrlRepository pointUrlRepository;
 
-    @Autowired
-    private PointUrlUserCookieRepository pointUrlUserCookieRepository;
+    private final PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
-    @Autowired
-    private PointUrlCallLogRepository pointUrlCallLogRepository;
+    private final PointUrlCallLogRepository pointUrlCallLogRepository;
 
-    @Autowired
-    private SavedPointRepository savedPointRepository;
+    private final SavedPointRepository savedPointRepository;
 
-    @Autowired
-    private SlackService slackService;
-
-    @Autowired
-    private WebClient.Builder webClientBuilder;
+    private final SlackService slackService;
 
     /**
      * 포인트 저장 로직
      */
     public void savePoint() {
-        List<PointUrl> pointUrls = pointUrlRepository.findByName("naver");
-
-        savePoint(pointUrls);
+        savePoint("naver");
     }
 
     /**
      * pointUrls의 데이터로 부터 포인터 적립
-     * @param pointUrls
      */
-    private void savePoint(List<PointUrl> pointUrls) {
-        List<UserCookie> userCookies = userCookieRepository.findBySiteName("naver");
+    private void savePoint(String urlName) {
+        List<PointUrl> pointUrls = pointUrlRepository.findByName(urlName);
+
+        List<UserCookie> userCookies = userCookieRepository.findBySiteNameAndIsValid(urlName, true);
 
         pointUrls.forEach(url -> {
             log.info("Url: {}", url);
@@ -69,11 +59,6 @@ public class NaverPointService {
 
     private void savePointUser(PointUrl url, List<UserCookie> userCookies) {
         userCookies.forEach(userCookie -> {
-            if(!userCookie.getIsValid()) {
-                log.warn("[{}] 사용자, 로그인이 풀려 point url 호출하지 않음", userCookie.getUserName());
-                return;
-            }
-
             //TODO 쿼리 한번에 데이터를 가져오도록 수정.
             //사용자가 이미 접속한 URL인 경우 제외
             if(!url.getPermanent() && pointUrlUserCookieRepository.findByPointUrlAndUserCookie(url, userCookie).isPresent()) {
@@ -83,43 +68,14 @@ public class NaverPointService {
 
             log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
-            //exchange(url, userCookie);
             exchange(url, userCookie);
         });
     }
 
-    private static void delay(long delay) {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Transactional
-    protected void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
-        //사용자 별 호출 url 정보 저장
-        pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
-                .pointUrl(url)
-                .userCookie(userCookie)
-                .build());
+    protected void exchange(PointUrl url, UserCookie userCookie) {
+        WebClient webClient = WebClient.create();
 
-        //호출 log
-        pointUrlCallLogRepository.save(PointUrlCallLog.builder()
-                .cookie(userCookie.getCookie())
-                .responseBody(response.getBody())
-                .responseHeader(response.getHeaders().toString())
-                .responseStatusCode(response.getStatusCode().value())
-                .siteName(userCookie.getSiteName())
-                .userName(userCookie.getUserName())
-                .cookie(userCookie.getCookie())
-                .pointUrl(url.getUrl())
-                .build()
-        );
-    }
-
-    private void exchange(PointUrl url, UserCookie userCookie) {
-        WebClient webClient = webClientBuilder.build();
         Mono<ResponseEntity<String>> entityMono = webClient
                 .get()
                 .uri(URI.create(url.getUrl()))
@@ -152,12 +108,6 @@ public class NaverPointService {
             log.debug("Response body: {} ", response.getBody());
 
             saveLog(url, userCookie, response);
-
-            delay(100L);
-        });
-
-        entityMono.doOnError(throwable -> {
-            log.error(throwable.getMessage(), throwable.getCause());
         });
     }
 
@@ -167,6 +117,28 @@ public class NaverPointService {
                 .point("코드 수정 필요")
                 .userCookie(userCookie)
                 .build());
+    }
+
+    @Transactional
+    protected void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
+        //사용자 별 호출 url 정보 저장
+        pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
+                .pointUrl(url)
+                .userCookie(userCookie)
+                .build());
+
+        //호출 log
+        pointUrlCallLogRepository.save(PointUrlCallLog.builder()
+                .cookie(userCookie.getCookie())
+                .responseBody(response.getBody())
+                .responseHeader(response.getHeaders().toString())
+                .responseStatusCode(response.getStatusCode().value())
+                .siteName(userCookie.getSiteName())
+                .userName(userCookie.getUserName())
+                .cookie(userCookie.getCookie())
+                .pointUrl(url.getUrl())
+                .build()
+        );
     }
 
     private void setHeaders(HttpHeaders headers, UserCookie userCookie) {
