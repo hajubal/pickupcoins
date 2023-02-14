@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 class PointUrlRepositoryImplTest {
     @Autowired
@@ -18,5 +20,12 @@ class PointUrlRepositoryImplTest {
 
         pointUrlRepository.findAll().stream().forEach(System.out::println);
 
+    }
+
+    @Test
+    void queryTest() {
+        List<PointUrl> urls = pointUrlRepository.findByNotCalledUrl("naver", "ha");
+
+        System.out.println("urls = " + urls);
     }
 }

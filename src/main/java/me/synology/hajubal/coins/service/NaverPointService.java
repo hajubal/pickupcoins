@@ -46,34 +46,23 @@ public class NaverPointService {
      * pointUrls의 데이터로 부터 포인터 적립
      */
     private void savePoint(String urlName) {
-        List<PointUrl> pointUrls = pointUrlRepository.findByName(urlName);
-
         List<UserCookie> userCookies = userCookieRepository.findBySiteNameAndIsValid(urlName, true);
 
-        pointUrls.forEach(url -> {
-            log.info("Url: {}", url);
+        log.debug("UserCookies: {}", userCookies);
 
-            savePointUser(url, userCookies);
-        });
-    }
-
-    private void savePointUser(PointUrl url, List<UserCookie> userCookies) {
         userCookies.forEach(userCookie -> {
-            //TODO 쿼리 한번에 데이터를 가져오도록 수정.
-            //사용자가 이미 접속한 URL인 경우 제외
-            if(!url.getPermanent() && pointUrlUserCookieRepository.findByPointUrlAndUserCookie(url, userCookie).isPresent()) {
-                log.info("이미 수집된 URL. url: {}, user: {}", url.getUrl(), userCookie.getUserName());
-                return;
-            }
+            List<PointUrl> pointUrl = pointUrlRepository.findByNotCalledUrl(urlName, userCookie.getUserName());
 
-            log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
+            log.debug("PointUrl: {}", pointUrl);
 
-            exchange(url, userCookie);
+            pointUrl.forEach(url -> exchange(url, userCookie));
         });
     }
 
     @Transactional
     protected void exchange(PointUrl url, UserCookie userCookie) {
+        log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
+
         WebClient webClient = WebClient.create();
 
         Mono<ResponseEntity<String>> entityMono = webClient
