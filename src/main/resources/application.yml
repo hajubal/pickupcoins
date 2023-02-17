@@ -11,6 +11,10 @@ spring:
 #        format_sql: true
         #JPQL query view
 #        use_sql_comments: true
+  messages:
+    basename: messages,errors
+  thymeleaf:
+    cache: false
 logging:
   level:
     me.synology.hajubal.coins: debug

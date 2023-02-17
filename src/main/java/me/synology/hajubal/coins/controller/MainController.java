@@ -59,7 +59,7 @@ public class MainController {
         model.addAttribute("items", all);
         model.addAttribute("request", request);
 
-        return "dashboard";
+        return "/dashboard";
     }
 
     @GetMapping("/users")
@@ -69,7 +69,7 @@ public class MainController {
         model.addAttribute("items", list);
         model.addAttribute("request", request);
 
-        return "users";
+        return "/users";
     }
 
     @GetMapping("/sites")
@@ -79,7 +79,7 @@ public class MainController {
         model.addAttribute("items", list);
         model.addAttribute("request", request);
 
-        return "sites";
+        return "/sites";
     }
 
     @GetMapping("/pointurl")
@@ -89,7 +89,7 @@ public class MainController {
         model.addAttribute("items", list);
         model.addAttribute("request", request);
 
-        return "pointurl";
+        return "/pointurl";
     }
 
     @GetMapping("/updateCookie/{userId}")
@@ -100,7 +100,7 @@ public class MainController {
         model.addAttribute("userCookie", userCookie);
         model.addAttribute("request", request);
 
-        return "cookieDetail";
+        return "/cookieDetail";
     }
 
     @PostMapping("/updateCookie/{userId}")
@@ -115,7 +115,7 @@ public class MainController {
         model.addAttribute("request", request);
         model.addAttribute("userCookie", new CookieInsertDto());
 
-        return "insertCookie";
+        return "/insertCookie";
     }
 
     @PostMapping("/insertCookie")
@@ -131,12 +131,12 @@ public class MainController {
         model.addAttribute("request", request);
         model.addAttribute("userCookie", new CookieInsertDto());
 
-        return "insertCookie2";
+        return "/insertCookie2";
     }
 
     @PostMapping("/insertCookie2")
     public String insertCookie(Model model, HttpServletRequest request
-            , @Validated @ModelAttribute("item") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
+            , @Validated @ModelAttribute("userCookie") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
         model.addAttribute("request", request);
 
         //특정 필드 예외가 아닌 전체 예외
