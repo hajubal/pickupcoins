@@ -39,23 +39,16 @@ public class NaverPointService {
      * 포인트 저장 로직
      */
     public void savePoint() {
-        savePoint("naver");
-    }
+        String urlName = "naver";
 
-    /**
-     * pointUrls의 데이터로 부터 포인터 적립
-     */
-    private void savePoint(String urlName) {
         List<UserCookie> userCookies = userCookieRepository.findBySiteNameAndIsValid(urlName, true);
 
         log.debug("UserCookies: {}", userCookies);
 
         userCookies.forEach(userCookie -> {
-            List<PointUrl> pointUrl = pointUrlRepository.findByNotCalledUrl(urlName, userCookie.getUserName());
+            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName, userCookie.getUserName());
 
-            log.debug("PointUrl: {}", pointUrl);
-
-            pointUrl.forEach(url -> exchange(url, userCookie));
+            pointUrls.forEach(pointUrl -> exchange(pointUrl, userCookie));
         });
     }
 
