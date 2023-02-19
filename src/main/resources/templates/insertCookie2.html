@@ -14,7 +14,6 @@
                     <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
             </div>
 
-
             <div class="mb-3">
                 <label for="userName" class="form-label" th:text="#{label.userCookie.userName}">사용자 이름</label>
                 <input type="text" class="form-control" id="userName" th:field="*{userName}"
@@ -23,7 +22,6 @@
                     사용자 이름 오류
                 </div>
             </div>
-
 
             <div class="mb-3">
                 <label for="siteName" class="form-label" th:text="#{label.userCookie.siteName}">사이트 이름</label>
