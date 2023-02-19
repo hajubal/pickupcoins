@@ -6,9 +6,9 @@
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">사용자</h1>
   </div>
-  <h2>쿠키 추가</h2>
+  <h2>쿠키 수정</h2>
   <div class="table-responsive">
-    <form th:action="@{/insertCookie}" th:object="${userCookie}" method="post">
+    <form th:action="@{/updateCookie/{id}(id=${userCookie.id})}" th:object="${userCookie}" method="post">
 
       <div th:if="${#fields.hasGlobalErrors()}">
         <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
@@ -38,6 +38,15 @@
                th:errorclass="field-error" placeholder="쿠키값을 입력하세요">
         <div class="field-error" th:errors="*{cookie}">
           쿠키값 오류
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="cookie" class="form-label" th:text="#{userCookie.isValid}">유효성</label>
+        <input type="text" class="form-control" id="isValid" th:field="*{isValid}"
+               th:errorclass="field-error" placeholder="유효성 값을 입력하세요">
+        <div class="field-error" th:errors="*{isValid}">
+          유효성 오류
         </div>
       </div>
 

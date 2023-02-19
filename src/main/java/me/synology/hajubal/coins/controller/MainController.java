@@ -29,9 +29,6 @@ public class MainController {
     private UserCookieRepository userCookieRepository;
 
     @Autowired
-    private PointUrlUserCookieRepository pointUrlUserCookieRepository;
-
-    @Autowired
     private SiteRepository siteRepository;
 
     @Autowired
@@ -52,102 +49,77 @@ public class MainController {
     }
 
     @GetMapping("/dashboard")
-    public String dashBoard(Model model, HttpServletRequest request) {
+    public String dashBoard(Model model) {
 
         List<SavedPoint> all = savedPointRepository.findAll();
 
         model.addAttribute("items", all);
-        model.addAttribute("request", request);
 
         return "/dashboard";
     }
 
     @GetMapping("/users")
-    public String userCookies(Model model, HttpServletRequest request) {
+    public String userCookies(Model model) {
         List<UserCookie> list = userCookieRepository.findAll();
 
         model.addAttribute("items", list);
-        model.addAttribute("request", request);
 
         return "/users";
     }
 
     @GetMapping("/sites")
-    public String sites(Model model, HttpServletRequest request) {
+    public String sites(Model model) {
         List<Site> list = siteRepository.findAll();
 
         model.addAttribute("items", list);
-        model.addAttribute("request", request);
 
         return "/sites";
     }
 
     @GetMapping("/pointurl")
-    public String pointurl(Model model, HttpServletRequest request) {
+    public String pointurl(Model model) {
         List<PointUrl> list = pointUrlRepository.findAll();
 
         model.addAttribute("items", list);
-        model.addAttribute("request", request);
 
         return "/pointurl";
     }
 
     @GetMapping("/updateCookie/{userId}")
-    public String updateCookieView(@PathVariable Long userId, Model model, HttpServletRequest request) {
+    public String updateCookieView(@PathVariable Long userId, Model model) {
 
         UserCookie userCookie = userCookieRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Not found user."));
 
         model.addAttribute("userCookie", userCookie);
-        model.addAttribute("request", request);
 
-        return "/cookieDetail";
+        return "/editCookie";
     }
 
     @PostMapping("/updateCookie/{userId}")
-    public String userCookieUpdate(@PathVariable Long userId, CookieUpdateDto cookieUpdateDto) {
+    public String userCookieUpdate(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") CookieUpdateDto cookieUpdateDto
+            , BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "/editCookie";
+        }
+
         userCookieService.updateUserCookie(userId, cookieUpdateDto);
 
         return "redirect:/updateCookie/" + userId;
     }
-
+    
     @GetMapping("/insertCookie")
-    public String insertCookieView(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
+    public String insertCookieView2(Model model) {
         model.addAttribute("userCookie", new CookieInsertDto());
 
         return "/insertCookie";
     }
 
     @PostMapping("/insertCookie")
-    public String insertCookie(@ModelAttribute CookieInsertDto cookieInsertDto) {
-
-        Long userId = userCookieService.insertUserCookie(cookieInsertDto);
-
-        return "redirect:/updateCookie/" + userId;
-    }
-
-    @GetMapping("/insertCookie2")
-    public String insertCookieView2(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
-        model.addAttribute("userCookie", new CookieInsertDto());
-
-        return "/insertCookie2";
-    }
-
-    @PostMapping("/insertCookie2")
-    public String insertCookie(Model model, HttpServletRequest request
-            , @Validated @ModelAttribute("userCookie") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
-        model.addAttribute("request", request);
-
-        //특정 필드 예외가 아닌 전체 예외
-        if (!cookieInsertDto.getIsValid()) {
-            bindingResult.reject("valid", new Object[]{Boolean.TRUE,
-                    cookieInsertDto.getIsValid()}, null);
-        }
-
+    public String insertCookie(@Validated @ModelAttribute("userCookie") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "insertCookie2";
+            return "insertCookie";
         }
 
         Long userId = userCookieService.insertUserCookie(cookieInsertDto);
@@ -171,7 +143,7 @@ public class MainController {
     }
 
     @GetMapping("/savePointLog")
-    public String savePointLog(Model model, HttpServletRequest request, @RequestParam(name = "userName", required = false) String userName) {
+    public String savePointLog(Model model, @RequestParam(name = "userName", required = false) String userName) {
 
         List<PointUrlCallLog> list;
 
@@ -183,7 +155,6 @@ public class MainController {
 
         model.addAttribute("userName", userName);
         model.addAttribute("items", list);
-        model.addAttribute("request", request);
 
         return "pointLog";
     }
