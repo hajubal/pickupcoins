@@ -1,6 +1,5 @@
 package me.synology.hajubal.coins.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.CookieInsertDto;
 import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
@@ -85,48 +84,55 @@ public class MainController {
         return "/pointurl";
     }
 
-    @GetMapping("/updateCookie/{userId}")
-    public String updateCookieView(@PathVariable Long userId, Model model) {
+    @GetMapping("/user/{userId}")
+    public String updateUser(@PathVariable Long userId, Model model) {
 
         UserCookie userCookie = userCookieRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Not found user."));
 
         model.addAttribute("userCookie", userCookie);
 
-        return "/editCookie";
+        return "editUser";
     }
 
-    @PostMapping("/updateCookie/{userId}")
-    public String userCookieUpdate(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") CookieUpdateDto cookieUpdateDto
+    @PostMapping("/user/{userId}")
+    public String updateUser(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") CookieUpdateDto cookieUpdateDto
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "/editCookie";
+            return "editUser";
         }
 
         userCookieService.updateUserCookie(userId, cookieUpdateDto);
 
-        return "redirect:/updateCookie/" + userId;
+        return "redirect:/user/" + userId;
     }
     
-    @GetMapping("/insertCookie")
-    public String insertCookieView2(Model model) {
+    @GetMapping("/insertUser")
+    public String insertUser(Model model) {
         model.addAttribute("userCookie", new CookieInsertDto());
 
-        return "/insertCookie";
+        return "addUser";
     }
 
-    @PostMapping("/insertCookie")
+    @PostMapping("/insertUser")
     public String insertCookie(@Validated @ModelAttribute("userCookie") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "insertCookie";
+            return "addUser";
         }
 
         Long userId = userCookieService.insertUserCookie(cookieInsertDto);
 
-        return "redirect:/updateCookie/" + userId;
+        return "redirect:/user/" + userId;
     }
 
+    @DeleteMapping("/user/{userId}")
+    public String deleteUser(@PathVariable Long userId) {
+
+        userCookieRepository.deleteById(userId);
+
+        return "redirect:/users";
+    }
 
     @GetMapping("/crawling")
     public String crawling() {

@@ -8,7 +8,7 @@
   </div>
   <h2>쿠키 수정</h2>
   <div class="table-responsive">
-    <form th:action="@{/updateCookie/{id}(id=${userCookie.id})}" th:object="${userCookie}" method="post">
+    <form th:action="@{/user/{id}(id=${userCookie.id})}" th:object="${userCookie}" method="post">
 
       <div th:if="${#fields.hasGlobalErrors()}">
         <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
@@ -52,8 +52,22 @@
 
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
+      <button type="button" class="btn btn-primary" th:userId="${userCookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
+    </form>
+    <form id="deleteUser" th:action="@{/user/{id}(id=${userCookie.id})}" method="POST">
+      <input type="hidden" name="_method" value="delete"/>
     </form>
   </div>
+
+  <script>
+    function deleteUser(userId) {
+      let form = document.getElementById("deleteUser");
+      form.submit();
+    }
+
+  </script>
+
 </main>
+
 </body>
 </html>
