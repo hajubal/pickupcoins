@@ -54,13 +54,13 @@
       <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
       <button type="button" class="btn btn-primary" th:userId="${userCookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
     </form>
-    <form id="deleteUser" th:action="@{/user/{id}(id=${userCookie.id})}" method="POST">
-      <input type="hidden" name="_method" value="delete"/>
+    <form id="deleteUser" th:action="@{/user/{id}(id=${userCookie.id})}" th:method="delete">
     </form>
   </div>
 
   <script>
     function deleteUser(userId) {
+      console.log('userId' + userId);
       let form = document.getElementById("deleteUser");
       form.submit();
     }

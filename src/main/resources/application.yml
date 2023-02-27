@@ -15,10 +15,14 @@ spring:
     basename: messages,errors
   thymeleaf:
     cache: false
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 logging:
   level:
     me.synology.hajubal.coins: debug
-    org.apache.coyote.http11: info
+    org.apache.coyote.http11: trace
     #print logger
     org.hibernate.SQL: info
     #parameter mapping
