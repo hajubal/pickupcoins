@@ -54,7 +54,7 @@ public class MainController {
 
         model.addAttribute("items", all);
 
-        return "/dashboard";
+        return "dashboard";
     }
 
     @GetMapping("/users")
@@ -63,7 +63,7 @@ public class MainController {
 
         model.addAttribute("items", list);
 
-        return "/users";
+        return "users";
     }
 
     @GetMapping("/sites")
@@ -72,7 +72,7 @@ public class MainController {
 
         model.addAttribute("items", list);
 
-        return "/sites";
+        return "sites";
     }
 
     @GetMapping("/pointurl")
@@ -81,7 +81,7 @@ public class MainController {
 
         model.addAttribute("items", list);
 
-        return "/pointurl";
+        return "pointurl";
     }
 
     @GetMapping("/user/{userId}")
