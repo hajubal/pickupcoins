@@ -34,7 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
@@ -45,9 +45,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.h2database:h2'
-//	implementation("com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:1.8.0")
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
-//	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
@@ -126,7 +124,11 @@ test {
 }
 
 //도커 서버에 이미지 생성 및 컨테이너 실행
+//org.hidetake.groovy.ssh.operation.SftpException: Failed SFTP PUT: d:\~~ -> dockerServer:/var/~~: (SSH_FX_NO_SUCH_FILE: A reference was made to a file which does not exist): No such file
+//오류 나면서 안됨. 원인 파악 불가
 task dockerDeploy() {
+	dependsOn('build')
+
 	doLast {
 		println ssh.version
 		ssh.run {
