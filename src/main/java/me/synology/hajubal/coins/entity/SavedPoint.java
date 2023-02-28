@@ -16,7 +16,7 @@ public class SavedPoint extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "savedPoint")
+    @OneToOne
     private UserCookie userCookie;
 
     private String point;
