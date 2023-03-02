@@ -53,7 +53,7 @@ public class NaverPointService {
     }
 
     @Transactional
-    protected void exchange(PointUrl url, UserCookie userCookie) {
+    public void exchange(PointUrl url, UserCookie userCookie) {
         log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
         WebClient webClient = WebClient.create();
@@ -94,8 +94,8 @@ public class NaverPointService {
     }
 
     @Transactional
-    protected void savePointLog(UserCookie userCookie) {
-        savedPointRepository.save(SavedPoint.builder()
+    public SavedPoint savePointLog(UserCookie userCookie) {
+        return savedPointRepository.save(SavedPoint.builder()
                 .point("코드 수정 필요")
                 .userCookie(userCookie)
                 .build());

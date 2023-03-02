@@ -2,7 +2,7 @@ spring:
   application:
     name: coin
   profiles:
-    active: local
+    active: dev
   jpa:
     properties:
       hibernate:
