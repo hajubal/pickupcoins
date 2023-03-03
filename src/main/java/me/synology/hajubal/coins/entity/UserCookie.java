@@ -37,6 +37,6 @@ public class UserCookie extends BaseTimeEntity {
     @OneToMany(mappedBy = "userCookie")
     private List<PointUrlUserCookie> pointUrlUserCookie;
 
-    @OneToOne(mappedBy = "userCookie")
-    private SavedPoint savedPoint;
+    @OneToMany(mappedBy = "userCookie")
+    private List<SavedPoint> savedPoint;
 }
