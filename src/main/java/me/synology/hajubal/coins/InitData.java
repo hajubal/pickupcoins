@@ -2,6 +2,7 @@ package me.synology.hajubal.coins;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.conf.UserCookieProps;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.SiteRepository;
@@ -22,18 +23,17 @@ public class InitData {
     @Autowired
     private SiteRepository siteRepository;
 
-    @Value("${naver.cookie}")
-    private List<String> naverCookie;
+    @Autowired
+    private UserCookieProps userCookieProps;
 
     @PostConstruct
     public void init() {
-        naverCookie.forEach(cookie -> {
-            String[] token = cookie.split(":");
+        userCookieProps.getUserCookies().forEach(user -> {
 
-            UserCookie userCookie = UserCookie.builder().userName(token[0]).siteName("naver").cookie(token[1]).isValid(true).build();
+            UserCookie userCookie = UserCookie.builder().userName(user.name()).siteName("naver").cookie(user.cookie()).isValid(true).build();
 
             if(userCookieRepository.findByCookie(userCookie.getCookie()).isEmpty()) {
-                log.info("save cookie. name: {}", token[0]);
+                log.info("save cookie. name: {}", user.name());
 
                 userCookieRepository.save(userCookie);
             }

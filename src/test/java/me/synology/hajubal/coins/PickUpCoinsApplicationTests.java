@@ -1,6 +1,8 @@
 package me.synology.hajubal.coins;
 
+import me.synology.hajubal.coins.conf.UserCookieProps;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StreamUtils;
 
@@ -12,8 +14,13 @@ import java.nio.charset.Charset;
 @SpringBootTest
 class PickUpCoinsApplicationTests {
 
+	@Autowired
+	private UserCookieProps userCookieProps;
+
+
 	@Test
 	void contextLoads() {
+		System.out.println("applicationProps.getUserCookies() = " + userCookieProps.getUserCookies());
 	}
 
 	//@RestTemplateTest
