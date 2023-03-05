@@ -2,18 +2,20 @@ package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.WebCrawler;
-import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
+import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.respository.SiteRepository;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -30,51 +32,31 @@ public class ClienWebCrawler implements WebCrawler {
      */
     @Transactional
     @Override
-    public Set<PointUrl> crawling() {
-        Site site = siteRepository.findByName("클리앙").orElseThrow(() -> new IllegalArgumentException("Not found site name. 클리앙"));
+    public Set<PointUrl> crawling() throws IOException {
+        Optional<Site> optionalSite = siteRepository.findByName("클리앙");
 
-        String siteUrl = site.getUrl();
+        if(optionalSite.isEmpty()) return Collections.emptySet();
 
-        //포인트 적립 URL을 가지고 있는 게시물의 URL
-        Set<String> pointPostUrl = new HashSet<>();
+        Site site = optionalSite.get();
 
-        Document document;
+        return fetchPointUrls(site.getDomain(), fetchPostUrls(site.getUrl()));
+    }
 
-        try {
-            document = Jsoup.connect(siteUrl).get();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        //게시판 목록 tag
-        document.select("span.list_subject").forEach(element -> {
-            //게시글 제목
-            String title = element.attr("title");
-
-            if(title.contains("네이버")) {
-                //게시글 상세 링크
-                String href = element.select("a[data-role=list-title-text]").attr("href");
-
-                log.debug("add url: {}", href);
-
-                pointPostUrl.add(href);
-            }
-        });
-
+    /**
+     * 게시글 목록에서 네이버 포인트 url 조회
+     *
+     * @param domain
+     * @param pointPostUrl
+     * @return
+     */
+    @NotNull
+    private static Set<PointUrl> fetchPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
         //포인트 url
         Set<PointUrl> pointUrl = new HashSet<>();
 
-        pointPostUrl.forEach(url -> {
-            Document postDocument;
-
-            try {
-                postDocument = Jsoup.connect(site.getDomain() + url).get();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
+        for (String postUrl : pointPostUrl) {
             //게시글 내용에 링크
-            postDocument.select("div.post_article a").forEach(aTag -> {
+            Jsoup.connect(domain + postUrl).get().select("div.post_article a").forEach(aTag -> {
                 String pointHref = aTag.attr("href");
 
                 if(pointHref.contains("campaign2-api.naver.com")) {
@@ -87,9 +69,29 @@ public class ClienWebCrawler implements WebCrawler {
                     pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.OFW_NAVER).url(pointHref).name("adison").build());
                 }
             });
-        });
+        }
 
         return pointUrl;
+    }
+
+    /**
+     * 포인트 적립 URL을 가지고 있는 게시물의 URL
+     *
+     * @param siteUrl
+     * @return
+     * @throws IOException
+     */
+    @NotNull
+    private static Set<String> fetchPostUrls(String siteUrl) throws IOException {
+        Set<String> pointPostUrl = new HashSet<>();
+
+        //게시판 목록 tag
+        Jsoup.connect(siteUrl).get().select("span.list_subject").forEach(element -> {
+            if(element.attr("title").contains("네이버")) {
+                pointPostUrl.add(element.select("a[data-role=list-title-text]").attr("href"));
+            }
+        });
+        return pointPostUrl;
     }
 
     @Override
