@@ -1,6 +1,5 @@
 package me.synology.hajubal.coins;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.conf.UserCookieProps;
 import me.synology.hajubal.coins.entity.Site;
@@ -8,14 +7,13 @@ import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j
 @Component
-public class InitData {
+public class InitData implements ApplicationRunner {
 
     @Autowired
     private UserCookieRepository userCookieRepository;
@@ -26,8 +24,8 @@ public class InitData {
     @Autowired
     private UserCookieProps userCookieProps;
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void run(ApplicationArguments args) {
         userCookieProps.getUserCookies().forEach(user -> {
 
             UserCookie userCookie = UserCookie.builder().userName(user.name()).siteName("naver").cookie(user.cookie()).isValid(true).build();
