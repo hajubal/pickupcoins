@@ -149,14 +149,14 @@ public class MainController {
     }
 
     @GetMapping("/savePointLog")
-    public String savePointLog(Model model, @RequestParam(name = "userName", required = false) String userName) {
+    public String savePointLog(Model model, @RequestParam(name = "userName", defaultValue = "ha") String[] userName) {
 
         List<PointUrlCallLog> list;
 
-        if (StringUtils.hasText(userName)) {
-            list = pointUrlCallLogRepository.findByUserName(userName);
-        } else {
+        if (userName.length == 0) {
             list = pointUrlCallLogRepository.findAll();
+        } else {
+            list = pointUrlCallLogRepository.findByUserNameIn(userName);
         }
 
         model.addAttribute("userName", userName);

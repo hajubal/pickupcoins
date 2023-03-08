@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PointUrlCallLogRepository extends JpaRepository<PointUrlCallLog, Long> {
-    List<PointUrlCallLog> findByUserName(String userName);
+    List<PointUrlCallLog> findByUserNameIn(String... userName);
+
+
 }
