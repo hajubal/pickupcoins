@@ -1,23 +1,12 @@
 package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.PointUrlUserCookie;
-import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-
-import static org.springframework.http.HttpMethod.GET;
 
 /**
  * naver point를 ofw.adison.co 페이지를 통해서 3초 뒤에 이동하는 페이지 적립하는 로직

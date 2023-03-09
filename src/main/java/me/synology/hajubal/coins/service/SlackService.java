@@ -27,8 +27,6 @@ public class SlackService {
      */
     public WebhookResponse sendMessage(String message) {
         Slack slack = Slack.getInstance();
-        //ApiTestResponse response = slack.methods().apiTest(r -> r.foo("bar"));
-        //System.out.println(response);
 
         if(webhookUrl == null) {
             throw new RuntimeException("webhookUrl not set.");

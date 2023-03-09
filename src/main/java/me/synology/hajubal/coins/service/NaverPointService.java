@@ -102,7 +102,7 @@ public class NaverPointService {
     }
 
     @Transactional
-    protected void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
+    public void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
         //사용자 별 호출 url 정보 저장
         pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
                 .pointUrl(url)
