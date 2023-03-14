@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.crawler.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
@@ -15,20 +16,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 루리웹 사이트 핫딜 게시판
  */
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class RuliwebCrawler implements WebCrawler {
 
-    @Autowired
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
 
     /**
      * 사이트에 포함된 포인트 url 수집
@@ -47,8 +45,7 @@ public class RuliwebCrawler implements WebCrawler {
         return fetchPointUrls(site.get().getDomain(), fetchPostUrls(site.get().getUrl()));
     }
 
-    @NotNull
-    private static Set<PointUrl> fetchPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
+    private Set<PointUrl> fetchPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
         //포인트 url
         Set<PointUrl> pointUrl = new HashSet<>();
 
@@ -74,8 +71,7 @@ public class RuliwebCrawler implements WebCrawler {
         return pointUrl;
     }
 
-    @NotNull
-    private static Set<String> fetchPostUrls(String siteUrl) throws IOException {
+    private Set<String> fetchPostUrls(String siteUrl) throws IOException {
         Document document = Jsoup.connect(siteUrl).get();
 
         Set<String> pointPostUrl = new HashSet<>();
@@ -99,5 +95,15 @@ public class RuliwebCrawler implements WebCrawler {
     @Override
     public String siteName() {
         return "Ruliweb";
+    }
+
+    @Override
+    public String getDomain() {
+        return "https://m.ruliweb.com";
+    }
+
+    @Override
+    public List<String> getBoardUrls() {
+        return List.of("/ps/board/1020");
     }
 }

@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.crawler.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
@@ -10,20 +11,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class ClienWebCrawler implements WebCrawler {
 
-    @Autowired
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
 
     /**
      * 사이트에 포함된 포인트 url 수집
@@ -49,8 +48,7 @@ public class ClienWebCrawler implements WebCrawler {
      * @param pointPostUrl
      * @return
      */
-    @NotNull
-    private static Set<PointUrl> fetchPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
+    private Set<PointUrl> fetchPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
         //포인트 url
         Set<PointUrl> pointUrl = new HashSet<>();
 
@@ -81,8 +79,7 @@ public class ClienWebCrawler implements WebCrawler {
      * @return
      * @throws IOException
      */
-    @NotNull
-    private static Set<String> fetchPostUrls(String siteUrl) throws IOException {
+    private Set<String> fetchPostUrls(String siteUrl) throws IOException {
         Set<String> pointPostUrl = new HashSet<>();
 
         //게시판 목록 tag
@@ -97,5 +94,15 @@ public class ClienWebCrawler implements WebCrawler {
     @Override
     public String siteName() {
         return "Clien";
+    }
+
+    @Override
+    public String getDomain() {
+        return "https://www.clien.net";
+    }
+
+    @Override
+    public List<String> getBoardUrls() {
+        return List.of("/service/board/jirum");
     }
 }

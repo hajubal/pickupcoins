@@ -1,28 +1,31 @@
 package me.synology.hajubal.coins;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.conf.UserCookieProps;
+import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class InitData implements ApplicationRunner {
 
-    @Autowired
-    private UserCookieRepository userCookieRepository;
+    private final UserCookieRepository userCookieRepository;
 
-    @Autowired
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
 
-    @Autowired
-    private UserCookieProps userCookieProps;
+    private final UserCookieProps userCookieProps;
+
+    private final List<WebCrawler> webCrawlers;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -44,5 +47,12 @@ public class InitData implements ApplicationRunner {
         if(siteRepository.findByName("루리웹").isEmpty()) {
             siteRepository.save(Site.builder().name("루리웹").domain("https://m.ruliweb.com").url("https://m.ruliweb.com/ps/board/1020").build());
         }
+
+        webCrawlers.forEach(webCrawler -> {
+            webCrawler.getDomain();
+            webCrawler.getBoardUrls();
+
+            siteRepository.findByUrl("");
+        });
     }
 }

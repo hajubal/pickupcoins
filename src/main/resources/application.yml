@@ -15,6 +15,7 @@ spring:
     basename: messages,errors
   thymeleaf:
     cache: false
+  # html form method extension by spring mvc
   mvc:
     hiddenmethod:
       filter:

@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.schedule;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.service.NaverPointService;
 import me.synology.hajubal.coins.service.WebCrawlerService;
@@ -8,16 +9,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Slf4j
 @EnableScheduling
 @Component
 public class Schedulers {
 
-    @Autowired
-    private NaverPointService naverPointService;
+    private final NaverPointService naverPointService;
 
-    @Autowired
-    private WebCrawlerService webCrawlerService;
+    private final WebCrawlerService webCrawlerService;
 
     @Scheduled(cron = "0 */10 * * * *")
     public void webCrawlerScheduler() {

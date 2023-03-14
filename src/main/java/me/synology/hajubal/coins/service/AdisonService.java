@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
@@ -11,22 +12,19 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * naver point를 ofw.adison.co 페이지를 통해서 3초 뒤에 이동하는 페이지 적립하는 로직
  */
+@RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
 @Service
 public class AdisonService {
 
-    @Autowired
-    private UserCookieRepository userCookieRepository;
+    private final UserCookieRepository userCookieRepository;
 
-    @Autowired
-    private PointUrlRepository pointUrlRepository;
+    private final PointUrlRepository pointUrlRepository;
 
-    @Autowired
-    private PointUrlUserCookieRepository pointUrlUserCookieRepository;
+    private final PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
-    @Autowired
-    private SlackService slackService;
+    private final SlackService slackService;
 
     @Transactional
     public void savePoint() {

@@ -1,10 +1,10 @@
 package me.synology.hajubal.coins.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,17 +12,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class WebCrawlerService {
 
-    @Autowired
-    private List<WebCrawler> webCrawlers;
+    private final List<WebCrawler> webCrawlers;
 
-    @Autowired
-    private PointUrlRepository pointUrlRepository;
+    private final PointUrlRepository pointUrlRepository;
 
     public void crawling() {
         savePointUrls(crawlPointUrls());
@@ -41,11 +39,11 @@ public class WebCrawlerService {
     private List<PointUrl> crawlPointUrls() {
         Set<PointUrl> pointUrlSet = new HashSet<>();
 
-        webCrawlers.forEach(webCrawlers -> {
+        webCrawlers.forEach(crawler -> {
             try {
-                pointUrlSet.addAll(webCrawlers.crawling());
+                pointUrlSet.addAll(crawler.crawling());
             } catch (IOException e) {
-                log.error("Crawling fail. site name: {}", webCrawlers.siteName());
+                log.error("Crawling fail. site name: {}", crawler.siteName());
                 log.error(e.getMessage(), e);
             }
         });

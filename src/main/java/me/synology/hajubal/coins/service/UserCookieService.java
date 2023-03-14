@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.CookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
@@ -8,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
 @Service
 public class UserCookieService {
 
-    @Autowired
-    private UserCookieRepository userCookieRepository;
+    private final UserCookieRepository userCookieRepository;
 
     /**
      * 쿠키 업데이트
