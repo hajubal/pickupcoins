@@ -1,8 +1,7 @@
 package me.synology.hajubal.coins.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.controller.dto.CookieInsertDto;
-import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
+import me.synology.hajubal.coins.controller.dto.CookieDto;
 import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.*;
 import me.synology.hajubal.coins.schedule.Schedulers;
@@ -10,7 +9,6 @@ import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -95,7 +93,7 @@ public class MainController {
     }
 
     @PostMapping("/user/{userId}")
-    public String updateUser(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") CookieUpdateDto cookieUpdateDto
+    public String updateUser(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") CookieDto.CookieUpdateDto cookieUpdateDto
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
@@ -109,13 +107,13 @@ public class MainController {
     
     @GetMapping("/insertUser")
     public String insertUser(Model model) {
-        model.addAttribute("userCookie", new CookieInsertDto());
+        model.addAttribute("userCookie", new CookieDto.CookieInsertDto());
 
         return "addUser";
     }
 
     @PostMapping("/insertUser")
-    public String insertCookie(@Validated @ModelAttribute("userCookie") CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
+    public String insertCookie(@Validated @ModelAttribute("userCookie") CookieDto.CookieInsertDto cookieInsertDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "addUser";

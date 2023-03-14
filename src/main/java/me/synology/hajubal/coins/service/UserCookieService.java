@@ -1,8 +1,7 @@
 package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.controller.dto.CookieInsertDto;
-import me.synology.hajubal.coins.controller.dto.CookieUpdateDto;
+import me.synology.hajubal.coins.controller.dto.CookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class UserCookieService {
      * @param cookieUpdateDto
      */
     @Transactional
-    public void updateUserCookie(Long userId, CookieUpdateDto cookieUpdateDto) {
+    public void updateUserCookie(Long userId, CookieDto.CookieUpdateDto cookieUpdateDto) {
         log.info("cookieUpdateDto: {}", cookieUpdateDto);
 
         UserCookie userCookie = userCookieRepository.findById(userId)
@@ -41,7 +40,7 @@ public class UserCookieService {
      * @return
      */
     @Transactional
-    public Long insertUserCookie(CookieInsertDto cookieInsertDto) {
+    public Long insertUserCookie(CookieDto.CookieInsertDto cookieInsertDto) {
         log.info("cookieInsertDto: {}", cookieInsertDto);
 
         UserCookie userCookie = cookieInsertDto.toEntity();

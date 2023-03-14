@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @ConfigurationProperties(prefix = "cookie")
@@ -27,7 +26,7 @@ public class UserCookieProps {
             users = naver.stream().map(s -> {
                 String[] split = s.split(":");
                 return new User(split[0], split[1]);
-            }).collect(Collectors.toList());
+            }).toList();
         }
 
         return users;
