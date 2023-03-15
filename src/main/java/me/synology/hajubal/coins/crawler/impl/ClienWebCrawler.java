@@ -2,20 +2,21 @@ package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.crawler.SiteData;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.respository.SiteRepository;
-import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -91,18 +92,4 @@ public class ClienWebCrawler implements WebCrawler {
         return pointPostUrl;
     }
 
-    @Override
-    public String getSiteName() {
-        return "Clien";
-    }
-
-    @Override
-    public String getDomain() {
-        return "https://www.clien.net";
-    }
-
-    @Override
-    public String getBoardUrl() {
-        return "/service/board/jirum";
-    }
 }

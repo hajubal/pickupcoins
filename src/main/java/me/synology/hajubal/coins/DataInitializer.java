@@ -3,6 +3,7 @@ package me.synology.hajubal.coins;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.conf.UserCookieProps;
+import me.synology.hajubal.coins.crawler.SiteData;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.UserCookie;
@@ -25,7 +26,7 @@ public class DataInitializer implements ApplicationRunner {
 
     private final UserCookieProps userCookieProps;
 
-    private final List<WebCrawler> webCrawlers;
+    private final List<SiteData> siteData;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -40,13 +41,13 @@ public class DataInitializer implements ApplicationRunner {
             }
         });
 
-        webCrawlers.forEach(webCrawler -> {
-            if (siteRepository.findByName(webCrawler.getSiteName()).isEmpty()) {
+        siteData.forEach(data -> {
+            if (siteRepository.findByName(data.getSiteName()).isEmpty()) {
                 siteRepository.save(
                         Site.builder()
-                        .name(webCrawler.getSiteName())
-                        .domain(webCrawler.getDomain())
-                        .url(webCrawler.getDomain() + webCrawler.getBoardUrl())
+                        .name(data.getSiteName())
+                        .domain(data.getDomain())
+                        .url(data.getDomain() + data.getBoardUrl())
                         .build()
                 );
             }

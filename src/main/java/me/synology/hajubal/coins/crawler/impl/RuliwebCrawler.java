@@ -2,6 +2,7 @@ package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.crawler.SiteData;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.entity.PointUrl;
@@ -92,18 +93,5 @@ public class RuliwebCrawler implements WebCrawler {
         return pointPostUrl;
     }
 
-    @Override
-    public String getSiteName() {
-        return "Ruliweb";
-    }
 
-    @Override
-    public String getDomain() {
-        return "https://m.ruliweb.com";
-    }
-
-    @Override
-    public String getBoardUrl() {
-        return "/ps/board/1020";
-    }
 }
