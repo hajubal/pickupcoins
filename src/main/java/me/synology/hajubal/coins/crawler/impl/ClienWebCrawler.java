@@ -92,7 +92,7 @@ public class ClienWebCrawler implements WebCrawler {
     }
 
     @Override
-    public String siteName() {
+    public String getSiteName() {
         return "Clien";
     }
 
@@ -102,7 +102,7 @@ public class ClienWebCrawler implements WebCrawler {
     }
 
     @Override
-    public List<String> getBoardUrls() {
-        return List.of("/service/board/jirum");
+    public String getBoardUrl() {
+        return "/service/board/jirum";
     }
 }

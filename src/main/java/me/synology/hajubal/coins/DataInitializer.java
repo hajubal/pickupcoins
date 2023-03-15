@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class InitData implements ApplicationRunner {
+public class DataInitializer implements ApplicationRunner {
 
     private final UserCookieRepository userCookieRepository;
 
@@ -40,19 +40,16 @@ public class InitData implements ApplicationRunner {
             }
         });
 
-        if(siteRepository.findByName("클리앙").isEmpty()) {
-            siteRepository.save(Site.builder().name("클리앙").domain("https://www.clien.net").url("https://www.clien.net/service/board/jirum").build());
-        }
-
-        if(siteRepository.findByName("루리웹").isEmpty()) {
-            siteRepository.save(Site.builder().name("루리웹").domain("https://m.ruliweb.com").url("https://m.ruliweb.com/ps/board/1020").build());
-        }
-
         webCrawlers.forEach(webCrawler -> {
-            webCrawler.getDomain();
-            webCrawler.getBoardUrls();
-
-            siteRepository.findByUrl("");
+            if (siteRepository.findByName(webCrawler.getSiteName()).isEmpty()) {
+                siteRepository.save(
+                        Site.builder()
+                        .name(webCrawler.getSiteName())
+                        .domain(webCrawler.getDomain())
+                        .url(webCrawler.getDomain() + webCrawler.getBoardUrl())
+                        .build()
+                );
+            }
         });
     }
 }

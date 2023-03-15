@@ -28,6 +28,7 @@ logging:
     org.hibernate.SQL: info
     #parameter mapping
     org.hibernate.type: info
+    org.springframework.security: debug
 
 decorator.datasource.p6spy:
   enable-logging: true

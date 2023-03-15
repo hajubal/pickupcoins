@@ -3,7 +3,6 @@ package me.synology.hajubal.coins.crawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 public interface WebCrawler {
@@ -12,9 +11,9 @@ public interface WebCrawler {
      */
     Set<PointUrl> crawling() throws IOException;
 
-    String siteName();
+    String getSiteName();
 
     String getDomain();
 
-    List<String> getBoardUrls();
+    String getBoardUrl();
 }

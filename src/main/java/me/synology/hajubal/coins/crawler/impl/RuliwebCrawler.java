@@ -93,7 +93,7 @@ public class RuliwebCrawler implements WebCrawler {
     }
 
     @Override
-    public String siteName() {
+    public String getSiteName() {
         return "Ruliweb";
     }
 
@@ -103,7 +103,7 @@ public class RuliwebCrawler implements WebCrawler {
     }
 
     @Override
-    public List<String> getBoardUrls() {
-        return List.of("/ps/board/1020");
+    public String getBoardUrl() {
+        return "/ps/board/1020";
     }
 }

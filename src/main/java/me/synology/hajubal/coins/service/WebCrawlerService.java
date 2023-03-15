@@ -43,7 +43,7 @@ public class WebCrawlerService {
             try {
                 pointUrlSet.addAll(crawler.crawling());
             } catch (IOException e) {
-                log.error("Crawling fail. site name: {}", crawler.siteName());
+                log.error("Crawling fail. site name: {}", crawler.getSiteName());
                 log.error(e.getMessage(), e);
             }
         });
