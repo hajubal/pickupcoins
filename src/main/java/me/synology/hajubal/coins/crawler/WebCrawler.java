@@ -11,9 +11,4 @@ public interface WebCrawler {
      */
     Set<PointUrl> crawling() throws IOException;
 
-    String getSiteName();
-
-    String getDomain();
-
-    String getBoardUrl();
 }
