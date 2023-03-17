@@ -71,14 +71,14 @@ public class NaverPointService {
                 return;
             }
 
-            if(response.getBody().contains("포인트 지급을 위해서는 로그인이 필요합니다")) {
+            if(response.getBody().contains("로그인이 필요")) {
                 userCookie.setIsValid(false);
 
                 log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
                 slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
             } else if(response.getBody().contains("적립")) {
-                savePointLog(userCookie);
+                savePointLog(userCookie, response.getBody());
             }
 
             //cookie session값 갱신
@@ -94,7 +94,10 @@ public class NaverPointService {
     }
 
     @Transactional
-    public SavedPoint savePointLog(UserCookie userCookie) {
+    public SavedPoint savePointLog(UserCookie userCookie, String body) {
+        //alert('~~~ 10 원이 적립되었습니다.');
+
+
         return savedPointRepository.save(SavedPoint.builder()
                 .point("코드 수정 필요")
                 .userCookie(userCookie)
