@@ -58,19 +58,25 @@ public class ClienWebCrawler implements WebCrawler {
             Jsoup.connect(domain + postUrl).get().select("div.post_article a").forEach(aTag -> {
                 String pointHref = aTag.attr("href");
 
-                if(pointHref.contains("campaign2-api.naver.com")) {
-                    log.debug("Naver point url: {}", pointHref);
+                log.debug("Naver point url: {}", pointHref);
 
-                    pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.NAVER).url(pointHref).name("naver").build());
-                } else if(pointHref.contains("ofw.adison.co/u/naverpay")) {
-                    log.debug("Adison naver point url: {}", pointHref);
+                POINT_URL_TYPE pointType = classifyUrlType(pointHref);
 
-                    pointUrl.add(PointUrl.builder().pointUrlType(POINT_URL_TYPE.OFW_NAVER).url(pointHref).name("adison").build());
-                }
+                pointUrl.add(PointUrl.builder().pointUrlType(pointType).url(pointHref).name(pointType.name()).build());
             });
         }
 
         return pointUrl;
+    }
+
+    private POINT_URL_TYPE classifyUrlType(String url) {
+        if(url.contains("campaign2-api.naver.com")) {
+            return POINT_URL_TYPE.NAVER;
+        } else if(url.contains("ofw.adison.co/u/naverpay")) {
+            return POINT_URL_TYPE.OFW_NAVER;
+        }
+
+        return POINT_URL_TYPE.UNSUPPORT;
     }
 
     /**
