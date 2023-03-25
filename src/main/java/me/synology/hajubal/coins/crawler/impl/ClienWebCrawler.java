@@ -2,7 +2,6 @@ package me.synology.hajubal.coins.crawler.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.crawler.SiteData;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
@@ -17,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -82,20 +82,25 @@ public class ClienWebCrawler implements WebCrawler {
     /**
      * 포인트 적립 URL을 가지고 있는 게시물의 URL
      *
-     * @param siteUrl
+     * @param siteUrl 포인트 적립 게시물이 올라오는 게시판 URL
      * @return
      * @throws IOException
      */
     private Set<String> fetchPostUrls(String siteUrl) throws IOException {
-        Set<String> pointPostUrl = new HashSet<>();
-
         //게시판 목록 tag
-        Jsoup.connect(siteUrl).get().select("span.list_subject").forEach(element -> {
-            if(element.attr("title").contains("네이버")) {
-                pointPostUrl.add(element.select("a[data-role=list-title-text]").attr("href"));
-            }
-        });
-        return pointPostUrl;
+        return Jsoup.connect(siteUrl).get().select(titleCssQuery())
+                .stream()
+                .filter(element -> element.attr("title").contains("네이버"))
+                .map(element -> element.select("a[data-role=list-title-text]").attr("href"))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * 게시글 제목을 가지고 있는 element css query
+     * @return
+     */
+    private String titleCssQuery() {
+        return "span.list_subject";
     }
 
 }
