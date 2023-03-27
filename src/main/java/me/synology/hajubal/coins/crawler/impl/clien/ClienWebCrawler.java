@@ -1,7 +1,8 @@
-package me.synology.hajubal.coins.crawler.impl;
+package me.synology.hajubal.coins.crawler.impl.clien;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.crawler.PointPostUrlFetcher;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
@@ -16,14 +17,20 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
 @Component
 public class ClienWebCrawler implements WebCrawler {
 
-    private final SiteRepository siteRepository;
+    private PointPostUrlFetcher pointPostUrlFetcher;
+
+    private SiteRepository siteRepository;
+
+    public ClienWebCrawler(ClienPointUrlSelector clienPointUrlSelector, SiteRepository siteRepository) {
+        this.pointPostUrlFetcher = new PointPostUrlFetcher(clienPointUrlSelector);
+        this.siteRepository = siteRepository;
+    }
 
     /**
      * 사이트에 포함된 포인트 url 수집
@@ -39,7 +46,7 @@ public class ClienWebCrawler implements WebCrawler {
 
         Site site = optionalSite.get();
 
-        return fetchPointUrls(site.getDomain(), fetchPostUrls(site.getUrl()));
+        return fetchPointUrls(site.getDomain(), pointPostUrlFetcher.fetchPostUrls(site.getUrl()));
     }
 
     /**
@@ -77,30 +84,6 @@ public class ClienWebCrawler implements WebCrawler {
         }
 
         return POINT_URL_TYPE.UNSUPPORT;
-    }
-
-    /**
-     * 포인트 적립 URL을 가지고 있는 게시물의 URL
-     *
-     * @param siteUrl 포인트 적립 게시물이 올라오는 게시판 URL
-     * @return
-     * @throws IOException
-     */
-    private Set<String> fetchPostUrls(String siteUrl) throws IOException {
-        //게시판 목록 tag
-        return Jsoup.connect(siteUrl).get().select(titleCssQuery())
-                .stream()
-                .filter(element -> element.attr("title").contains("네이버"))
-                .map(element -> element.select("a[data-role=list-title-text]").attr("href"))
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * 게시글 제목을 가지고 있는 element css query
-     * @return
-     */
-    private String titleCssQuery() {
-        return "span.list_subject";
     }
 
 }
