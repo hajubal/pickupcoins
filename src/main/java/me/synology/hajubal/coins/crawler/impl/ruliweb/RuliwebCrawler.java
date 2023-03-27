@@ -1,4 +1,4 @@
-package me.synology.hajubal.coins.crawler.impl;
+package me.synology.hajubal.coins.crawler.impl.ruliweb;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

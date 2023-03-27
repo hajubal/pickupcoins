@@ -1,7 +1,7 @@
 package me.synology.hajubal.coins.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.crawler.impl.ClienWebCrawler;
+import me.synology.hajubal.coins.crawler.impl.clien.ClienWebCrawler;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
