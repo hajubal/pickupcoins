@@ -23,8 +23,8 @@ public class PointPostUrlFetcher {
         //게시판 목록 tag
         return Jsoup.connect(siteUrl).get().select(pointUrlSelector.titleCssQuery())
                 .stream()
-                .filter(element -> pointUrlSelector.titleSelector(element))
-                .map(element -> pointUrlSelector.linkExtractor(element))
+                .filter(pointUrlSelector::titleSelector)
+                .map(pointUrlSelector::linkExtractor)
                 .collect(Collectors.toSet());
     }
 

@@ -1,6 +1,5 @@
 package me.synology.hajubal.coins.crawler.impl.clien;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.PointPostUrlFetcher;
 import me.synology.hajubal.coins.crawler.WebCrawler;
@@ -18,14 +17,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-@RequiredArgsConstructor
 @Slf4j
 @Component
 public class ClienWebCrawler implements WebCrawler {
 
-    private PointPostUrlFetcher pointPostUrlFetcher;
+    private final PointPostUrlFetcher pointPostUrlFetcher;
 
-    private SiteRepository siteRepository;
+    private final SiteRepository siteRepository;
 
     public ClienWebCrawler(ClienPointUrlSelector clienPointUrlSelector, SiteRepository siteRepository) {
         this.pointPostUrlFetcher = new PointPostUrlFetcher(clienPointUrlSelector);
@@ -46,7 +44,7 @@ public class ClienWebCrawler implements WebCrawler {
 
         Site site = optionalSite.get();
 
-        return fetchPointUrls(site.getDomain(), pointPostUrlFetcher.fetchPostUrls(site.getUrl()));
+        return extractPointUrls(site.getDomain(), pointPostUrlFetcher.fetchPostUrls(site.getUrl()));
     }
 
     /**
@@ -56,7 +54,7 @@ public class ClienWebCrawler implements WebCrawler {
      * @param pointPostUrl
      * @return
      */
-    private Set<PointUrl> fetchPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
+    private Set<PointUrl> extractPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
         //포인트 url
         Set<PointUrl> pointUrl = new HashSet<>();
 
@@ -67,23 +65,17 @@ public class ClienWebCrawler implements WebCrawler {
 
                 log.debug("Naver point url: {}", pointHref);
 
-                POINT_URL_TYPE pointType = classifyUrlType(pointHref);
+                POINT_URL_TYPE pointType = POINT_URL_TYPE.classifyUrlType(pointHref);
 
-                pointUrl.add(PointUrl.builder().pointUrlType(pointType).url(pointHref).name(pointType.name()).build());
+                pointUrl.add(PointUrl.builder()
+                        .pointUrlType(pointType)
+                        .url(pointHref)
+                        .name(pointType.name())
+                        .build());
             });
         }
 
         return pointUrl;
-    }
-
-    private POINT_URL_TYPE classifyUrlType(String url) {
-        if(url.contains("campaign2-api.naver.com")) {
-            return POINT_URL_TYPE.NAVER;
-        } else if(url.contains("ofw.adison.co/u/naverpay")) {
-            return POINT_URL_TYPE.OFW_NAVER;
-        }
-
-        return POINT_URL_TYPE.UNSUPPORT;
     }
 
 }
