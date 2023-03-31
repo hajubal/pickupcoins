@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @DynamicInsert @DynamicUpdate
 @Entity
-public class PointUrl extends BaseTimeEntity {
+public class PointUrl extends BaseDataEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

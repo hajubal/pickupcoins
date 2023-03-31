@@ -13,7 +13,7 @@ import java.util.List;
 @DynamicInsert @DynamicUpdate
 @Data
 @Entity
-public class UserCookie extends BaseTimeEntity {
+public class UserCookie extends BaseDataEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
