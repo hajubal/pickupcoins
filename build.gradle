@@ -61,6 +61,11 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+ext.SSH_HOST = project.getProperties().getOrDefault("SSH_HOST", "127.0.0.1")
+ext.SSH_ID = project.getProperties().getOrDefault("SSH_ID", "test")
+ext.SSH_PW = project.getProperties().getOrDefault("SSH_PW", "test")
+ext.SSH_PORT = project.getProperties().getOrDefault("SSH_PORT", "22")
+
 //서버 접속 정보
 remotes {
 	dockerServer {
@@ -120,10 +125,6 @@ task showPlatformVersion {
 			}
 		}
 	}
-}
-
-test {
-	exclude '**/*'
 }
 
 //도커 서버에 이미지 생성 및 컨테이너 실행
