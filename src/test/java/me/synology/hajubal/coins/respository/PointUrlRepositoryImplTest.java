@@ -1,31 +1,46 @@
 package me.synology.hajubal.coins.respository;
 
 import me.synology.hajubal.coins.entity.PointUrl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
-@SpringBootTest
+import static org.assertj.core.api.Assertions.assertThat;
+
+
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
 class PointUrlRepositoryImplTest {
     @Autowired
     private PointUrlRepository pointUrlRepository;
 
+    @DisplayName("저장 테스트")
     @Test
-    void save() {
-        PointUrl build = PointUrl.builder().url("url").name("name").build();
+    void saveTest() {
+        PointUrl pointUrl = PointUrl.builder().url("url").name("name").build();
 
-        pointUrlRepository.save(build);
+        pointUrlRepository.save(pointUrl);
 
-        pointUrlRepository.findAll().stream().forEach(System.out::println);
+        Optional<PointUrl> byId = pointUrlRepository.findById(pointUrl.getId());
 
+        assertThat(byId).contains(pointUrl);
     }
 
+    @DisplayName("호출안된 url 조회 테스트")
     @Test
-    void queryTest() {
-        List<PointUrl> urls = pointUrlRepository.findByNotCalledUrl("naver", "ha");
+    void findByNotCalledUrlQueryTest() {
+        PointUrl pointUrl = PointUrl.builder().url("url").name("name").build();
 
-        System.out.println("urls = " + urls);
+        pointUrlRepository.save(pointUrl);
+
+        List<PointUrl> urls = pointUrlRepository.findByNotCalledUrl("name", "ha");
+
+        assertThat(urls).hasSize(1);
     }
 }
