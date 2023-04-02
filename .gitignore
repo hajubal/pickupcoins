@@ -236,6 +236,6 @@ $RECYCLE.BIN/
 *.lnk
 
 application-dev.yml
-application-test.yml
+#application-test.yml
 application-local.yml
 gradle.properties
