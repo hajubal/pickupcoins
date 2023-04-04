@@ -1,10 +1,10 @@
 package me.synology.hajubal.coins.service;
 
 import me.synology.hajubal.coins.crawler.impl.clien.ClienWebCrawler;
-import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,7 +18,7 @@ class NaverPointServiceTest {
     @Autowired
     private ClienWebCrawler webCrawler;
 
-    @Autowired
+    @Mock
     private UserCookieRepository userCookieRepository;
 
     @Test
@@ -40,8 +40,5 @@ class NaverPointServiceTest {
 
         System.out.println("userCookie = " + userCookie);
 
-        SavedPoint savedPoint = naverPointService.savePointLog(userCookie, "");
-
-        System.out.println("savedPoint = " + savedPoint);
     }
 }
