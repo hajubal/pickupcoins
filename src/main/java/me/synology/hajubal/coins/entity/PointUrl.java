@@ -37,6 +37,6 @@ public class PointUrl extends BaseDataEntity {
     private Boolean permanent;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "pointUrl")
+    @OneToMany(mappedBy = "pointUrl", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<PointUrlUserCookie> pointUrlUserCookies;
 }

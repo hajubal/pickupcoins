@@ -34,10 +34,10 @@ public class UserCookie extends BaseDataEntity {
     private Boolean isValid;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "userCookie")
+    @OneToMany(mappedBy = "userCookie", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<PointUrlUserCookie> pointUrlUserCookie;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "userCookie")
+    @OneToMany(mappedBy = "userCookie", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<SavedPoint> savedPoint;
 }
