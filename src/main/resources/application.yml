@@ -21,6 +21,15 @@ spring:
       filter:
         enabled: true
 
+management:
+  endpoint:
+    info:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 logging:
   level:
     me.synology.hajubal.coins: debug
