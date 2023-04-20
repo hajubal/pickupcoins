@@ -19,6 +19,7 @@ public class SecurityConfig {
                 .cors().disable()
                 .headers().frameOptions().disable().and()
                 .authorizeHttpRequests().requestMatchers(toH2Console()).permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 .and().formLogin()
                 ;
