@@ -17,7 +17,7 @@ import java.net.URI;
 
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class ExchangeService {
     private final SlackService slackService;
@@ -30,7 +30,6 @@ public class ExchangeService {
 
     private final WebClient.Builder webClientBuilder;
 
-    @Transactional
     public void exchange(PointUrl url, UserCookie userCookie) {
         log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
@@ -76,7 +75,7 @@ public class ExchangeService {
         headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
     }
 
-    private void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
+    public void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
         //사용자 별 호출 url 정보 저장
         pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
                 .pointUrl(url)
@@ -97,7 +96,7 @@ public class ExchangeService {
         );
     }
 
-    private void savePointLog(UserCookie userCookie, String body) {
+    public void savePointLog(UserCookie userCookie, String body) {
         //alert('~~~ 10 원이 적립되었습니다.');
 
         savedPointRepository.save(SavedPoint.builder()
