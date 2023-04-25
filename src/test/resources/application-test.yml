@@ -9,6 +9,9 @@ spring:
     url: jdbc:h2:~/coins;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
+  test:
+    database:
+      replace: none
 slack:
   webhook:
     url: https://hooks.slack.com/services/~
