@@ -37,7 +37,7 @@ public class UserCookie extends BaseDataEntity {
     @OneToMany(mappedBy = "userCookie", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<PointUrlUserCookie> pointUrlUserCookie;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "userCookie", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<SavedPoint> savedPoint;
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "userCookie", orphanRemoval = true, cascade = CascadeType.ALL)
+//    private List<SavedPoint> savedPoint;
 }
