@@ -19,14 +19,14 @@ public class Schedulers {
 
     private final WebCrawlerService webCrawlerService;
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(fixedDelay = 1000 * 60 * 5)
     public void webCrawlerScheduler() {
         log.info("Call webCrawlerScheduler.");
 
         webCrawlerService.crawling();
     }
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(fixedDelay = 1000 * 60 * 5)
     public void pointScheduler() {
         log.info("Call pointScheduler.");
 
