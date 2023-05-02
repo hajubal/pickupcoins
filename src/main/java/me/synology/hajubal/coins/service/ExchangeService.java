@@ -49,7 +49,7 @@ public class ExchangeService {
             }
 
             if(response.getBody().contains("로그인이 필요")) {
-                userCookie.setIsValid(false);
+                userCookie.invalid();
 
                 log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
@@ -61,7 +61,7 @@ public class ExchangeService {
             //cookie session값 갱신
             if(response.getHeaders().containsKey("cookie")) {
                 log.info("cookie 갱신 user: {}", userCookie.getUserName());
-                userCookie.setCookie(response.getHeaders().getFirst("cookie"));
+                userCookie.updateCookie(response.getHeaders().getFirst("cookie"));
             }
 
             log.debug("Response body: {} ", response.getBody());

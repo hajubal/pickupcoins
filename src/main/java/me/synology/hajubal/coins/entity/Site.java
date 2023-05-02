@@ -1,15 +1,10 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Site extends BaseDataEntity {
 
@@ -25,4 +20,10 @@ public class Site extends BaseDataEntity {
     @Column(nullable = false)
     private String url;
 
+    @Builder
+    public Site(String name, String domain, String url) {
+        this.name = name;
+        this.domain = domain;
+        this.url = url;
+    }
 }

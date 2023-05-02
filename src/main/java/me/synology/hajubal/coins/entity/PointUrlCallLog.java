@@ -1,15 +1,10 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class PointUrlCallLog extends BaseDataEntity {
 
@@ -35,4 +30,15 @@ public class PointUrlCallLog extends BaseDataEntity {
     private String cookie;
 
     private int responseStatusCode;
+
+    @Builder
+    public PointUrlCallLog(String pointUrl, String siteName, String userName, String responseBody, String responseHeader, String cookie, int responseStatusCode) {
+        this.pointUrl = pointUrl;
+        this.siteName = siteName;
+        this.userName = userName;
+        this.responseBody = responseBody;
+        this.responseHeader = responseHeader;
+        this.cookie = cookie;
+        this.responseStatusCode = responseStatusCode;
+    }
 }

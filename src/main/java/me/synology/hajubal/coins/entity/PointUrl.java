@@ -8,10 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @DynamicInsert @DynamicUpdate
 @Entity
 public class PointUrl extends BaseDataEntity {
@@ -36,7 +34,11 @@ public class PointUrl extends BaseDataEntity {
     @Column(columnDefinition = "boolean default false")
     private Boolean permanent;
 
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "pointUrl", orphanRemoval = true, cascade = CascadeType.ALL)
-//    private List<PointUrlUserCookie> pointUrlUserCookies;
+    @Builder
+    public PointUrl(String name, String url, POINT_URL_TYPE pointUrlType, Boolean permanent) {
+        this.name = name;
+        this.url = url;
+        this.pointUrlType = pointUrlType;
+        this.permanent = permanent;
+    }
 }

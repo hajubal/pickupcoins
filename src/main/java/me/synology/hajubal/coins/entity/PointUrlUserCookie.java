@@ -1,15 +1,11 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class PointUrlUserCookie extends BaseDataEntity {
 
@@ -21,4 +17,10 @@ public class PointUrlUserCookie extends BaseDataEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserCookie userCookie;
+
+    @Builder
+    public PointUrlUserCookie(PointUrl pointUrl, UserCookie userCookie) {
+        this.pointUrl = pointUrl;
+        this.userCookie = userCookie;
+    }
 }

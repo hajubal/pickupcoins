@@ -39,20 +39,4 @@ class SavedPointRepositoryTest {
         all.forEach(System.out::println);
     }
 
-    @Transactional
-    @Test
-    void deleteTest() {
-        UserCookie userCookie = UserCookie.builder().userName("test").siteName("test").isValid(Boolean.TRUE).build();
-        userCookie.setSavedPoint(List.of(SavedPoint.builder().userCookie(userCookie).build()));
-        userCookie.setPointUrlUserCookie(List.of(PointUrlUserCookie.builder().userCookie(userCookie).build()));
-
-        userCookieRepository.save(userCookie);
-
-        //?? 이게 왜 주소값이 다르지???
-        // => test 함수에 @Transactional을 붙이지 않아서 트렌젝션 번위가 아니여서 영속성 범위에 해당되지 않아서 그렇다.
-        assertThat(userCookie).isEqualTo(userCookieRepository.findById(userCookie.getId()).get());
-
-//        assertThat(userCookie.getSavedPoint());
-
-    }
 }

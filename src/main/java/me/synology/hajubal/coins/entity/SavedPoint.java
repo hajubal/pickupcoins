@@ -1,15 +1,10 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class SavedPoint extends BaseDataEntity {
 
@@ -20,4 +15,10 @@ public class SavedPoint extends BaseDataEntity {
     private UserCookie userCookie;
 
     private String point;
+
+    @Builder
+    public SavedPoint(UserCookie userCookie, String point) {
+        this.userCookie = userCookie;
+        this.point = point;
+    }
 }
