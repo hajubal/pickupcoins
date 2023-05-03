@@ -1,11 +1,12 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert @DynamicUpdate
@@ -31,17 +32,12 @@ public class UserCookie extends BaseDataEntity {
     @Column(columnDefinition = "boolean default true")
     private Boolean isValid;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "userCookie", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<PointUrlUserCookie> pointUrlUserCookie;
-
     @Builder
-    public UserCookie(String userName, String siteName, String cookie, Boolean isValid, List<PointUrlUserCookie> pointUrlUserCookie) {
+    public UserCookie(String userName, String siteName, String cookie, Boolean isValid) {
         this.userName = userName;
         this.siteName = siteName;
         this.cookie = cookie;
         this.isValid = isValid;
-        this.pointUrlUserCookie = pointUrlUserCookie;
     }
 
     public void invalid() {
