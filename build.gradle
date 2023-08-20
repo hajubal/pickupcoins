@@ -151,7 +151,7 @@ task dockerDeploy() {
 				def buildPath = "${project.buildDir.getAbsolutePath()}/libs"
 				def jarName = "${jar.getArchiveBaseName().get()}-${jar.getArchiveVersion().get()}.jar"
 				def from = "${buildPath}/${jarName}"
-				def to = "/var/services/homes/hajubal/dockerfile/${project.name}"
+				def to = "/homes/hajubal/dockerfile/pickupcoins/${project.name}"
 				def hostPort = "7070"
 				def containerPort = "8080"
 				def dockerFile = "${project.file("Dockerfile")}"
