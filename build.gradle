@@ -80,6 +80,10 @@ remotes {
 	}
 }
 
+ssh.settings {
+	knownHosts = allowAnyHosts
+}
+
 task dev {
 	doLast {
 		def path = "${project.buildDir.getAbsolutePath()}\\lib\\${jar.archiveName}"
