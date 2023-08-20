@@ -86,7 +86,7 @@ ssh.settings {
 
 task dev {
 	doLast {
-		def path = "${project.buildDir.getAbsolutePath()}\\lib\\${jar.archiveName}"
+		def path = "${project.buildDir.getAbsolutePath()}/lib/${jar.archiveName}"
 		def dir = fileTree(dir: 'build').getDir()
 		def dockerFile = "${project.file("Dockerfile")}"
 		def buildPath = fileTree(dir: 'build').getDir()
@@ -148,7 +148,7 @@ task dockerDeploy() {
 				def command
 				def imageName = "${project.name}:${project.version}"
 				def containerName = "${project.name}"
-				def buildPath = "${project.buildDir.getAbsolutePath()}\\libs"
+				def buildPath = "${project.buildDir.getAbsolutePath()}/libs"
 				def jarName = "${jar.getArchiveBaseName().get()}-${jar.getArchiveVersion().get()}.jar"
 				def from = "${buildPath}\\${jarName}"
 				def to = "/var/services/homes/hajubal/dockerfile/${project.name}"
