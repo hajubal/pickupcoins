@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'me.synology.hajubal'
-version = '1.0.2'
+version = '1.0.3'
 sourceCompatibility = '17'
 
 configurations {
@@ -151,60 +151,51 @@ task dockerDeploy() {
 				def buildPath = "${project.buildDir.getAbsolutePath()}/libs"
 				def jarName = "${jar.getArchiveBaseName().get()}-${jar.getArchiveVersion().get()}.jar"
 				def from = "${buildPath}/${jarName}"
-				def to = "/homes/hajubal/dockerfile/pickupcoins/${project.name}"
+				def to = "/homes/hajubal/dockerfile/${project.name}"
+				def commandTo = "/var/services/homes/hajubal/dockerfile/${project.name}"
 				def hostPort = "7070"
 				def containerPort = "8080"
 				def dockerFile = "${project.file("Dockerfile")}"
 
-//				command = 'docker version'
-//				println "\n\$ ${command}"
-//				execute(command){r->println r}
-
-				command = "ls ${to}"
+				command = "ls ${commandTo}"
 				println "\n\$ ${command}"
 				execute(command){r->println r}
-
-				//프로젝트 폴더 삭제 후 재생성
-//				command = "rm -r ${to}"
-//				println "\n\$ ${command}"
-//				execute(command){r->println r}
-//
-//				command = "mkdir ${to}"
-//				println "\n\$ ${command}"
-//				execute(command){r->println r}
 
 				//프로젝트 폴더에 jar 파일 복사
 				println "\n\$ put from:${from}, into: ${to}/${containerName}.jar"
 				put from: from, into: to + "/" + containerName + ".jar"
-				//put from: 'C:\\Users\\hajubal\\IdeaProjects\\pickupcoins\\build\\libs\\pickupcoins-1.0.0.jar', into: to
 
 				//프로젝트 폴더에 Dockerfile 복사
 				println "\n\$ put from: ${dockerFile}, into: ${to}"
 				put from: dockerFile, into: to
 
-				//기존 컨테이너 중지/삭제
-				command = "docker stop ${containerName}"
+				command = "${commandTo}/install.sh"
 				println "\n\$ ${command}"
 				execute(command, ignoreError: true){r->println r}
 
-				command = "docker rm ${containerName}"
-				println "\n\$ ${command}"
-				execute(command, ignoreError: true){r->println r}
+				//기존 컨테이너 중지/삭제
+//				command = "docker stop ${containerName}"
+//				println "\n\$ ${command}"
+//				execute(command, ignoreError: true){r->println r}
+//
+//				command = "docker rm ${containerName}"
+//				println "\n\$ ${command}"
+//				execute(command, ignoreError: true){r->println r}
 
 				//이번에 생성되는 이미지 명으로 이미 생성된 이미지 삭제
-				command = "docker rmi ${imageName}"
-				println "\n\$ ${command}"
-				execute(command, ignoreError: true){r->println r}
+//				command = "docker rmi ${imageName}"
+//				println "\n\$ ${command}"
+//				execute(command, ignoreError: true){r->println r}
 
 				//Dockerfile 실행
-				command = "docker build ${to} -t ${imageName}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
+//				command = "docker build ${commandTo} -t ${imageName}"
+//				println "\n\$ ${command}"
+//				execute(command){r->println r}
 
 				//신규 이미지로 컨테이너 생성/실행
-				command = "docker run -d -p ${hostPort}:${containerPort} --name ${containerName} ${imageName}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
+//				command = "docker run -d -p ${hostPort}:${containerPort} --name ${containerName} ${imageName}"
+//				println "\n\$ ${command}"
+//				execute(command){r->println r}
 			}
 		}
 	}
