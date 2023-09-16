@@ -30,17 +30,20 @@ public class DataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        //2023.08.27 DB 업데이트 된 데이터 유실되므로 주석 처리
-//        userCookieProps.getUserCookies().forEach(user -> {
-//
-//            UserCookie userCookie = UserCookie.builder().userName(user.name()).siteName("naver").cookie(user.cookie()).isValid(true).build();
-//
-//            if(userCookieRepository.findByCookie(userCookie.getCookie()).isEmpty()) {
-//                log.info("save cookie. name: {}", user.name());
-//
-//                userCookieRepository.save(userCookie);
-//            }
-//        });
+        /**
+         * 2023.08.27 DB 업데이트 된 데이터 유실되므로 주석 처리
+         * 2023.09.16 없는 사용자가 있는 경우 추가. 로컬 개발 환경에서 필요함.
+         */
+        userCookieProps.getUserCookies().forEach(user -> {
+
+            UserCookie userCookie = UserCookie.builder().userName(user.name()).siteName("naver").cookie(user.cookie()).isValid(true).build();
+
+            if(!userCookieRepository.existsByUserName(userCookie.getUserName())) {
+                log.info("save cookie. name: {}", user.name());
+
+                userCookieRepository.save(userCookie);
+            }
+        });
 
         siteData.forEach(data -> {
             if (siteRepository.findByName(data.getSiteName()).isEmpty()) {
