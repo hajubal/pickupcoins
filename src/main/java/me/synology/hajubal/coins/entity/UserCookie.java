@@ -51,4 +51,15 @@ public class UserCookie extends BaseDataEntity {
     public void updateCookie(String cookie) {
         this.cookie = cookie;
     }
+
+    @Override
+    public String toString() {
+        return "UserCookie{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", siteName='" + siteName + '\'' +
+                ", cookie='" + cookie + '\'' +
+                ", isValid=" + isValid +
+                '}';
+    }
 }

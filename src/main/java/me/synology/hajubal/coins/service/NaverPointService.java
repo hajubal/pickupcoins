@@ -37,10 +37,11 @@ public class NaverPointService {
         log.debug("UserCookies: {}", userCookies);
 
         userCookies.forEach(userCookie -> {
-            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName, userCookie.getUserName());
+            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName.toUpperCase(), userCookie.getUserName());
+
+            log.info("Not called url size: {}", pointUrls.size());
 
             pointUrls.forEach(pointUrl -> exchangeService.exchange(pointUrl, userCookie));
         });
     }
-
 }
