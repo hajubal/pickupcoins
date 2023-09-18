@@ -2,7 +2,7 @@ spring:
   application:
     name: coin
   profiles:
-    active: dev
+    active: local
   jpa:
     properties:
       hibernate:
@@ -36,6 +36,11 @@ server:
     mbeanregistry:
       enabled: true
 
+decorator.datasource.p6spy:
+  enable-logging: true
+  multiline: true
+  logging: slf4j
+
 logging:
   level:
     me.synology.hajubal.coins: debug
@@ -44,9 +49,5 @@ logging:
     org.hibernate.SQL: info
     #parameter mapping
     org.hibernate.type: info
-    org.springframework.security: debug
+    org.springframework.security: error
 
-decorator.datasource.p6spy:
-  enable-logging: true
-  multiline: true
-  logging: slf4j
