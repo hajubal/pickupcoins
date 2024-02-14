@@ -20,7 +20,7 @@ spring:
 
 logging:
   file:
-    path: ~/tmp/log/pickupcoins
+    path: /tmp/log/pickupcoins
 
 slack:
   webhook:
