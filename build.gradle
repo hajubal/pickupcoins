@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'me.synology.hajubal'
-version = '1.0.3'
+version = '1.0.4'
 sourceCompatibility = '17'
 
 configurations {
@@ -84,11 +84,11 @@ ssh.settings {
 	knownHosts = allowAnyHosts
 }
 
-task dev {
+tasks.register('dev') {
 	doLast {
-		def path = "${project.buildDir.getAbsolutePath()}/lib/${jar.archiveName}"
+		def path = bootJar.archiveFile.get().asFile.getAbsolutePath()
 		def dir = fileTree(dir: 'build').getDir()
-		def dockerFile = "${project.file("Dockerfile")}"
+		def dockerFile = project.file("Dockerfile")
 		def buildPath = fileTree(dir: 'build').getDir()
 
 		println path
@@ -96,40 +96,42 @@ task dev {
 		println dockerFile
 		println buildPath
 
-		def archiveNamePath = "${bootJar.archiveFile.get().asFile}"
+		def archiveNamePath = bootJar.archiveFile.get().asFile
 		println 'archiveNamePath: ' + archiveNamePath
 
-		def archiveName = "${bootJar.archiveName}"
+		def archiveName = bootJar.archiveFileName
 		println 'archiveName: ' + archiveName
 
-		def archiveFileName = "${jar.archiveFileName.get()}"
+		def archiveFileName = jar.archiveFileName.get()
 		println 'archiveFileName: ' + archiveFileName
 
-		def archiveBaseName = "${jar.archiveBaseName.get()}"
+		def archiveBaseName = jar.archiveBaseName.get()
 		println 'archiveBaseName: ' + archiveBaseName
 
-		def archiveExtension = "${jar.archiveExtension.get()}"
+		def archiveExtension = jar.archiveExtension.get()
 		println 'archiveExtension: ' + archiveExtension
-
-		println ">>>>> ${jar.archiveFile.get().asFile.getAbsolutePath()}"
 
 		println "project name: ${project.name}"
 
-		println 'host: ' + project.SSH_HOST
-		println 'id: ' + project.SSH_ID
-		println 'pw: ' + project.SSH_PW
-		println 'port: ' + Integer.valueOf(project.SSH_PORT)
+		println "host: ${project.SSH_HOST}"
+		println "id: ${project.SSH_ID}"
+		println "pw: ${project.SSH_PW}"
+		println "port: ${project.SSH_PORT}"
 	}
 }
 
 //도커 서버 정보 출력
-task showPlatformVersion {
+tasks.register('showPlatformVersion') {
 	doLast {
 		println ssh.version
 		ssh.run {
 			session(remotes.dockerServer) {
-				execute 'uname -a'
-				//execute 'cat /etc/*-release', ignoreError: true
+				def commandTo = "/var/services/homes/hajubal/dockerfile/${project.name}"
+
+				execute 'hostname'
+				execute "/usr/local/bin/docker-compose -f ${commandTo}/docker-compose.yml build"
+
+				//execute 'java -version'
 			}
 		}
 	}
@@ -139,7 +141,7 @@ task showPlatformVersion {
 //org.hidetake.groovy.ssh.operation.SftpException: Failed SFTP PUT: d:\~~ -> dockerServer:/var/~~: (SSH_FX_NO_SUCH_FILE: A reference was made to a file which does not exist): No such file
 //오류 나면서 안됨. 원인 파악 불가
 //==> 원인: 시놀로지의 경우 ssh로 보여지는 path와 ftp로 보는 경로가 다름. 그래서 scp로 업로도할 경로는 ftp로 접속해서 보여지는 경로로 업로드 해야 함.
-task dockerDeploy() {
+tasks.register('dockerDeploy') {
 	dependsOn('build')
 
 	doLast {
@@ -147,56 +149,30 @@ task dockerDeploy() {
 		ssh.run {
 			session(remotes.dockerServer) {
 				def command
-				def imageName = "${project.name}:${project.version}"
-				def containerName = "${project.name}"
+				def projectName = project.name
 				def buildPath = "${project.buildDir.getAbsolutePath()}/libs"
 				def jarName = "${jar.getArchiveBaseName().get()}-${jar.getArchiveVersion().get()}.jar"
 				def from = "${buildPath}/${jarName}"
 				def to = "/homes/hajubal/dockerfile/${project.name}"
 				def commandTo = "/var/services/homes/hajubal/dockerfile/${project.name}"
-				def hostPort = "7070"
-				def containerPort = "8080"
-				def dockerFile = "${project.file("Dockerfile")}"
+				def dockerFile = project.file("Dockerfile")
+				def dockerComposeFile = project.file("docker-compose.yml")
 
 				command = "ls ${commandTo}"
 				println "\n\$ ${command}"
 				execute(command){r->println r}
 
 				//프로젝트 폴더에 jar 파일 복사
-				println "\n\$ put from:${from}, into: ${to}/${containerName}.jar"
-				put from: from, into: to + "/" + containerName + ".jar"
+				put from: from, into: "${to}/${projectName}.jar"
 
 				//프로젝트 폴더에 Dockerfile 복사
-				println "\n\$ put from: ${dockerFile}, into: ${to}"
 				put from: dockerFile, into: to
 
-//				command = "${commandTo}/install.sh"
-//				println "\n\$ ${command}"
-//				execute(command, ignoreError: true){r->println r}
+				//프로젝트 폴더에 Dockerfile 복사
+				put from: dockerComposeFile, into: to
 
-				//기존 컨테이너 중지/삭제
-//				command = "docker stop ${containerName}"
-//				println "\n\$ ${command}"
-//				execute(command, ignoreError: true){r->println r}
-//
-//				command = "docker rm ${containerName}"
-//				println "\n\$ ${command}"
-//				execute(command, ignoreError: true){r->println r}
-
-				//이번에 생성되는 이미지 명으로 이미 생성된 이미지 삭제
-//				command = "docker rmi ${imageName}"
-//				println "\n\$ ${command}"
-//				execute(command, ignoreError: true){r->println r}
-
-				//Dockerfile 실행
-//				command = "docker build ${commandTo} -t ${imageName}"
-//				println "\n\$ ${command}"
-//				execute(command){r->println r}
-
-				//신규 이미지로 컨테이너 생성/실행
-//				command = "docker run -d -p ${hostPort}:${containerPort} --name ${containerName} ${imageName}"
-//				println "\n\$ ${command}"
-//				execute(command){r->println r}
+				execute("/usr/local/bin/docker-compose -f ${commandTo}/docker-compose.yml build", ignoreError: true){r->println r}
+				execute("/usr/local/bin/docker-compose -f ${commandTo}/docker-compose.yml up -d", ignoreError: true){r->println r}
 			}
 		}
 	}

@@ -1,0 +1,15 @@
+services:
+  coin:
+    build:
+      context: ~/dockerfile/pickupcoins
+      dockerfile: Dockerfile
+    container_name: coin
+    image: coin:1.0.4
+    ports:
+      - 7070:8080
+    networks:
+      - coin-network
+
+networks:
+  coin-network:
+    driver: bridge
