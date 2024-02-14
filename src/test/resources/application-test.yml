@@ -16,5 +16,9 @@ slack:
   webhook:
     url: https://hooks.slack.com/services/~
 
+logging:
+  file:
+    path: /tmp/log/pickupcoins
+
 cookie:
   naver: ha:~~
