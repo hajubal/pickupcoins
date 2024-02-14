@@ -10,10 +10,6 @@ import java.util.Optional;
 @Repository
 public interface UserCookieRepository extends JpaRepository<UserCookie, Long> {
 
-    Optional<UserCookie> findByCookie(String cookie);
-
-    List<UserCookie> findBySiteName(String siteName);
-
     boolean existsByUserName(String userName);
 
     List<UserCookie> findBySiteNameAndIsValid(String siteName, Boolean isValid);
