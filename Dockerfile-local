@@ -1,0 +1,13 @@
+FROM bellsoft/liberica-openjdk-alpine-musl:17
+LABEL description="coin pick server"
+MAINTAINER hajubal@gmail.com
+
+ARG VERSION
+
+ADD ./build/libs/pickupcoins-$VERSION.jar  /pickupcoins.jar
+
+RUN mkdir /logs
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/pickupcoins.jar", "--spring.profiles.active=dev"]
