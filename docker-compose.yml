@@ -4,9 +4,11 @@ services:
       context: ~/dockerfile/pickupcoins
       dockerfile: Dockerfile
     container_name: coin
-    image: coin:1.0.4
+    image: coin:${VERSION}
     ports:
       - 7070:8080
+    volumes:
+      - /var/services/homes/hajubal/dockerfile/pickupcoins/logs:/logs
     networks:
       - coin-network
 
