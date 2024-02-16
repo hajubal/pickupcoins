@@ -12,6 +12,24 @@ services:
     networks:
       - coin-network
 
+#  pinpoint-mysql:
+#    container_name: coin-mysql
+#    image: mysql:8.0
+#    restart: no
+#    hostname: coin-mysql
+#    ports:
+#      - "32774:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#      - MYSQL_USER=${MYSQL_USER}
+#      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+#      - MYSQL_DATABASE=${MYSQL_DATABASE}
+#
+#    volumes:
+#      - mysql_data:/var/lib/mysql
+#    networks:
+#      - coin-network
+
 networks:
   coin-network:
     driver: bridge
