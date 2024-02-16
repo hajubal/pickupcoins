@@ -9,14 +9,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * FIXME: 설정할 경우 로그인 페이지도 접근 안되는 문제가 있음
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Profile("local")
     @Order(0)
-    @Bean
+//    @Bean
     public SecurityFilterChain h2SecurityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests().requestMatchers(toH2Console()).permitAll().and().build();
     }
@@ -25,15 +32,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .cors().disable()
-                .headers().frameOptions().disable().and()
-                .authorizeHttpRequests()
-                //.requestMatchers(toH2Console()).permitAll()  //h2-console이 propertiesdp 설정이 안될 경우 오류 발생
-                .requestMatchers("/actuator/**").permitAll()
-                        .anyRequest().authenticated()
-                .and().formLogin()
-                ;
+                .authorizeHttpRequests((authorizeHttpRequests) ->
+                        authorizeHttpRequests
+                                .requestMatchers("/actuator/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .httpBasic(withDefaults())
+                .formLogin(withDefaults())
+        ;
 
         return http.build();
     }
