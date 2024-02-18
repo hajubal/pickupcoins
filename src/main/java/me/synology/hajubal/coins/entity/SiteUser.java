@@ -6,9 +6,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @Entity
 public class SiteUser extends BaseDataEntity {
 
