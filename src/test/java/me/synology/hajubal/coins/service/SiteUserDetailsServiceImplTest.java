@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -35,13 +36,14 @@ class SiteUserDetailsServiceImplTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    //FIXME test fail
 //    @WithUserDetails("user@example.com")
     @WithMockUser
     @Test
     void loginTest() throws Exception {
         this.mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard"))
+        ;
     }
 
 }
