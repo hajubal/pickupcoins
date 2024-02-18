@@ -43,11 +43,7 @@ decorator.datasource.p6spy:
 
 logging:
   level:
+    root: info
     me.synology.hajubal.coins: debug
     org.apache.coyote.http11: trace
-    #print logger
-    org.hibernate.SQL: info
-    #parameter mapping
-    org.hibernate.type: info
-    org.springframework.security: error
 
