@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
@@ -42,14 +42,12 @@ dependencies {
 
 	implementation 'com.slack.api:slack-api-client:1.27.1'
 	implementation 'org.jsoup:jsoup:1.15.3'
-	implementation 'mysql:mysql-connector-java:8.0.30'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
-
-	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	runtimeOnly 'mysql:mysql-connector-java:8.0.30'
 	runtimeOnly 'com.h2database:h2'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -81,59 +79,6 @@ ssh.settings {
 	knownHosts = allowAnyHosts
 }
 
-tasks.register('dev') {
-	doLast {
-		def path = bootJar.archiveFile.get().asFile.getAbsolutePath()
-		def dir = fileTree(dir: 'build').getDir()
-		def dockerFile = project.file("Dockerfile")
-		def buildPath = fileTree(dir: 'build').getDir()
-
-		println path
-		println dir
-		println dockerFile
-		println buildPath
-
-		def archiveNamePath = bootJar.archiveFile.get().asFile
-		println 'archiveNamePath: ' + archiveNamePath
-
-		def archiveName = bootJar.archiveFileName
-		println 'archiveName: ' + archiveName
-
-		def archiveFileName = jar.archiveFileName.get()
-		println 'archiveFileName: ' + archiveFileName
-
-		def archiveBaseName = jar.archiveBaseName.get()
-		println 'archiveBaseName: ' + archiveBaseName
-
-		def archiveExtension = jar.archiveExtension.get()
-		println 'archiveExtension: ' + archiveExtension
-
-		println "project name: ${project.name}"
-
-		println "host: ${project.SSH_HOST}"
-		println "id: ${project.SSH_ID}"
-		println "pw: ${project.SSH_PW}"
-		println "port: ${project.SSH_PORT}"
-	}
-}
-
-//도커 서버 정보 출력
-tasks.register('showPlatformVersion') {
-	doLast {
-		println ssh.version
-		ssh.run {
-			session(remotes.dockerServer) {
-				def commandTo = "/var/services/homes/hajubal/dockerfile/${project.name}"
-
-				execute 'hostname'
-				execute "/usr/local/bin/docker-compose -f ${commandTo}/docker-compose.yml build"
-
-				//execute 'java -version'
-			}
-		}
-	}
-}
-
 //도커 서버에 이미지 생성 및 컨테이너 실행
 //org.hidetake.groovy.ssh.operation.SftpException: Failed SFTP PUT: d:\~~ -> dockerServer:/var/~~: (SSH_FX_NO_SUCH_FILE: A reference was made to a file which does not exist): No such file
 //오류 나면서 안됨. 원인 파악 불가
@@ -145,28 +90,23 @@ tasks.register('dockerDeploy') {
 		println ssh.version
 		ssh.run {
 			session(remotes.dockerServer) {
-				def command
-				def projectName = project.name
-				def buildPath = "${project.buildDir.getAbsolutePath()}/libs"
-				def jarName = "${jar.getArchiveBaseName().get()}-${jar.getArchiveVersion().get()}.jar"
-				def from = "${buildPath}/${jarName}"
+				def jarFile = bootJar.archiveFile.get().asFile
+
+				//시놀로지의 경우 ssh로 보여지는 path와 ftp로 보는 경로가 다름.
 				def to = "/homes/hajubal/dockerfile/${project.name}"
+
+				//시놀로지 명령어가 실행되는 경로
 				def commandTo = "/var/services/homes/hajubal/dockerfile/${project.name}"
+
 				def dockerFile = project.file("Dockerfile")
 				def dockerComposeFile = project.file("docker-compose.yml")
+				def envFile = project.file(".env")
 
-				command = "ls ${commandTo}"
-				println "\n\$ ${command}"
-				execute(command){r->println r}
-
-				//프로젝트 폴더에 jar 파일 복사
-				put from: from, into: "${to}/${projectName}.jar"
-
-				//프로젝트 폴더에 Dockerfile 복사
+				//프로젝트 폴더에 파일 복사
+				put from: jarFile, into: "${to}/pickupcoins.jar"
 				put from: dockerFile, into: to
-
-				//프로젝트 폴더에 Dockerfile 복사
 				put from: dockerComposeFile, into: to
+				put from: envFile, into: to
 
 				execute("/usr/local/bin/docker-compose -f ${commandTo}/docker-compose.yml build", ignoreError: true){r->println r}
 				execute("/usr/local/bin/docker-compose -f ${commandTo}/docker-compose.yml up -d", ignoreError: true){r->println r}
