@@ -3,6 +3,7 @@ package me.synology.hajubal.coins.service;
 import me.synology.hajubal.coins.controller.dto.CookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,12 +31,13 @@ class UserCookieServiceTest {
         cookieInsertDto.setSiteName("site");
         cookieInsertDto.setCookie("cookie");
 
-        //when
         Long userId = userCookieService.insertUserCookie(cookieInsertDto);
 
-        //then
+        //when
         Optional<UserCookie> userCookie = userCookieRepository.findById(userId);
 
-        assertThat(userCookie.isPresent()).isTrue();
+        //then
+        assertThat(userCookie).isPresent().get()
+                .has(new Condition<>(cookie -> cookie.getUserName().equals("test"), "test condition"));
     }
 }
