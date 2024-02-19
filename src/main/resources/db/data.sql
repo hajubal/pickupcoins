@@ -1,0 +1,2 @@
+insert into SITE_USER (id, login_id, user_name, password, created_by, created_date) values (1, 'user', '사용자', '{bcrypt}$2a$10$G2rb7WX4SOX4ruywoq377O6IaUGN4NYWRDqij3k1gR4qThzs3fxV6', 'system', now())
+insert into USER_COOKIE (id, SITE_NAME, USER_NAME, IS_VALID, CREATED_DATE, CREATED_BY) values (1, 'naver', 'ha', 1, now(), 'application')

@@ -25,7 +25,7 @@ class SiteUserDetailsServiceImplTest {
     @Test
     void generatePassword() {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        String encodedPassword = encoder.encode("gkwngjs12!@");
+        String encodedPassword = encoder.encode("user");
 
         System.out.println("encodedPassword = " + encodedPassword);
     }
