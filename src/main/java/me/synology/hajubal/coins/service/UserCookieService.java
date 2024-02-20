@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.CookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -52,5 +53,18 @@ public class UserCookieService {
         userCookieRepository.save(userCookie);
 
         return userCookie.getId();
+    }
+
+    @Transactional
+    public void deleteCookieUser(Long userId) {
+        userCookieRepository.deleteById(userId);
+    }
+
+    public List<UserCookie> getAll() {
+        return userCookieRepository.findAll();
+    }
+
+    public UserCookie getUserCookie(Long userCookieId) {
+        return userCookieRepository.findById(userCookieId).orElseThrow(() -> new IllegalArgumentException("Not found user."));
     }
 }
