@@ -31,7 +31,7 @@ public class PointController {
 
         model.addAttribute("items", list);
 
-        return "pointUrl";
+        return "point/pointUrl";
     }
 
     @GetMapping("/crawling")
@@ -62,6 +62,6 @@ public class PointController {
         model.addAttribute("userName", userName);
         model.addAttribute("items", list);
 
-        return "pointLog";
+        return "point/pointLog";
     }
 }
