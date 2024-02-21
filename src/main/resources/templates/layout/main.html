@@ -48,9 +48,15 @@
             </a>
           </li>
           <li class="nav-item">
+            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/siteuser')} ? 'active' : ''" class="nav-link" href="/siteuser">
+              <span data-feather="siteuser" class="align-text-bottom"></span>
+              사이트 사용자
+            </a>
+          </li>
+          <li class="nav-item">
             <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/users')} ? 'active' : ''" class="nav-link" href="/users">
               <span data-feather="users" class="align-text-bottom"></span>
-              사용자
+              사용자 쿠키
             </a>
           </li>
           <li class="nav-item">
