@@ -25,7 +25,7 @@ public class UserCookieController {
         List<UserCookie> list = userCookieService.getAll();
         model.addAttribute("items", list);
 
-        return "cookieUser/users";
+        return "userCookie/users";
     }
 
     @GetMapping("/user/{userCookieId}")
@@ -33,7 +33,7 @@ public class UserCookieController {
         UserCookie userCookie = userCookieService.getUserCookie(userCookieId);
         model.addAttribute("userCookie", userCookie);
 
-        return "cookieUser/editUser";
+        return "userCookie/editUser";
     }
 
     @PostMapping("/user/{userId}")
@@ -41,7 +41,7 @@ public class UserCookieController {
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "cookieUser/editUser";
+            return "userCookie/editUser";
         }
 
         userCookieService.updateUserCookie(userId, cookieUpdateDto);
@@ -53,7 +53,7 @@ public class UserCookieController {
     public String insertUser(Model model) {
         model.addAttribute("userCookie", new CookieDto.CookieInsertDto());
 
-        return "cookieUser/addUser";
+        return "userCookie/addUser";
     }
 
     @PostMapping("/insertUser")
@@ -61,7 +61,7 @@ public class UserCookieController {
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "cookieUser/addUser";
+            return "userCookie/addUser";
         }
 
         Long userId = userCookieService.insertUserCookie(cookieInsertDto);
