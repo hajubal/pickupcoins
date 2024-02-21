@@ -2,7 +2,7 @@ package me.synology.hajubal.coins.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.controller.dto.CookieDto;
+import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.service.UserCookieService;
 import org.springframework.stereotype.Controller;
@@ -37,34 +37,34 @@ public class UserCookieController {
     }
 
     @PostMapping("/user/{userId}")
-    public String updateUser(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") CookieDto.CookieUpdateDto cookieUpdateDto
+    public String updateUser(@PathVariable Long userId, @Validated @ModelAttribute("userCookie") UserCookieDto.UpdateDto updateDto
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "userCookie/editUser";
         }
 
-        userCookieService.updateUserCookie(userId, cookieUpdateDto);
+        userCookieService.updateUserCookie(userId, updateDto);
 
         return "redirect:/user/" + userId;
     }
 
     @GetMapping("/insertUser")
     public String insertUser(Model model) {
-        model.addAttribute("userCookie", new CookieDto.CookieInsertDto());
+        model.addAttribute("userCookie", new UserCookieDto.InsertDto());
 
         return "userCookie/addUser";
     }
 
     @PostMapping("/insertUser")
-    public String insertCookie(@Validated @ModelAttribute("userCookie") CookieDto.CookieInsertDto cookieInsertDto
+    public String insertCookie(@Validated @ModelAttribute("userCookie") UserCookieDto.InsertDto insertDto
             , BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "userCookie/addUser";
         }
 
-        Long userId = userCookieService.insertUserCookie(cookieInsertDto);
+        Long userId = userCookieService.insertUserCookie(insertDto);
 
         return "redirect:/user/" + userId;
     }

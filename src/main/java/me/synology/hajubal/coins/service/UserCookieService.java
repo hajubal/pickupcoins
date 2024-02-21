@@ -2,7 +2,7 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.controller.dto.CookieDto;
+import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.springframework.stereotype.Service;
@@ -22,18 +22,18 @@ public class UserCookieService {
      * 쿠키 업데이트
      *
      * @param userId
-     * @param cookieUpdateDto
+     * @param updateDto
      */
     @Transactional
-    public void updateUserCookie(Long userId, CookieDto.CookieUpdateDto cookieUpdateDto) {
-        log.info("cookieUpdateDto: {}", cookieUpdateDto);
+    public void updateUserCookie(Long userId, UserCookieDto.UpdateDto updateDto) {
+        log.info("cookieUpdateDto: {}", updateDto);
 
         UserCookie userCookie = userCookieRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Not found user"));
 
-        userCookie.updateCookie(cookieUpdateDto.getCookie());
+        userCookie.updateCookie(updateDto.getCookie());
 
-        if(cookieUpdateDto.getIsValid()) userCookie.valid();
+        if(updateDto.getIsValid()) userCookie.valid();
         else userCookie.invalid();
 
     }
@@ -41,14 +41,14 @@ public class UserCookieService {
     /**
      * 신규 사용자 쿠키 추가
      *
-     * @param cookieInsertDto
+     * @param insertDto
      * @return
      */
     @Transactional
-    public Long insertUserCookie(CookieDto.CookieInsertDto cookieInsertDto) {
-        log.info("cookieInsertDto: {}", cookieInsertDto);
+    public Long insertUserCookie(UserCookieDto.InsertDto insertDto) {
+        log.info("cookieInsertDto: {}", insertDto);
 
-        UserCookie userCookie = cookieInsertDto.toEntity();
+        UserCookie userCookie = insertDto.toEntity();
 
         userCookieRepository.save(userCookie);
 

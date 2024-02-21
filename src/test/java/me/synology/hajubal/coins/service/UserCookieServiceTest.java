@@ -1,6 +1,6 @@
 package me.synology.hajubal.coins.service;
 
-import me.synology.hajubal.coins.controller.dto.CookieDto;
+import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.UserCookieRepository;
 import org.assertj.core.api.Condition;
@@ -26,12 +26,12 @@ class UserCookieServiceTest {
     @Test
     void createUserCookie() {
         //given
-        CookieDto.CookieInsertDto cookieInsertDto = new CookieDto.CookieInsertDto();
-        cookieInsertDto.setUserName("test");
-        cookieInsertDto.setSiteName("site");
-        cookieInsertDto.setCookie("cookie");
+        UserCookieDto.InsertDto insertDto = new UserCookieDto.InsertDto();
+        insertDto.setUserName("test");
+        insertDto.setSiteName("site");
+        insertDto.setCookie("cookie");
 
-        Long userId = userCookieService.insertUserCookie(cookieInsertDto);
+        Long userId = userCookieService.insertUserCookie(insertDto);
 
         //when
         Optional<UserCookie> userCookie = userCookieRepository.findById(userId);

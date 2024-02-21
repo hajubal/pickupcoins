@@ -6,10 +6,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import me.synology.hajubal.coins.entity.UserCookie;
 
-public class CookieDto {
+public class UserCookieDto {
 
     @Data
-    public static class CookieInsertDto {
+    public static class InsertDto {
         @NotBlank
         @Size(max = 255)
         private String userName;
@@ -32,7 +32,7 @@ public class CookieDto {
     }
 
     @Data
-    public class CookieUpdateDto {
+    public static class UpdateDto {
 
         @NotBlank
         @Size(max = 255)
