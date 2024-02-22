@@ -33,16 +33,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));
 
         public SiteUserDetailsImpl(SiteUser siteUser) {
-            super(siteUser.getLoginId(), siteUser.getUserName(), siteUser.getPassword(), siteUser.getSlackWebhookUrl());
+            super(siteUser.getId(), siteUser.getLoginId(), siteUser.getUserName(), siteUser.getPassword(), siteUser.getSlackWebhookUrl());
         }
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return ROLE_USER;
         }
+
         @Override
         public String getUsername() {
-            return this.getUserName();
+            return this.getLoginId();
         }
 
         @Override

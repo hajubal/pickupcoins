@@ -2,12 +2,19 @@ package me.synology.hajubal.coins.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.controller.dto.PasswordUpdateDto;
 import me.synology.hajubal.coins.controller.dto.SiteUserDto;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.service.SiteUserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +26,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SiteUserController {
 
     private final SiteUserService siteUserService;
+
+    private final UserDetailsService userDetailsService;
 
     @GetMapping("/siteuser")
     public String getUser(Model model, Authentication authentication) {
@@ -51,4 +60,40 @@ public class SiteUserController {
         return "/siteUser/editUser";
     }
 
+    @GetMapping("/editPassword")
+    public String editPasswordPage(Model model) {
+        model.addAttribute("updatePassword", new PasswordUpdateDto());
+        return "/siteUser/editUserPassword";
+    }
+
+    @PostMapping("/editPassword")
+    public String updatePassword(Authentication authentication
+            , @Validated @ModelAttribute("updatePassword") PasswordUpdateDto passwordUpdateDto
+            , BindingResult bindingResult) {
+
+        log.info("Update password: {}", passwordUpdateDto.toString());
+
+        log.info("Authentication: {}", authentication);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
+
+        log.info("UserDetail: {}", userDetails);
+
+        if(!passwordUpdateDto.getNewPassword().equals(passwordUpdateDto.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "password.notequal", "입력한 비밀번호 두개가 일치 하지 않는다");
+        }
+
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        boolean matches = passwordEncoder.matches(passwordUpdateDto.getPassword(), userDetails.getPassword());
+
+        if(!matches) {
+            //global message setting
+//            bindingResult.addError(new ObjectError("updatePassword.password", "기존 비밀번호와 일치 하지 않는다"));
+            bindingResult.rejectValue("password", "password.notequal", "기존 비밀번호와 일치 하지 않는다");
+        }
+
+        siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getPassword());
+
+        return "/siteUser/editUserPassword";
+    }
 }

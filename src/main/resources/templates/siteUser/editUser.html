@@ -6,7 +6,7 @@
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">사용자</h1>
   </div>
-  <h2>사용자 수정</h2>
+  <h2>정보 변경</h2>
   <div class="table-responsive">
     <form th:action="@{/siteuser}" th:object="${siteUser}" method="post">
 
@@ -33,6 +33,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/editPassword}'|">Password Change</button>
     </form>
   </div>
 </main>
