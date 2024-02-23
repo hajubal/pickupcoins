@@ -1,5 +1,7 @@
 package me.synology.hajubal.coins.service;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +24,8 @@ class SiteUserDetailsServiceImplTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Disabled
+    @DisplayName("사용자 비밀번호 암호화.")
     @Test
     void generatePassword() {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

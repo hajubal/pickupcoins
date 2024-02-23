@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -71,16 +70,14 @@ public class SiteUserController {
             , @Validated @ModelAttribute("updatePassword") PasswordUpdateDto passwordUpdateDto
             , BindingResult bindingResult) {
 
-        log.info("Update password: {}", passwordUpdateDto.toString());
-
-        log.info("Authentication: {}", authentication);
+        log.info("Update password authentication: {}", authentication);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
 
         log.info("UserDetail: {}", userDetails);
 
         if(!passwordUpdateDto.getNewPassword().equals(passwordUpdateDto.getConfirmPassword())) {
-            bindingResult.rejectValue("confirmPassword", "password.notequal", "입력한 비밀번호 두개가 일치 하지 않는다");
+            bindingResult.rejectValue("confirmPassword", "editPassword.error.notConfirm");
         }
 
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -89,7 +86,7 @@ public class SiteUserController {
         if(!matches) {
             //global message setting
 //            bindingResult.addError(new ObjectError("updatePassword.password", "기존 비밀번호와 일치 하지 않는다"));
-            bindingResult.rejectValue("password", "password.notequal", "기존 비밀번호와 일치 하지 않는다");
+            bindingResult.rejectValue("password", "editPassword.error.password");
         }
 
         siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getPassword());
