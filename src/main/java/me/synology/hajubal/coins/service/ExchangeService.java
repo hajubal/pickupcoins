@@ -54,7 +54,9 @@ public class ExchangeService {
 
                 log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
-                WebhookResponse webhookResponse = slackService.sendMessage("[ " + userCookie.getUserName() + " ] 로그인 풀림.");
+                String slackWebhookUrl = userCookie.getSiteUser().getSlackWebhookUrl();
+
+                WebhookResponse webhookResponse = slackService.sendMessage(slackWebhookUrl, "[ " + userCookie.getUserName() + " ] 로그인 풀림.");
 
                 log.info("Webhook response code: {}" , webhookResponse.getCode());
             } else if(response.getBody().contains("적립")) {

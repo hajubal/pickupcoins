@@ -3,52 +3,53 @@ package me.synology.hajubal.coins.service;
 import com.slack.api.Slack;
 import com.slack.api.webhook.Payload;
 import com.slack.api.webhook.WebhookResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.exception.SlackConfigException;
 import me.synology.hajubal.coins.exception.SlackServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Properties;
 
+/**
+ * Slack message 전송 서비스
+ *
+ */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class SlackService {
+
+    private final Slack slack;
+
     /**
      * 지정된 slack webhook url로 message 전송
      *
-     * @param message
-     * @return WebhookResponse
-     * @throws IOException
+     * @param slackWebhookUrl web hook url
+     * @param message 전송 메시지
+     * @return WebhookResponse 전송 결과
+     * @throws SlackServiceException 전송 오류
+     * @throws SlackConfigException slack 설정 오류
      */
-    public WebhookResponse sendMessage(String message) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SiteUser principal = (SiteUser) authentication.getPrincipal();
-
-        Slack slack = Slack.getInstance();
-
-        if(principal.getSlackWebhookUrl() == null) {
-            throw new SlackConfigException("WebhookUrl not set.");
+    public WebhookResponse sendMessage(String slackWebhookUrl, String message) throws SlackConfigException, SlackServiceException {
+        if(!StringUtils.hasText(slackWebhookUrl)) {
+            throw new SlackConfigException("Slack web hook url not set.");
         }
 
-        Payload payload = Payload.builder().text(message).build();
+        if(!StringUtils.hasText(message)) {
+            throw new SlackServiceException("Slack message is empty.");
+        }
 
-        WebhookResponse webhookResponse = null;
         try {
-            webhookResponse = slack.send(principal.getSlackWebhookUrl(), payload);
+            WebhookResponse webhookResponse = slack.send(slackWebhookUrl, message);
+
+            log.info(webhookResponse.toString());
+
+            return webhookResponse;
         } catch (IOException e) {
             throw new SlackServiceException(e.getMessage(), e);
         }
-
-        log.info(webhookResponse.toString());
-
-        return webhookResponse;
     }
+
 }

@@ -1,6 +1,7 @@
 package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +33,13 @@ public class UserCookie extends BaseDataEntity {
     @Column(columnDefinition = "boolean default true")
     private Boolean isValid;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "site_user_id")
+    private SiteUser siteUser;
+
     @Builder
-    public UserCookie(String userName, String siteName, String cookie, Boolean isValid) {
+    public UserCookie(@NotNull SiteUser siteUser, String userName, String siteName, String cookie, Boolean isValid) {
+        this.siteUser = siteUser;
         this.userName = userName;
         this.siteName = siteName;
         this.cookie = cookie;
