@@ -17,6 +17,13 @@ public class SiteUserService {
 
     private final SiteUserRepository siteUserRepository;
 
+    /**
+     * 사이트 사용자 정보 변경
+     *
+     * @param id 사이트 사용자 아이디
+     * @param updateDto 변결될 사용자 정보
+     * @return 변경된 사용자 정보
+     */
     @Transactional
     public SiteUser updateSiteUser(Long id, SiteUserDto.UpdateDto updateDto) {
 
@@ -28,10 +35,22 @@ public class SiteUserService {
         return siteUser;
     }
 
+    /**
+     * 사이트 사용자 조회
+     *
+     * @param loginId 사이트 사용자 로그인 아이디
+     * @return 사이트 사용자
+     */
     public SiteUser getSiteUser(String loginId) {
         return siteUserRepository.findByLoginId(loginId).orElseThrow();
     }
 
+    /**
+     * 사이트 사용자 비밀번호 변경
+     *
+     * @param id 사이트 사용자 아이디
+     * @param newPassword 신규 비밀번호
+     */
     @Transactional
     public void updatePassword(Long id, String newPassword) {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
