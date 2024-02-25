@@ -16,9 +16,13 @@ public class SavedPoint extends BaseDataEntity {
 
     private String point;
 
+    @Lob
+    private String responseBody;
+
     @Builder
-    public SavedPoint(UserCookie userCookie, String point) {
+    public SavedPoint(UserCookie userCookie, String point, String responseBody) {
         this.userCookie = userCookie;
         this.point = point;
+        this.responseBody = responseBody;
     }
 }

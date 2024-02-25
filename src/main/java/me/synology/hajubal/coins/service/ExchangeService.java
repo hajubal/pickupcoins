@@ -107,6 +107,7 @@ public class ExchangeService {
         savedPointRepository.save(SavedPoint.builder()
                 .point("코드 수정 필요")
                 .userCookie(userCookie)
+                .responseBody(body)
                 .build());
     }
 }
