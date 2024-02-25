@@ -3,6 +3,8 @@ services:
     build:
       context: ~/dockerfile/pickupcoins
       dockerfile: Dockerfile
+      args:
+        - VERSION=${VERSION}
     container_name: coin_snapshot
     image: coin:${VERSION}
     ports:
@@ -24,6 +26,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_LOWER_CASE_TABLE_NAMES=1
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
