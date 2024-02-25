@@ -15,6 +15,16 @@
       </div>
 
       <div class="mb-3">
+        <label for="id" class="form-label" th:text="#{siteUser.id}">사용자 ID</label>
+        <input type="text" class="form-control" id="id" th:field="*{id}" disabled>
+      </div>
+
+      <div class="mb-3">
+        <label for="loginId" class="form-label" th:text="#{siteUser.loginId}">사용자 로그인 ID</label>
+        <input type="text" class="form-control" id="loginId" th:field="*{loginId}" disabled>
+      </div>
+
+      <div class="mb-3">
         <label for="userName" class="form-label" th:text="#{siteUser.userName}">사용자 이름</label>
         <input type="text" class="form-control" id="userName" th:field="*{userName}"
                th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
