@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 class PointUrlUserCookieRepositoryTest {
@@ -19,6 +18,7 @@ class PointUrlUserCookieRepositoryTest {
     @Autowired
     private PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
+    @Transactional
     @Test
     void saveTest() {
         PointUrl pointUrl = PointUrl.builder().url("url").name("name").build();

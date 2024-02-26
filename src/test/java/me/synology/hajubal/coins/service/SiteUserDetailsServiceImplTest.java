@@ -43,6 +43,8 @@ class SiteUserDetailsServiceImplTest {
         System.out.println("encodedPassword = " + encodedPassword);
     }
 
+
+    @Transactional
     @Test
     void findUser() {
         //given
