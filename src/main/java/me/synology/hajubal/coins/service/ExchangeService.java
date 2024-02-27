@@ -10,15 +10,19 @@ import me.synology.hajubal.coins.respository.SavedPointRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
+/**
+ * 포인트를 제공하느 url을 호출하는 서비스
+ */
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class ExchangeService {
     private final SlackService slackService;
@@ -31,6 +35,7 @@ public class ExchangeService {
 
     private final WebClient.Builder webClientBuilder;
 
+    @Transactional
     public void exchange(PointUrl url, UserCookie userCookie) {
         log.info("Call point url: {}. user name: {}", url.getUrl(), userCookie.getUserName());
 
@@ -44,30 +49,25 @@ public class ExchangeService {
                 .toEntity(String.class)
                 ;
 
+        //호출 결과 처리
         entityMono.subscribe(response -> {
             if(response == null || response.getBody() == null) {
                 return;
             }
 
-            if(response.getBody().contains("로그인이 필요")) {
+            if(isNeedLogin(response)) {
                 userCookie.invalid();
 
                 log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", userCookie.getUserName(), userCookie.getSiteName(), userCookie.getCookie());
 
-                String slackWebhookUrl = userCookie.getSiteUser().getSlackWebhookUrl();
-
-                WebhookResponse webhookResponse = slackService.sendMessage(slackWebhookUrl, "[ " + userCookie.getUserName() + " ] 로그인 풀림.");
+                WebhookResponse webhookResponse = slackService.sendMessage(userCookie.getSiteUser().getSlackWebhookUrl(), "[ " + userCookie.getUserName() + " ] 로그인 풀림.");
 
                 log.info("Webhook response code: {}" , webhookResponse.getCode());
-            } else if(response.getBody().contains("적립")) {
-                savePointLog(userCookie, response.getBody());
+            } else if(isSavePoint(response)) {
+                savePointPostProcess(userCookie, response);
             }
 
-            //cookie session값 갱신
-            if(response.getHeaders().containsKey("cookie")) {
-                log.info("cookie 갱신 user: {}", userCookie.getUserName());
-                userCookie.updateCookie(response.getHeaders().getFirst("cookie"));
-            }
+
 
             log.debug("Response body: {} ", response.getBody());
 
@@ -75,11 +75,20 @@ public class ExchangeService {
         });
     }
 
+    private static boolean isSavePoint(ResponseEntity<String> response) {
+        return response.getBody().contains("적립");
+    }
+
+    private static boolean isNeedLogin(ResponseEntity<String> response) {
+        return response.getBody().contains("로그인이 필요");
+    }
+
     private void setCookieHeaders(HttpHeaders headers, String userCookie) {
         headers.add("Cookie", userCookie);
         headers.add("user-agent", "/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveLog(PointUrl url, UserCookie userCookie, ResponseEntity<String> response) {
         //사용자 별 호출 url 정보 저장
         pointUrlUserCookieRepository.save(PointUrlUserCookie.builder()
@@ -101,13 +110,19 @@ public class ExchangeService {
         );
     }
 
-    public void savePointLog(UserCookie userCookie, String body) {
-        //alert('~~~ 10 원이 적립되었습니다.');
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void savePointPostProcess(UserCookie userCookie,  ResponseEntity<String> response) {
+        //cookie session값 갱신
+        if(response.getHeaders().containsKey("cookie")) {
+            log.info("cookie 갱신 user: {}", userCookie.getUserName());
+            userCookie.updateCookie(response.getHeaders().getFirst("cookie"));
+        }
 
+        //getBody() 는 "10원이 적립 되었습니다." 라는 문자열을 포함하고 있음.
         savedPointRepository.save(SavedPoint.builder()
                 .point("코드 수정 필요")
                 .userCookie(userCookie)
-                .responseBody(body)
+                .responseBody(response.getBody())
                 .build());
     }
 }
