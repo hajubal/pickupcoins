@@ -8,7 +8,7 @@
   </div>
   <h2>정보 변경</h2>
   <div class="table-responsive">
-    <form th:action="@{/siteuser}" th:object="${siteUser}" method="post">
+    <form th:action="@{/siteUser}" th:object="${siteUser}" method="post">
 
       <div th:if="${#fields.hasGlobalErrors()}">
         <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>

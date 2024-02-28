@@ -28,7 +28,7 @@ public class SiteUserController {
 
     private final UserDetailsService userDetailsService;
 
-    @GetMapping("/siteuser")
+    @GetMapping("/siteUser")
     public String getUser(Model model, Authentication authentication) {
         SiteUser siteUser = (SiteUser) authentication.getPrincipal();
 
@@ -47,7 +47,7 @@ public class SiteUserController {
         return "/siteUser/editUser";
     }
 
-    @PostMapping("/siteuser")
+    @PostMapping("/siteUser")
     public String updateUser(@Validated @ModelAttribute("siteUser") SiteUserDto.UpdateDto updateDto
             , Authentication authentication) {
         SiteUser siteUser = (SiteUser) authentication.getPrincipal();
@@ -61,13 +61,13 @@ public class SiteUserController {
         return "/siteUser/editUser";
     }
 
-    @GetMapping("/editPassword")
+    @GetMapping("/updatePassword")
     public String editPasswordPage(Model model) {
         model.addAttribute("updatePassword", new PasswordUpdateDto());
-        return "/siteUser/editUserPassword";
+        return "/siteUser/updatePassword";
     }
 
-    @PostMapping("/editPassword")
+    @PostMapping("/updatePassword")
     public String updatePassword(Authentication authentication
             , @Validated @ModelAttribute("updatePassword") PasswordUpdateDto passwordUpdateDto
             , BindingResult bindingResult) {
@@ -93,6 +93,6 @@ public class SiteUserController {
 
         siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getPassword());
 
-        return "/siteUser/editUserPassword";
+        return "/siteUser/updatePassword";
     }
 }
