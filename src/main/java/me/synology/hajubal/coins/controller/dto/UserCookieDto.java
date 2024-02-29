@@ -34,6 +34,9 @@ public class UserCookieDto {
     @Data
     public static class UpdateDto {
 
+        @NotNull
+        private Long id;
+
         @NotBlank
         @Size(max = 255)
         private String userName;

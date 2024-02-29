@@ -45,7 +45,7 @@ public class UserCookieService {
      * @return
      */
     @Transactional
-    public Long insertUserCookie(UserCookieDto.InsertDto insertDto) {
+    public Long addUserCookie(UserCookieDto.InsertDto insertDto) {
         log.info("cookieInsertDto: {}", insertDto);
 
         UserCookie userCookie = insertDto.toEntity();

@@ -31,7 +31,7 @@ class UserCookieServiceTest {
         insertDto.setSiteName("site");
         insertDto.setCookie("cookie");
 
-        Long userId = userCookieService.insertUserCookie(insertDto);
+        Long userId = userCookieService.addUserCookie(insertDto);
 
         //when
         Optional<UserCookie> userCookie = userCookieRepository.findById(userId);

@@ -8,10 +8,15 @@
   </div>
   <h2>쿠키 수정</h2>
   <div class="table-responsive">
-    <form th:action="@{/user/{id}(id=${userCookie.id})}" th:object="${userCookie}" method="post">
+    <form th:action="@{/cookie/{id}(id=${cookie.id})}" th:object="${cookie}" method="post">
 
       <div th:if="${#fields.hasGlobalErrors()}">
         <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+      </div>
+
+      <div class="mb-3">
+        <label for="userName" class="form-label" th:text="#{userCookie.id}">쿠키 ID</label>
+        <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
       </div>
 
       <div class="mb-3">
@@ -52,9 +57,9 @@
 
       <button type="submit" class="btn btn-primary">Submit</button>
       <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
-      <button type="button" class="btn btn-primary" th:userId="${userCookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
+      <button type="button" class="btn btn-primary" th:userId="${cookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
     </form>
-    <form id="deleteUser" th:action="@{/user/{id}(id=${userCookie.id})}" th:method="delete">
+    <form id="deleteUser" th:action="@{/cookie/{id}(id=${cookie.id})}" th:method="delete">
     </form>
   </div>
 
