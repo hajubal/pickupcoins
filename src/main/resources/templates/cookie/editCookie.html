@@ -56,7 +56,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
-      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/users}'|">List</button>
+      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/cookies}'|">List</button>
       <button type="button" class="btn btn-primary" th:userId="${cookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
     </form>
     <form id="deleteUser" th:action="@{/cookie/{id}(id=${cookie.id})}" th:method="delete">
