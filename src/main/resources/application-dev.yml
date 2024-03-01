@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://coin-mysql:3306/coin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: coin_user
+    password: password
+  sql:
+    init:
+      mode: never
+
+logging:
+  file:
+    path: /logs

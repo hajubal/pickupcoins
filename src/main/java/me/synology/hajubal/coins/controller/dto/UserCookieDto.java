@@ -4,12 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import me.synology.hajubal.coins.entity.UserCookie;
+import me.synology.hajubal.coins.entity.Cookie;
 
-public class CookieDto {
+public class UserCookieDto {
 
     @Data
-    public static class CookieInsertDto {
+    public static class InsertDto {
         @NotBlank
         @Size(max = 255)
         private String userName;
@@ -21,8 +21,8 @@ public class CookieDto {
         @NotBlank
         private String cookie;
 
-        public UserCookie toEntity() {
-            return UserCookie.builder()
+        public Cookie toEntity() {
+            return Cookie.builder()
                     .userName(userName)
                     .siteName(siteName)
                     .cookie(cookie)
@@ -32,7 +32,10 @@ public class CookieDto {
     }
 
     @Data
-    public class CookieUpdateDto {
+    public static class UpdateDto {
+
+        @NotNull
+        private Long id;
 
         @NotBlank
         @Size(max = 255)

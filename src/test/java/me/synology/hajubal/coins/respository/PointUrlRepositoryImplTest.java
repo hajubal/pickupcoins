@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ class PointUrlRepositoryImplTest {
     @Autowired
     private PointUrlRepository pointUrlRepository;
 
+    @Transactional
     @DisplayName("저장 테스트")
     @Test
     void saveTest() {
@@ -32,6 +34,7 @@ class PointUrlRepositoryImplTest {
         assertThat(byId).contains(pointUrl);
     }
 
+    @Transactional
     @DisplayName("호출안된 url 조회 테스트")
     @Test
     void findByNotCalledUrlQueryTest() {

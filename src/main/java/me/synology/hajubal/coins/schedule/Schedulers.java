@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.service.NaverPointService;
 import me.synology.hajubal.coins.service.WebCrawlerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ public class Schedulers {
         webCrawlerService.crawling();
     }
 
+    @Profile("!local")
     @Scheduled(fixedDelay = 1000 * 60 * 5)
     public void pointScheduler() {
         log.info("Call pointScheduler.");

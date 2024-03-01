@@ -2,7 +2,7 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import me.synology.hajubal.coins.entity.SiteUser;
-import me.synology.hajubal.coins.respository.UserRepository;
+import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +18,11 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final SiteUserRepository siteUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SiteUser siteUser = userRepository.findByLoginId(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        SiteUser siteUser = siteUserRepository.findByLoginId(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
         return new SiteUserDetailsImpl(siteUser);
     }
@@ -33,31 +33,32 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));
 
         public SiteUserDetailsImpl(SiteUser siteUser) {
-            super(siteUser.getLoginId(), siteUser.getUserName(), siteUser.getPassword());
+            super(siteUser.getId(), siteUser.getLoginId(), siteUser.getUserName(), siteUser.getPassword(), siteUser.getSlackWebhookUrl());
         }
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return ROLE_USER;
         }
+
         @Override
         public String getUsername() {
-            return this.getUserName();
+            return this.getLoginId();
         }
 
         @Override
         public boolean isAccountNonExpired() {
-            return false;
+            return true;
         }
 
         @Override
         public boolean isAccountNonLocked() {
-            return false;
+            return true;
         }
 
         @Override
         public boolean isCredentialsNonExpired() {
-            return false;
+            return true;
         }
 
         @Override

@@ -48,9 +48,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/users')} ? 'active' : ''" class="nav-link" href="/users">
+            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/siteUser')} ? 'active' : ''" class="nav-link" href="/siteUser">
+              <span data-feather="siteUser" class="align-text-bottom"></span>
+              사이트 사용자
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/users')} ? 'active' : ''" class="nav-link" href="/cookies">
               <span data-feather="users" class="align-text-bottom"></span>
-              사용자
+              사용자 쿠키
             </a>
           </li>
           <li class="nav-item">
@@ -60,7 +66,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/pointurl')} ? 'active' : ''" class="nav-link" href="/pointurl">
+            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/pointUrl')} ? 'active' : ''" class="nav-link" href="/pointUrl">
               <span data-feather="bar-chart-2" class="align-text-bottom"></span>
               포인트 URL
             </a>

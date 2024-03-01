@@ -3,33 +3,38 @@ services:
     build:
       context: ~/dockerfile/pickupcoins
       dockerfile: Dockerfile
-    container_name: coin
+      args:
+        - VERSION=${VERSION}
+    container_name: coin_snapshot
     image: coin:${VERSION}
     ports:
-      - 7070:8080
+      - 7071:8080
     volumes:
       - /var/services/homes/hajubal/dockerfile/pickupcoins/logs:/logs
     networks:
       - coin-network
 
-#  pinpoint-mysql:
-#    container_name: coin-mysql
-#    image: mysql:8.0
-#    restart: no
-#    hostname: coin-mysql
-#    ports:
-#      - "32774:3306"
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-#      - MYSQL_USER=${MYSQL_USER}
-#      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-#      - MYSQL_DATABASE=${MYSQL_DATABASE}
-#
-#    volumes:
-#      - mysql_data:/var/lib/mysql
-#    networks:
-#      - coin-network
+  coin-mysql:
+    container_name: coin-mysql
+    image: mysql:8.0
+    restart: no
+    hostname: coin-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_LOWER_CASE_TABLE_NAMES=1
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - coin-network
 
 networks:
   coin-network:
     driver: bridge
+
+volumes:
+  mysql_data:

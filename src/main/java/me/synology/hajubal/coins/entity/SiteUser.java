@@ -3,12 +3,15 @@ package me.synology.hajubal.coins.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @Entity
 public class SiteUser extends BaseDataEntity {
 
@@ -21,21 +24,40 @@ public class SiteUser extends BaseDataEntity {
     @Column(length = 255, nullable = false)
     private String userName;
 
+    @ToString.Exclude
     @JsonIgnore
     @Column(length = 1024, nullable = false)
     private String password;
 
+    @Column
+    private String slackWebhookUrl;
+
     @JsonCreator
-    public SiteUser(Long id, String loginId, String userName, String password) {
+    public SiteUser(Long id, String loginId, String userName, String password, String slackWebhookUrl) {
         this.id = id;
         this.loginId = loginId;
         this.userName = userName;
         this.password = password;
+        this.slackWebhookUrl = slackWebhookUrl;
     }
 
-    public SiteUser(String loginId, String userName, String password) {
+    @Builder
+    public SiteUser(String loginId, String userName, String password, String slackWebhookUrl) {
         this.loginId = loginId;
         this.userName = userName;
+        this.password = password;
+        this.slackWebhookUrl = slackWebhookUrl;
+    }
+
+    public void updateSlackWebhookUrl(String slackWebhookUrl) {
+        this.slackWebhookUrl = slackWebhookUrl;
+    }
+
+    public void updateUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void updatePassword(String password) {
         this.password = password;
     }
 }

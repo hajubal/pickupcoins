@@ -12,13 +12,17 @@ public class SavedPoint extends BaseDataEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private UserCookie userCookie;
+    private Cookie cookie;
 
     private String point;
 
+    @Lob
+    private String responseBody;
+
     @Builder
-    public SavedPoint(UserCookie userCookie, String point) {
-        this.userCookie = userCookie;
+    public SavedPoint(Cookie cookie, String point, String responseBody) {
+        this.cookie = cookie;
         this.point = point;
+        this.responseBody = responseBody;
     }
 }
