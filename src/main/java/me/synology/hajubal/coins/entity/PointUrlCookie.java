@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class PointUrlUserCookie extends BaseDataEntity {
+public class PointUrlCookie extends BaseDataEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,11 +16,11 @@ public class PointUrlUserCookie extends BaseDataEntity {
     private PointUrl pointUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private UserCookie userCookie;
+    private Cookie cookie;
 
     @Builder
-    public PointUrlUserCookie(PointUrl pointUrl, UserCookie userCookie) {
+    public PointUrlCookie(PointUrl pointUrl, Cookie cookie) {
         this.pointUrl = pointUrl;
-        this.userCookie = userCookie;
+        this.cookie = cookie;
     }
 }

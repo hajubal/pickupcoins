@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class PointController {
         if (userName.length == 0) {
             list = pointUrlCallLogRepository.findAll();
         } else {
-            list = pointUrlCallLogRepository.findByUserNameIn(userName);
+            list = pointUrlCallLogRepository.findByUserNameIn(List.of(userName));
         }
 
         model.addAttribute("userName", userName);

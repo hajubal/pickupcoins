@@ -15,7 +15,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="userName" class="form-label" th:text="#{userCookie.userName}">사용자 이름</label>
+        <label for="userName" class="form-label" th:text="#{cookie.userName}">사용자 이름</label>
         <input type="text" class="form-control" id="userName" th:field="*{userName}"
                th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
         <div class="field-error" th:errors="*{userName}">
@@ -24,7 +24,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="siteName" class="form-label" th:text="#{userCookie.siteName}">사이트 이름</label>
+        <label for="siteName" class="form-label" th:text="#{cookie.siteName}">사이트 이름</label>
         <input type="text" class="form-control" id="siteName" th:field="*{siteName}"
                th:errorclass="field-error" placeholder="사이트 이름을 입력하세요">
         <div class="field-error" th:errors="*{siteName}">
@@ -33,7 +33,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="cookie" class="form-label" th:text="#{userCookie.cooke}">쿠키</label>
+        <label for="cookie" class="form-label" th:text="#{cookie.cooke}">쿠키</label>
         <input type="text" class="form-control" id="cookie" th:field="*{cookie}"
                th:errorclass="field-error" placeholder="쿠키값을 입력하세요">
         <div class="field-error" th:errors="*{cookie}">

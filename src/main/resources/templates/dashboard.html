@@ -20,7 +20,7 @@
           <tbody>
             <tr th:each="item : ${items}">
               <td th:text="${item.id}">id</td>
-              <td th:text="${item.userCookie.userName}">user name</td>
+              <td th:text="${item.cookie.userName}">user name</td>
               <td th:text="${item.point}">point</td>
               <td th:text="${item.createdDate}">create date</td>
             </tr>

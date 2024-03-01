@@ -3,8 +3,8 @@ package me.synology.hajubal.coins.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
-import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.service.UserCookieService;
+import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.service.CookieService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,11 +18,11 @@ import java.util.List;
 @Controller
 public class CookieController {
 
-    private final UserCookieService userCookieService;
+    private final CookieService cookieService;
 
     @GetMapping("/cookies")
     public String cookies(Model model) {
-        List<UserCookie> list = userCookieService.getAll();
+        List<Cookie> list = cookieService.getAll();
         model.addAttribute("cookies", list);
 
         return "cookie/cookies";
@@ -30,7 +30,7 @@ public class CookieController {
 
     @GetMapping("/cookie/{cookieId}")
     public String updateCookiePage(@PathVariable Long cookieId, Model model) {
-        UserCookie cookie = userCookieService.getUserCookie(cookieId);
+        Cookie cookie = cookieService.getCookie(cookieId);
         model.addAttribute("cookie", cookie);
 
         return "cookie/editCookie";
@@ -44,7 +44,7 @@ public class CookieController {
             return "cookie/editCookie";
         }
 
-        userCookieService.updateUserCookie(cookieId, editDto);
+        cookieService.updateCookie(cookieId, editDto);
 
         return "redirect:/cookie/" + cookieId;
     }
@@ -64,14 +64,14 @@ public class CookieController {
             return "cookie/addCookie";
         }
 
-        Long userId = userCookieService.addUserCookie(insertDto);
+        Long userId = cookieService.insertCookie(insertDto);
 
         return "redirect:/cookie/" + userId;
     }
 
     @DeleteMapping("/cookie/{cookieId}")
     public String deleteCookie(@PathVariable Long cookieId) {
-        userCookieService.deleteCookieUser(cookieId);
+        cookieService.deleteCookie(cookieId);
 
         return "redirect:/cookies";
     }

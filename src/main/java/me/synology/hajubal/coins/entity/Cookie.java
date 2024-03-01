@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert @DynamicUpdate
 @Getter
 @Entity
-public class UserCookie extends BaseDataEntity {
+public class Cookie extends BaseDataEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +38,7 @@ public class UserCookie extends BaseDataEntity {
     private SiteUser siteUser;
 
     @Builder
-    public UserCookie(@NotNull SiteUser siteUser, String userName, String siteName, String cookie, Boolean isValid) {
+    public Cookie(@NotNull SiteUser siteUser, String userName, String siteName, String cookie, Boolean isValid) {
         this.siteUser = siteUser;
         this.userName = userName;
         this.siteName = siteName;
@@ -60,7 +60,7 @@ public class UserCookie extends BaseDataEntity {
 
     @Override
     public String toString() {
-        return "UserCookie{" +
+        return "Cookie{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", siteName='" + siteName + '\'' +

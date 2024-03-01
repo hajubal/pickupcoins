@@ -18,11 +18,11 @@ public interface PointUrlRepository extends JpaRepository<PointUrl, Long> {
             "   and pu.id not in (" +
             "                     select pu.id " +
             "                       from PointUrl pu " +
-            "                       join PointUrlUserCookie puuc " +
+            "                       join PointUrlCookie puuc " +
             "                         on pu.id = puuc.pointUrl.id " +
             "                        and pu.permanent = false " +
-            "                       join UserCookie uc " +
-            "                         on puuc.userCookie.id = uc.id " +
+            "                       join Cookie uc " +
+            "                         on puuc.cookie.id = uc.id " +
             "                        and uc.isValid = true " +
             "                        and uc.userName = :userName " +
             "                      where pu.name = :siteName )"

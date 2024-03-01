@@ -1,8 +1,8 @@
 package me.synology.hajubal.coins.service;
 
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
-import me.synology.hajubal.coins.entity.UserCookie;
-import me.synology.hajubal.coins.respository.UserCookieRepository;
+import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.respository.CookieRepository;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class UserCookieServiceTest {
+class CookieServiceTest {
 
     @Autowired
-    private UserCookieService userCookieService;
+    private CookieService cookieService;
 
     @Autowired
-    private UserCookieRepository userCookieRepository;
+    private CookieRepository cookieRepository;
 
     @Transactional
     @Test
@@ -31,10 +31,10 @@ class UserCookieServiceTest {
         insertDto.setSiteName("site");
         insertDto.setCookie("cookie");
 
-        Long userId = userCookieService.addUserCookie(insertDto);
+        Long userId = cookieService.insertCookie(insertDto);
 
         //when
-        Optional<UserCookie> userCookie = userCookieRepository.findById(userId);
+        Optional<Cookie> userCookie = cookieRepository.findById(userId);
 
         //then
         assertThat(userCookie).isPresent().get()

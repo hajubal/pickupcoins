@@ -2,10 +2,10 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.UserCookie;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.respository.UserCookieRepository;
+import me.synology.hajubal.coins.respository.CookieRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class NaverPointService {
 
-    private final UserCookieRepository userCookieRepository;
+    private final CookieRepository cookieRepository;
 
     private final PointUrlRepository pointUrlRepository;
 
@@ -29,14 +29,15 @@ public class NaverPointService {
     /**
      * 포인트 저장 로직
      */
+    @Transactional
     public void savePoint() {
         String urlName = "naver";
 
-        List<UserCookie> userCookies = userCookieRepository.findBySiteNameAndIsValid(urlName, true);
+        List<Cookie> cookies = cookieRepository.findBySiteNameAndIsValid(urlName, true);
 
-        log.debug("UserCookies: {}", userCookies);
+        log.debug("UserCookies: {}", cookies);
 
-        userCookies.forEach(userCookie -> {
+        cookies.forEach(userCookie -> {
             List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName.toUpperCase(), userCookie.getUserName());
 
             log.info("Not called url size: {}", pointUrls.size());

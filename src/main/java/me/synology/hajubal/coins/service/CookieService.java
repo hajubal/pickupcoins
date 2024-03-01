@@ -1,0 +1,75 @@
+package me.synology.hajubal.coins.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.controller.dto.UserCookieDto;
+import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.respository.CookieRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * 사이트 사용자의 쿠키를 정보를 관리하는 서비스
+ */
+@RequiredArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
+@Service
+public class CookieService {
+
+    private final CookieRepository cookieRepository;
+
+    /**
+     * 쿠키 업데이트
+     *
+     * @param userId
+     * @param updateDto
+     */
+    @Transactional
+    public void updateCookie(Long userId, UserCookieDto.UpdateDto updateDto) {
+        log.info("cookieUpdateDto: {}", updateDto);
+
+        Cookie cookie = cookieRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
+
+        cookie.updateCookie(updateDto.getCookie());
+
+        if(updateDto.getIsValid()) {
+            cookie.valid();
+        } else {
+            cookie.invalid();
+        }
+    }
+
+    /**
+     * 신규 사용자 쿠키 추가
+     *
+     * @param insertDto
+     * @return
+     */
+    @Transactional
+    public Long insertCookie(UserCookieDto.InsertDto insertDto) {
+        log.info("cookieInsertDto: {}", insertDto);
+
+        Cookie cookie = insertDto.toEntity();
+
+        cookieRepository.save(cookie);
+
+        return cookie.getId();
+    }
+
+    @Transactional
+    public void deleteCookie(Long userId) {
+        cookieRepository.deleteById(userId);
+    }
+
+    public List<Cookie> getAll() {
+        return cookieRepository.findAll();
+    }
+
+    public Cookie getCookie(Long userCookieId) {
+        return cookieRepository.findById(userCookieId).orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
+    }
+}
