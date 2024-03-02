@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VERSION=${VERSION}
-    container_name: coin_snapshot
+    container_name: coin
     image: coin:${VERSION}
     ports:
       - 7071:8080
