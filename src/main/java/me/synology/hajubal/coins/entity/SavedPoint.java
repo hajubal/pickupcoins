@@ -17,6 +17,7 @@ public class SavedPoint extends BaseDataEntity {
     private String point;
 
     @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String responseBody;
 
     @Builder
