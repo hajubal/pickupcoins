@@ -50,9 +50,11 @@ public class SiteUserController {
     @PostMapping("/siteUser")
     public String updateUser(@Validated @ModelAttribute("siteUser") SiteUserDto.UpdateDto updateDto
             , Authentication authentication) {
-        SiteUser siteUser = (SiteUser) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        siteUser = siteUserService.getSiteUser(siteUser.getLoginId());
+        log.info("UserDetail: {}", userDetails);
+
+        SiteUser siteUser = siteUserService.getSiteUser(userDetails.getUsername());
 
         siteUser = siteUserService.updateSiteUser(siteUser.getId(), updateDto);
 
