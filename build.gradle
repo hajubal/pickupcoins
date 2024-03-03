@@ -54,6 +54,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'commons-beanutils:commons-beanutils:1.9.4'
 }
 
 tasks.named('test') {
