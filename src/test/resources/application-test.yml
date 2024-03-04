@@ -2,23 +2,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-  h2:
-    console:
-      enabled: true
   datasource:
-    url: jdbc:h2:~/coins;AUTO_SERVER=TRUE
+    url: jdbc:h2:~/coins;AUTO_SERVER=TRUE;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
-  test:
-    database:
-      replace: none
-slack:
-  webhook:
-    url: https://hooks.slack.com/services/~
+  sql:
+    init:
+      mode: always
 
 logging:
   file:
     path: /tmp/log/pickupcoins
-
-cookie:
-  naver: ha:~~

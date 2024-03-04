@@ -30,7 +30,7 @@
   <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
   <div class="navbar-nav">
     <div class="nav-item text-nowrap">
-      <a sec:authorize="isAuthenticated()" class="nav-link px-3" th:href="@{/logout}">Sign out</a>
+      <a sec:authorize="isAuthenticated()" id="logout" class="nav-link px-3" th:href="@{/logout}">Sign out</a>
     </div>
   </div>
 </header>
