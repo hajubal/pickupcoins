@@ -36,13 +36,7 @@ public class SiteUserController {
 
         siteUser = siteUserService.getSiteUser(siteUser.getLoginId());
 
-        SiteUserDto.UpdateDto updateDto = new SiteUserDto.UpdateDto();
-        updateDto.setId(siteUser.getId());
-        updateDto.setLoginId(siteUser.getLoginId());
-        updateDto.setUserName(siteUser.getUserName());
-        updateDto.setSlackWebhookUrl(siteUser.getSlackWebhookUrl());
-
-        model.addAttribute("siteUser", updateDto);
+        model.addAttribute("siteUser", SiteUserDto.UpdateDto.fromEntity(siteUser));
 
         return "/siteUser/editUser";
     }

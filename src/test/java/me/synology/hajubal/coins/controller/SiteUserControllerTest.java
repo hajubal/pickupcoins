@@ -4,6 +4,7 @@ import me.synology.hajubal.coins.controller.dto.SiteUserDto;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.service.SiteUserService;
 import me.synology.hajubal.coins.util.QueryStringUtils;
+import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +50,6 @@ class SiteUserControllerTest {
 
         given(siteUserService.getSiteUser(updateDto.getLoginId())).willReturn(siteUser);
 
-        SiteUser updateSiteUser = createSiteUser("loginId");
-        updateSiteUser.updateUserName("updateUserName");
-
-        given(siteUserService.updateSiteUser(updateDto.getId(), updateDto)).willReturn(updateSiteUser);
-
         //when
         ResultActions perform = mockMvc.perform(post("/siteUser")
                 .contentType("application/x-www-form-urlencoded")
@@ -62,7 +58,8 @@ class SiteUserControllerTest {
 
         //then
         perform.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("/siteUser/editUser"));
+                .andExpect(MockMvcResultMatchers.view().name("/siteUser/editUser"))
+                .andExpect(MockMvcResultMatchers.model().attribute("siteUser", Matchers.equalTo(updateDto)));
     }
 
     @NotNull
