@@ -3,6 +3,7 @@ package me.synology.hajubal.coins.controller.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import me.synology.hajubal.coins.entity.SiteUser;
 
 public class SiteUserDto {
 
@@ -19,5 +20,15 @@ public class SiteUserDto {
 
         @Size(max = 255)
         private String slackWebhookUrl;
+
+        public static UpdateDto fromEntity(SiteUser siteUser) {
+            UpdateDto updateDto = new UpdateDto();
+            updateDto.setId(siteUser.getId());
+            updateDto.setUserName(siteUser.getUserName());
+            updateDto.setLoginId(siteUser.getLoginId());
+            updateDto.setSlackWebhookUrl(siteUser.getSlackWebhookUrl());
+
+            return updateDto;
+        }
     }
 }

@@ -10,10 +10,10 @@
 
 ## 기술 스택
 
-1. springboot
-2. spring jpa
-3. mysql
-4. slack api
+1. SpringBoot
+2. SpringData, JPA
+3. MySql
+4. Slack API
 
 ## 시나리오
 
@@ -22,5 +22,8 @@
 3. 포인트 URL을 로그인 쿠키정보를 포함하여 호출
 
 ## 릴리즈
+### v1.0.4
+Docker compose 기반으로 어플리케이션 구동 방식 변경
+
 ### v1.0.0
 2분 간격으로 application.yml에 설정된 정보를 기준으로 포인트 수집

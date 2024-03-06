@@ -36,35 +36,31 @@ public class SiteUserController {
 
         siteUser = siteUserService.getSiteUser(siteUser.getLoginId());
 
-        SiteUserDto.UpdateDto updateDto = new SiteUserDto.UpdateDto();
-        updateDto.setId(siteUser.getId());
-        updateDto.setLoginId(siteUser.getLoginId());
-        updateDto.setUserName(siteUser.getUserName());
-        updateDto.setSlackWebhookUrl(siteUser.getSlackWebhookUrl());
+        model.addAttribute("siteUser", SiteUserDto.UpdateDto.fromEntity(siteUser));
 
-        model.addAttribute("siteUser", updateDto);
-
-        return "/siteUser/editUser";
+        return "siteUser/editUser";
     }
 
     @PostMapping("/siteUser")
     public String updateUser(@Validated @ModelAttribute("siteUser") SiteUserDto.UpdateDto updateDto
             , Authentication authentication) {
-        SiteUser siteUser = (SiteUser) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        siteUser = siteUserService.getSiteUser(siteUser.getLoginId());
+        log.info("UserDetail: {}", userDetails);
+
+        SiteUser siteUser = siteUserService.getSiteUser(userDetails.getUsername());
 
         siteUser = siteUserService.updateSiteUser(siteUser.getId(), updateDto);
 
         log.info("SiteUser: {}", siteUser);
 
-        return "/siteUser/editUser";
+        return "siteUser/editUser";
     }
 
     @GetMapping("/updatePassword")
     public String editPasswordPage(Model model) {
         model.addAttribute("updatePassword", new PasswordUpdateDto());
-        return "/siteUser/updatePassword";
+        return "siteUser/updatePassword";
     }
 
     @PostMapping("/updatePassword")
@@ -91,8 +87,8 @@ public class SiteUserController {
             bindingResult.rejectValue("password", "editPassword.error.password");
         }
 
-        siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getPassword());
+        siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getNewPassword());
 
-        return "/siteUser/updatePassword";
+        return "siteUser/updatePassword";
     }
 }
