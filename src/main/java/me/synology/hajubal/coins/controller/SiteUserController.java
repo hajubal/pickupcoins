@@ -38,7 +38,7 @@ public class SiteUserController {
 
         model.addAttribute("siteUser", SiteUserDto.UpdateDto.fromEntity(siteUser));
 
-        return "/siteUser/editUser";
+        return "siteUser/editUser";
     }
 
     @PostMapping("/siteUser")
@@ -54,13 +54,13 @@ public class SiteUserController {
 
         log.info("SiteUser: {}", siteUser);
 
-        return "/siteUser/editUser";
+        return "siteUser/editUser";
     }
 
     @GetMapping("/updatePassword")
     public String editPasswordPage(Model model) {
         model.addAttribute("updatePassword", new PasswordUpdateDto());
-        return "/siteUser/updatePassword";
+        return "siteUser/updatePassword";
     }
 
     @PostMapping("/updatePassword")
@@ -87,8 +87,8 @@ public class SiteUserController {
             bindingResult.rejectValue("password", "editPassword.error.password");
         }
 
-        siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getPassword());
+        siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getNewPassword());
 
-        return "/siteUser/updatePassword";
+        return "siteUser/updatePassword";
     }
 }
