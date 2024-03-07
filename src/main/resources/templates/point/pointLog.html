@@ -48,6 +48,22 @@
             </tr>
           </tbody>
         </table>
+        <div>
+          <ul>
+            <li th:if="${currentPage > 0}">
+              <a th:href="@{/}?page=0">First</a>
+            </li>
+            <li th:unless="${currentPage == 0}">
+              <a th:href="@{/?page=${currentPage - 1}}">Previous</a>
+            </li>
+            <li th:unless="${currentPage >= totalPages - 1}">
+              <a th:href="@{/?page=${currentPage + 1}}">Next</a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+              <a th:href="@{/?page=${totalPages - 1}}">Last</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </main>
   </body>
