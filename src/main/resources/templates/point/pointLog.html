@@ -29,49 +29,45 @@
             <tr>
               <th scope="col">URL</th>
               <th scope="col">Site Name</th>
-              <!--<th scope="col">User Name</th>
+              <th scope="col">User Name</th>
               <th scope="col">Status Code</th>
               <th scope="col">Response Body</th>
               <th scope="col">Response Header</th>
-              <th scope="col">Cookie</th>-->
+              <th scope="col">Cookie</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="item : ${items}">
               <td th:text="${item.pointUrl}">id</td>
               <td th:text="${item.siteName}">site name</td>
-              <!--<td th:text="${item.userName}">user name</td>
+              <<td th:text="${item.userName}">user name</td>
               <td th:text="${item.responseStatusCode}">status</td>
               <td th:text="${item.responseBody}">body</td>
               <td th:text="${item.responseHeader}">header</td>
-              <td th:text="${item.cookie}">cookie</td>-->
+              <td th:text="${item.cookie}">cookie</td>
             </tr>
           </tbody>
         </table>
         <div>
-
-          <!-- 첫번째 페이지로 이동 -->
-          <a th:href="@{/savePointLog(page=1)}">첫 페이지 </a>
-
-          <!-- 이전 링크 활성화 비활성화 -->
-          <a th:href="${items.first} ? '#' : @{/savePointLog(page=${items.number})}"> 이전 </a>
-
-          <!-- 페이지 번호 링크(현재 페이지는 숫자만)
-                  for(int page=startPage; page<=endPage; page++)-->
-          <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
-		<!-- 현재페이지는 링크 없이 숫자만 -->
-            <span th:if="${page == items.number}" th:text="${page}"></span>
-            <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
-            <span th:unless="${page == items.number}">
-              <a th:href="@{/savePointLog(page=${page})}" th:text="${page}"></a>
-            </span>
-          </span>
-
-          <!-- 다음 링크 활성화 비활성화 -->
-          <a th:href="${items.last} ? '#' : @{/savePointLog(page=${items.number + 1})}"> 다음 </a>
-
-          <!-- 마지막 페이지로 이동 -->
-          <a th:href="@{/savePointLog(page=${items.totalPages})}"> 마지막 페이지</a>
+          <nav aria-label="...">
+            <ul class="pagination">
+              <li th:class="${items.first} ? 'page-item  disable' : 'page-item'">
+                <a class="page-link" th:href="${items.first} ? '#' : @{/savePointLog(page=${items.number - 1})}">Previous</a>
+              </li>
+              <th:block th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                <li th:if="${page - 1 == items.number}" class="page-item active" href="#">
+                  <a class="page-link" href="#" th:text="${page}"></a>
+                </li>
+                <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
+                <li th:unless="${page - 1 == items.number}" class="page-item" aria-current="page">
+                  <a th:href="@{/savePointLog(page=${page - 1})}" th:text="${page}" class="page-link"></a>
+                </li>
+              </th:block>
+              <li th:class="${items.last} ? 'page-item disable' : 'page-item'">
+                <a class="page-link" th:href="${items.last} ? '#' : @{/savePointLog(page=${items.number + 1})}">Next</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </main>
