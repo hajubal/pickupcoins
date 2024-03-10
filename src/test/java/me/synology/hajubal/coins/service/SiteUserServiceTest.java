@@ -24,9 +24,11 @@ class SiteUserServiceTest {
     @Transactional
     @Test
     void updateSiteUserTest() {
+        String loginId = System.currentTimeMillis() + "";
+
         //given
         SiteUser beforeSiteUser = siteUserRepository.save(SiteUser.builder()
-                .loginId("user").password("password").userName("userName").slackWebhookUrl("slackUrl")
+                .loginId(loginId).password("password").userName("userName").slackWebhookUrl("slackUrl")
                 .build());
 
         //when
@@ -47,9 +49,11 @@ class SiteUserServiceTest {
     @Transactional
     @Test
     void getSiteUserTest() {
+        String loginId = System.currentTimeMillis() + "";
+
         //given
         SiteUser beforeSiteUser = siteUserRepository.save(SiteUser.builder()
-                .loginId("user").password("password").userName("userName").slackWebhookUrl("slackUrl")
+                .loginId(loginId).password("password").userName("userName").slackWebhookUrl("slackUrl")
                 .build());
 
         //when
@@ -65,9 +69,11 @@ class SiteUserServiceTest {
     @Transactional
     @Test
     void updatePasswordTest() {
+        String loginId = System.currentTimeMillis() + "";
+
         //given
         SiteUser beforeSiteUser = siteUserRepository.save(SiteUser.builder()
-                .loginId("user").password("password").userName("userName").slackWebhookUrl("slackUrl")
+                .loginId(loginId).password("password").userName("userName").slackWebhookUrl("slackUrl")
                 .build());
 
         //when
