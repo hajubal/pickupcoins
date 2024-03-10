@@ -58,7 +58,7 @@ class SiteUserControllerTest {
 
         //then
         perform.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("/siteUser/editUser"))
+                .andExpect(MockMvcResultMatchers.view().name("siteUser/editUser"))
                 .andExpect(MockMvcResultMatchers.model().attribute("siteUser", Matchers.equalTo(updateDto)));
     }
 

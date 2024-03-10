@@ -47,14 +47,15 @@ class SiteUserDetailsServiceImplTest {
     @Transactional
     @Test
     void findUser() {
+        String loginId = System.currentTimeMillis() + "";
         //given
-        userRepository.save(SiteUser.builder().loginId("user").password("password").userName("userName").build());
+        userRepository.save(SiteUser.builder().loginId(loginId).password("password").userName("userName").build());
 
         //when
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername("user");
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(loginId);
 
         //then
-        assertThat(userDetails.getUsername()).isEqualTo("user");
+        assertThat(userDetails.getUsername()).isEqualTo(loginId);
     }
 
 
