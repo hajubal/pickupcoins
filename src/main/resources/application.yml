@@ -39,6 +39,17 @@ server:
     mbeanregistry:
       enabled: true
 
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState : 10s
+    instances:
+      hgsssss:
+        baseConfig: default
+
 decorator.datasource.p6spy:
   enable-logging: true
   multiline: true
