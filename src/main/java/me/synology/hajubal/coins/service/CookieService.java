@@ -43,6 +43,16 @@ public class CookieService {
         }
     }
 
+    @Transactional
+    public void updateCookie(Long userId, String cookieStr) {
+        log.info("userId: {}, cookie: {}", userId, cookieStr);
+
+        Cookie cookie = cookieRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
+
+        cookie.updateCookie(cookieStr);
+    }
+
     /**
      * 신규 사용자 쿠키 추가
      *
@@ -71,5 +81,11 @@ public class CookieService {
 
     public Cookie getCookie(Long userCookieId) {
         return cookieRepository.findById(userCookieId).orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
+    }
+
+    @Transactional
+    public void invalid(Long cookieId) {
+        Cookie cookie = cookieRepository.findById(cookieId).orElseThrow();
+        cookie.invalid();
     }
 }

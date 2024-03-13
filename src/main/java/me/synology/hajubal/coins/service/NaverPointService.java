@@ -6,10 +6,12 @@ import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.CookieRepository;
+import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * naver point url에 접속하여 point를 적립하는 로직
@@ -37,12 +39,14 @@ public class NaverPointService {
 
         log.debug("UserCookies: {}", cookies);
 
-        cookies.forEach(userCookie -> {
-            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName.toUpperCase(), userCookie.getUserName());
+        List<ExchangeDto> exchangeDtoList = cookies.stream().map(ExchangeDto::from).toList();
+
+        exchangeDtoList.forEach(exchangeDto -> {
+            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName.toUpperCase(), exchangeDto.getUserName());
 
             log.info("Not called url size: {}", pointUrls.size());
 
-            pointUrls.forEach(pointUrl -> exchangeService.exchange(pointUrl, userCookie));
+            pointUrls.forEach(pointUrl -> exchangeService.exchange(pointUrl, exchangeDto));
         });
     }
 }

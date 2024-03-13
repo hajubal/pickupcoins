@@ -33,7 +33,7 @@ public class Cookie extends BaseDataEntity {
     @Column(columnDefinition = "boolean default true")
     private Boolean isValid;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_user_id")
     private SiteUser siteUser;
 

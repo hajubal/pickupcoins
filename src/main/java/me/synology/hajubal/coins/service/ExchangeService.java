@@ -7,6 +7,7 @@ import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
+import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,16 +36,18 @@ public class ExchangeService {
 
     private final WebClient.Builder webClientBuilder;
 
+    private final CookieService cookieService;
+
     @Transactional
-    public void exchange(PointUrl url, Cookie cookie) {
-        log.info("Call point url: {}. user name: {}", url.getUrl(), cookie.getUserName());
+    public void exchange(PointUrl url, ExchangeDto exchangeDto) {
+        log.info("Call point url: {}. user name: {}", url.getUrl(), exchangeDto.getUserName());
 
         WebClient webClient = webClientBuilder.build();
 
         Mono<ResponseEntity<String>> entityMono = webClient
                 .get()
                 .uri(URI.create(url.getUrl()))
-                .headers(httpHeaders -> setCookieHeaders(httpHeaders, cookie.getCookie()))
+                .headers(httpHeaders -> setCookieHeaders(httpHeaders, exchangeDto.getCookie()))
                 .retrieve()
                 .toEntity(String.class)
                 ;
@@ -56,18 +59,21 @@ public class ExchangeService {
             }
 
             if(isNeedLogin(response)) {
-                cookie.invalid();
+                cookieService.invalid(exchangeDto.getCookieId());
 
-                log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", cookie.getUserName(), cookie.getSiteName(), cookie.getCookie());
+                log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", exchangeDto.getUserName(), exchangeDto.getSiteName(), exchangeDto.getCookie());
 
-                WebhookResponse webhookResponse = slackService.sendMessage(cookie.getSiteUser().getSlackWebhookUrl(), "[ " + cookie.getUserName() + " ] 로그인 풀림.");
+                WebhookResponse webhookResponse = slackService.sendMessage(exchangeDto.getWebHookUrl(), "[ " + exchangeDto.getUserName() + " ] 로그인 풀림.");
 
                 log.info("Webhook response code: {}" , webhookResponse.getCode());
             } else if(isSavePoint(response)) {
-                savePointPostProcess(cookie, response);
+                savePointPostProcess(exchangeDto, response);
             }
 
             log.debug("Response body: {} ", response.getBody());
+
+            //TODO 리팩토링 필요
+            Cookie cookie = cookieService.getCookie(exchangeDto.getCookieId());
 
             saveLog(url, cookie, response);
         });
@@ -109,12 +115,15 @@ public class ExchangeService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void savePointPostProcess(Cookie cookie, ResponseEntity<String> response) {
+    public void savePointPostProcess(ExchangeDto exchangeDto, ResponseEntity<String> response) {
         //cookie session값 갱신
         if(response.getHeaders().containsKey("cookie")) {
-            log.info("cookie 갱신 user: {}", cookie.getUserName());
-            cookie.updateCookie(response.getHeaders().getFirst("cookie"));
+            log.info("cookie 갱신 user: {}", exchangeDto.getUserName());
+            cookieService.updateCookie(exchangeDto.getCookieId(), response.getHeaders().getFirst("cookie"));
         }
+
+        //TODO 리팩토링 필요
+        Cookie cookie = cookieService.getCookie(exchangeDto.getCookieId());
 
         //getBody() 는 "10원이 적립 되었습니다." 라는 문자열을 포함하고 있음.
         savedPointRepository.save(SavedPoint.builder()
