@@ -58,6 +58,14 @@ public class Cookie extends BaseDataEntity {
         this.cookie = cookie;
     }
 
+    public void updateSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public void updateUserName(String userName) {
+        this.userName = userName;
+    }
+
     @Override
     public String toString() {
         return "Cookie{" +
@@ -68,4 +76,5 @@ public class Cookie extends BaseDataEntity {
                 ", isValid=" + isValid +
                 '}';
     }
+
 }

@@ -2,16 +2,16 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.code.SiteName;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.CookieRepository;
+import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * naver point url에 접속하여 point를 적립하는 로직
@@ -33,16 +33,14 @@ public class NaverPointService {
      */
     @Transactional
     public void savePoint() {
-        String urlName = "naver";
-
-        List<Cookie> cookies = cookieRepository.findBySiteNameAndIsValid(urlName, true);
+        List<Cookie> cookies = cookieRepository.findBySiteNameIgnoreCaseAndIsValid(SiteName.NAVER.name(), true);
 
         log.debug("UserCookies: {}", cookies);
 
         List<ExchangeDto> exchangeDtoList = cookies.stream().map(ExchangeDto::from).toList();
 
         exchangeDtoList.forEach(exchangeDto -> {
-            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(urlName.toUpperCase(), exchangeDto.getUserName());
+            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(SiteName.NAVER.name(), exchangeDto.getUserName());
 
             log.info("Not called url size: {}", pointUrls.size());
 

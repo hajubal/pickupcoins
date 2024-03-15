@@ -57,6 +57,7 @@ public class SiteUserController {
         return "siteUser/editUser";
     }
 
+    @ModelAttribute(name = "updatePassword")
     @GetMapping("/updatePassword")
     public String editPasswordPage(Model model) {
         model.addAttribute("updatePassword", new PasswordUpdateDto());

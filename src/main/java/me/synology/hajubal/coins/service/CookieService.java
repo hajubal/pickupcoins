@@ -41,6 +41,9 @@ public class CookieService {
         } else {
             cookie.invalid();
         }
+
+        cookie.updateSiteName(updateDto.getSiteName());
+        cookie.updateUserName(updateDto.getUserName());
     }
 
     @Transactional
@@ -63,9 +66,7 @@ public class CookieService {
     public Long insertCookie(UserCookieDto.InsertDto insertDto) {
         log.info("cookieInsertDto: {}", insertDto);
 
-        Cookie cookie = insertDto.toEntity();
-
-        cookieRepository.save(cookie);
+        Cookie cookie = cookieRepository.save(insertDto.toEntity());
 
         return cookie.getId();
     }
