@@ -26,13 +26,11 @@ import java.net.URI;
 @Transactional(readOnly = true)
 @Service
 public class ExchangeService {
-    private final SlackService slackService;
-
     private final PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
     private final PointUrlCallLogRepository pointUrlCallLogRepository;
 
-    private final SavedPointRepository savedPointRepository;
+    private final PointManageService pointManageService;
 
     private final WebClient.Builder webClientBuilder;
 
@@ -70,7 +68,7 @@ public class ExchangeService {
             if(isInvalidCookie(body)) {
                 cookieService.invalid(exchangeDto.getCookieId(), exchangeDto.getWebHookUrl());
             } else if(isSavePoint(body)) {
-                savePointPostProcess(exchangeDto, response);
+                pointManageService.savePointPostProcess(exchangeDto, response);
             }
 
             log.debug("Response body: {} ", response.getBody());
@@ -117,22 +115,5 @@ public class ExchangeService {
         );
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void savePointPostProcess(ExchangeDto exchangeDto, ResponseEntity<String> response) {
-        //cookie session값 갱신
-        if(response.getHeaders().containsKey("cookie")) {
-            log.info("cookie 갱신 user: {}", exchangeDto.getUserName());
-            cookieService.updateCookie(exchangeDto.getCookieId(), response.getHeaders().getFirst("cookie"));
-        }
 
-        //TODO 리팩토링 필요
-        Cookie cookie = cookieService.getCookie(exchangeDto.getCookieId());
-
-        //getBody() 는 "10원이 적립 되었습니다." 라는 문자열을 포함하고 있음.
-        savedPointRepository.save(SavedPoint.builder()
-                .point("코드 수정 필요")
-                .cookie(cookie)
-                .responseBody(response.getBody())
-                .build());
-    }
 }

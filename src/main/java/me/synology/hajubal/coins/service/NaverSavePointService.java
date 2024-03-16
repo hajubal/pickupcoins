@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Transactional(readOnly = true)
 @Service
-public class NaverPointService {
+public class NaverSavePointService {
 
     private final CookieRepository cookieRepository;
 
