@@ -38,13 +38,19 @@ public class ExchangeService {
 
     private final CookieService cookieService;
 
+    /**
+     * point url을 호출.
+     *
+     * @param url
+     * @param exchangeDto
+     */
     @Transactional
     public void exchange(PointUrl url, ExchangeDto exchangeDto) {
         log.info("Call point url: {}. user name: {}", url.getUrl(), exchangeDto.getUserName());
 
         WebClient webClient = webClientBuilder.build();
 
-        Mono<ResponseEntity<String>> entityMono = webClient
+        Mono<ResponseEntity<String>> mono = webClient
                 .get()
                 .uri(URI.create(url.getUrl()))
                 .headers(httpHeaders -> setCookieHeaders(httpHeaders, exchangeDto.getCookie()))
@@ -53,20 +59,17 @@ public class ExchangeService {
                 ;
 
         //호출 결과 처리
-        entityMono.subscribe(response -> {
+        mono.subscribe(response -> {
             if(response == null || response.getBody() == null) {
+                log.info("Exchange response is empty.");
                 return;
             }
 
-            if(isNeedLogin(response)) {
-                cookieService.invalid(exchangeDto.getCookieId());
+            String body = response.getBody();
 
-                log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", exchangeDto.getUserName(), exchangeDto.getSiteName(), exchangeDto.getCookie());
-
-                WebhookResponse webhookResponse = slackService.sendMessage(exchangeDto.getWebHookUrl(), "[ " + exchangeDto.getUserName() + " ] 로그인 풀림.");
-
-                log.info("Webhook response code: {}" , webhookResponse.getCode());
-            } else if(isSavePoint(response)) {
+            if(isInvalidCookie(body)) {
+                cookieService.invalid(exchangeDto.getCookieId(), exchangeDto.getWebHookUrl());
+            } else if(isSavePoint(body)) {
                 savePointPostProcess(exchangeDto, response);
             }
 
@@ -79,12 +82,12 @@ public class ExchangeService {
         });
     }
 
-    private static boolean isSavePoint(ResponseEntity<String> response) {
-        return response.getBody().contains("적립");
+    private static boolean isSavePoint(String content) {
+        return content.contains("적립");
     }
 
-    private static boolean isNeedLogin(ResponseEntity<String> response) {
-        return response.getBody().contains("로그인이 필요");
+    private static boolean isInvalidCookie(String content) {
+        return content.contains("로그인이 필요");
     }
 
     private void setCookieHeaders(HttpHeaders headers, String userCookie) {

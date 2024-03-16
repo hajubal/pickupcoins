@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.service;
 
+import com.slack.api.webhook.WebhookResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
@@ -21,17 +22,19 @@ public class CookieService {
 
     private final CookieRepository cookieRepository;
 
+    private final SlackService slackService;
+
     /**
      * 쿠키 업데이트
      *
-     * @param userId
+     * @param cookieId
      * @param updateDto
      */
     @Transactional
-    public void updateCookie(Long userId, UserCookieDto.UpdateDto updateDto) {
+    public void updateCookie(Long cookieId, UserCookieDto.UpdateDto updateDto) {
         log.info("cookieUpdateDto: {}", updateDto);
 
-        Cookie cookie = cookieRepository.findById(userId)
+        Cookie cookie = cookieRepository.findById(cookieId)
                 .orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
 
         cookie.updateCookie(updateDto.getCookie());
@@ -47,10 +50,10 @@ public class CookieService {
     }
 
     @Transactional
-    public void updateCookie(Long userId, String cookieStr) {
-        log.info("userId: {}, cookie: {}", userId, cookieStr);
+    public void updateCookie(Long cookieId, String cookieStr) {
+        log.info("userId: {}, cookie: {}", cookieId, cookieStr);
 
-        Cookie cookie = cookieRepository.findById(userId)
+        Cookie cookie = cookieRepository.findById(cookieId)
                 .orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
 
         cookie.updateCookie(cookieStr);
@@ -72,21 +75,30 @@ public class CookieService {
     }
 
     @Transactional
-    public void deleteCookie(Long userId) {
-        cookieRepository.deleteById(userId);
+    public void deleteCookie(Long cookieId) {
+        cookieRepository.deleteById(cookieId);
     }
 
     public List<Cookie> getAll() {
         return cookieRepository.findAll();
     }
 
-    public Cookie getCookie(Long userCookieId) {
-        return cookieRepository.findById(userCookieId).orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
+    public Cookie getCookie(Long cookieId) {
+        return cookieRepository.findById(cookieId).orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
     }
 
     @Transactional
-    public void invalid(Long cookieId) {
+    public void invalid(Long cookieId, String webhookUrl) {
         Cookie cookie = cookieRepository.findById(cookieId).orElseThrow();
         cookie.invalid();
+
+        log.info("[{}] 로그인 풀림.", cookie.getUserName());
+
+        try {
+            WebhookResponse webhookResponse = slackService.sendMessage(webhookUrl, "[ " + cookie.getUserName() + " ] 로그인 풀림.");
+            log.info("Webhook response code: {}", webhookResponse.getCode());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }
