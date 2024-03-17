@@ -27,6 +27,7 @@ class SlackServiceTest {
     @Autowired
     private SlackService slackService;
 
+    @DisplayName("slack send 테스트")
     @Test
     void sendMessage() throws Exception {
 

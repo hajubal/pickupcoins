@@ -30,6 +30,7 @@ class CookieServiceTest {
     @MockBean
     private SlackService slackService;
 
+    @DisplayName("cookie 생성 테스트")
     @Test
     void createUserCookie() {
         //given
@@ -43,6 +44,7 @@ class CookieServiceTest {
                 .has(new Condition<>(cookie -> cookie.getUserName().equals("test"), "test condition"));
     }
 
+    @DisplayName("cookie 정보 수정 테스트")
     @Test
     void updateCookieTest() {
         //given
@@ -73,7 +75,6 @@ class CookieServiceTest {
     void invalidExceptionTest() {
         //given
         Long cookieId = createCookie();
-
         given(slackService.sendMessage(any(), any())).willThrow(SlackServiceException.class);
 
         //when
@@ -82,9 +83,12 @@ class CookieServiceTest {
         //then
         Cookie cookie = cookieService.getCookie(cookieId);
         assertThat(cookie.getIsValid()).isFalse();
-
     }
 
+
+    /**
+     * cookie 생성 핼퍼 함수
+     */
     private Long createCookie() {
         UserCookieDto.InsertDto insertDto = new UserCookieDto.InsertDto();
         insertDto.setUserName("test");

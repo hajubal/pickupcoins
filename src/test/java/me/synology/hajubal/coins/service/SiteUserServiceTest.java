@@ -1,8 +1,11 @@
 package me.synology.hajubal.coins.service;
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import me.synology.hajubal.coins.controller.dto.SiteUserDto;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,20 +24,17 @@ class SiteUserServiceTest {
     @Autowired
     private SiteUserRepository siteUserRepository;
 
-    @Transactional
+
+    @DisplayName("사용자 이름, slackurl 수정 테스트")
     @Test
     void updateSiteUserTest() {
-        String loginId = System.currentTimeMillis() + "";
-
         //given
-        SiteUser beforeSiteUser = siteUserRepository.save(SiteUser.builder()
-                .loginId(loginId).password("password").userName("userName").slackWebhookUrl("slackUrl")
-                .build());
+        SiteUser beforeSiteUser = createSiteUser();
 
         //when
         SiteUserDto.UpdateDto updateDto = new SiteUserDto.UpdateDto();
-        updateDto.setUserName("updateUserName");
-        updateDto.setSlackWebhookUrl("updateSlackUrl");
+        updateDto.setUserName(beforeSiteUser.getUserName() + "updateUserName");
+        updateDto.setSlackWebhookUrl(beforeSiteUser.getSlackWebhookUrl() + "updateSlackUrl");
 
         siteUserService.updateSiteUser(beforeSiteUser.getId(), updateDto);
 
@@ -46,35 +46,24 @@ class SiteUserServiceTest {
 
     }
 
-    @Transactional
+    @DisplayName("사용자 조회 테스트")
     @Test
     void getSiteUserTest() {
-        String loginId = System.currentTimeMillis() + "";
-
         //given
-        SiteUser beforeSiteUser = siteUserRepository.save(SiteUser.builder()
-                .loginId(loginId).password("password").userName("userName").slackWebhookUrl("slackUrl")
-                .build());
+        SiteUser beforeSiteUser = createSiteUser();
 
         //when
-
-
-        //then
         SiteUser updateSiteUser = siteUserRepository.findById(beforeSiteUser.getId()).orElseThrow();
 
+        //then
         assertThat(updateSiteUser).isEqualTo(beforeSiteUser);
-
     }
 
-    @Transactional
+    @DisplayName("비밀번호 수정 테스트")
     @Test
     void updatePasswordTest() {
-        String loginId = System.currentTimeMillis() + "";
-
         //given
-        SiteUser beforeSiteUser = siteUserRepository.save(SiteUser.builder()
-                .loginId(loginId).password("password").userName("userName").slackWebhookUrl("slackUrl")
-                .build());
+        SiteUser beforeSiteUser = createSiteUser();
 
         //when
         siteUserService.updatePassword(beforeSiteUser.getId(), "newPassword");
@@ -84,4 +73,14 @@ class SiteUserServiceTest {
 
         assertThat(PasswordEncoderFactories.createDelegatingPasswordEncoder().matches("newPassword", updateSiteUser.getPassword())).isTrue();
     }
+
+    /**
+     * 사용자 생성 핼퍼 함수
+     */
+    private SiteUser createSiteUser() {
+        return siteUserRepository.save(SiteUser.builder()
+                .loginId("loginId" + RandomUtil.getPositiveInt()).password("password").userName("userName").slackWebhookUrl("slackUrl")
+                .build());
+    }
+
 }

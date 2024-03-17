@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
 @SpringBootTest
 class SiteUserDetailsServiceImplTest {
 
@@ -43,20 +42,19 @@ class SiteUserDetailsServiceImplTest {
         System.out.println("encodedPassword = " + encodedPassword);
     }
 
-
-    @Transactional
+    @DisplayName("사용자 조회 테스트")
     @Test
     void findUser() {
-        String loginId = System.currentTimeMillis() + "";
+        SiteUser siteUser = SiteUser.builder().loginId("loginId").password("password").userName("userName").build();
+
         //given
-        userRepository.save(SiteUser.builder().loginId(loginId).password("password").userName("userName").build());
+        userRepository.save(siteUser);
 
         //when
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(loginId);
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(siteUser.getLoginId());
 
         //then
-        assertThat(userDetails.getUsername()).isEqualTo(loginId);
+        assertThat(userDetails.getUsername()).isEqualTo(siteUser.getLoginId());
     }
-
 
 }
