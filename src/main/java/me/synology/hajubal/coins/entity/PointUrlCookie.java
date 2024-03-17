@@ -3,7 +3,7 @@ package me.synology.hajubal.coins.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
