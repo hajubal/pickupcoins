@@ -40,7 +40,7 @@ class SlackServiceTest {
         given(webhookResponse.getCode()).willReturn(200);
 
         //when
-        WebhookResponse response = slackService.sendMessage("http://url", "message");
+        WebhookResponse response = slackService.sendMessage("http://url", "{\"text\":\"Hello, World!\"}");
 
         //then
         assertThat(response.getCode()).isEqualTo(200);
