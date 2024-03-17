@@ -25,11 +25,10 @@
 
       <div class="mb-3">
         <label for="siteName" class="form-label" th:text="#{cookie.siteName}">사이트 이름</label>
-        <input type="text" class="form-control" id="siteName" th:field="*{siteName}"
-               th:errorclass="field-error" placeholder="사이트 이름을 입력하세요">
-        <div class="field-error" th:errors="*{siteName}">
-          사이트 이름 오류
-        </div>
+        <select th:field="*{siteName}" class="form-select" aria-label="사이트 이름">
+          <option th:each="name : ${siteName}" th:value="${name}"
+                  th:text="${name}">siteName</option>
+        </select>
       </div>
 
       <div class="mb-3">

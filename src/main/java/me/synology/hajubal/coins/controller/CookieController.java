@@ -2,6 +2,7 @@ package me.synology.hajubal.coins.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.code.SiteName;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.service.CookieService;
@@ -11,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,6 +22,11 @@ import java.util.List;
 public class CookieController {
 
     private final CookieService cookieService;
+
+    @ModelAttribute("siteName")
+    public List<SiteName> deliveryCodes() {
+        return Arrays.stream(SiteName.values()).collect(Collectors.toList());
+    }
 
     @GetMapping("/cookies")
     public String cookies(Model model) {

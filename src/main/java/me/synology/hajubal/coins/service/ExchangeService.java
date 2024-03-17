@@ -7,6 +7,7 @@ import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
 import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
+import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,60 +26,66 @@ import java.net.URI;
 @Transactional(readOnly = true)
 @Service
 public class ExchangeService {
-    private final SlackService slackService;
-
     private final PointUrlUserCookieRepository pointUrlUserCookieRepository;
 
     private final PointUrlCallLogRepository pointUrlCallLogRepository;
 
-    private final SavedPointRepository savedPointRepository;
+    private final PointManageService pointManageService;
 
     private final WebClient.Builder webClientBuilder;
 
+    private final CookieService cookieService;
+
+    /**
+     * point url을 호출.
+     *
+     * @param url
+     * @param exchangeDto
+     */
     @Transactional
-    public void exchange(PointUrl url, Cookie cookie) {
-        log.info("Call point url: {}. user name: {}", url.getUrl(), cookie.getUserName());
+    public void exchange(PointUrl url, ExchangeDto exchangeDto) {
+        log.info("Call point url: {}. user name: {}", url.getUrl(), exchangeDto.getUserName());
 
         WebClient webClient = webClientBuilder.build();
 
-        Mono<ResponseEntity<String>> entityMono = webClient
+        Mono<ResponseEntity<String>> mono = webClient
                 .get()
                 .uri(URI.create(url.getUrl()))
-                .headers(httpHeaders -> setCookieHeaders(httpHeaders, cookie.getCookie()))
+                .headers(httpHeaders -> setCookieHeaders(httpHeaders, exchangeDto.getCookie()))
                 .retrieve()
                 .toEntity(String.class)
                 ;
 
         //호출 결과 처리
-        entityMono.subscribe(response -> {
+        mono.subscribe(response -> {
             if(response == null || response.getBody() == null) {
+                log.info("Exchange response is empty.");
                 return;
             }
 
-            if(isNeedLogin(response)) {
-                cookie.invalid();
+            String body = response.getBody();
 
-                log.info("로그인이 풀린 사용자: {}, 사이트: {}, cookie: {}", cookie.getUserName(), cookie.getSiteName(), cookie.getCookie());
-
-                WebhookResponse webhookResponse = slackService.sendMessage(cookie.getSiteUser().getSlackWebhookUrl(), "[ " + cookie.getUserName() + " ] 로그인 풀림.");
-
-                log.info("Webhook response code: {}" , webhookResponse.getCode());
-            } else if(isSavePoint(response)) {
-                savePointPostProcess(cookie, response);
+            if(isInvalidCookie(body)) {
+                cookieService.invalid(exchangeDto.getCookieId(), exchangeDto.getWebHookUrl());
+            } else if(isSavePoint(body)) {
+                pointManageService.savePointPostProcess(exchangeDto, response);
             }
 
             log.debug("Response body: {} ", response.getBody());
+
+            //TODO 리팩토링 필요
+            Cookie cookie = cookieService.getCookie(exchangeDto.getCookieId());
 
             saveLog(url, cookie, response);
         });
     }
 
-    private static boolean isSavePoint(ResponseEntity<String> response) {
-        return response.getBody().contains("적립");
+    private static boolean isSavePoint(String content) {
+        return content.contains("적립");
     }
 
-    private static boolean isNeedLogin(ResponseEntity<String> response) {
-        return response.getBody().contains("로그인이 필요");
+    private static boolean isInvalidCookie(String content) {
+        return content.contains("로그인이 필요");
     }
 
     private void setCookieHeaders(HttpHeaders headers, String userCookie) {
@@ -108,19 +115,5 @@ public class ExchangeService {
         );
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void savePointPostProcess(Cookie cookie, ResponseEntity<String> response) {
-        //cookie session값 갱신
-        if(response.getHeaders().containsKey("cookie")) {
-            log.info("cookie 갱신 user: {}", cookie.getUserName());
-            cookie.updateCookie(response.getHeaders().getFirst("cookie"));
-        }
 
-        //getBody() 는 "10원이 적립 되었습니다." 라는 문자열을 포함하고 있음.
-        savedPointRepository.save(SavedPoint.builder()
-                .point("코드 수정 필요")
-                .cookie(cookie)
-                .responseBody(response.getBody())
-                .build());
-    }
 }

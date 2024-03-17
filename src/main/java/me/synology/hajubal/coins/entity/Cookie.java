@@ -2,13 +2,11 @@ package me.synology.hajubal.coins.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert @DynamicUpdate
 @Getter
@@ -58,6 +56,14 @@ public class Cookie extends BaseDataEntity {
         this.cookie = cookie;
     }
 
+    public void updateSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public void updateUserName(String userName) {
+        this.userName = userName;
+    }
+
     @Override
     public String toString() {
         return "Cookie{" +
@@ -68,4 +74,5 @@ public class Cookie extends BaseDataEntity {
                 ", isValid=" + isValid +
                 '}';
     }
+
 }

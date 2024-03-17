@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+@EqualsAndHashCode(callSuper = true)
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

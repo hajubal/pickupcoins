@@ -2,9 +2,8 @@ package me.synology.hajubal.coins.schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.service.NaverPointService;
+import me.synology.hajubal.coins.service.NaverSavePointService;
 import me.synology.hajubal.coins.service.WebCrawlerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Schedulers {
 
-    private final NaverPointService naverPointService;
+    private final NaverSavePointService naverSavePointService;
 
     private final WebCrawlerService webCrawlerService;
 
@@ -32,6 +31,6 @@ public class Schedulers {
     public void pointScheduler() {
         log.info("Call pointScheduler.");
 
-        naverPointService.savePoint();
+        naverSavePointService.savePoint();
     }
 }
