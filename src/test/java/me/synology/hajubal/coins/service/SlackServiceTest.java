@@ -36,11 +36,11 @@ class SlackServiceTest {
     void sendMessage() throws Exception {
 
         //given
-        given(slack.send("http://url", "message")).willReturn(webhookResponse);
+        given(slack.send(anyString(), anyString())).willReturn(webhookResponse);
         given(webhookResponse.getCode()).willReturn(200);
 
         //when
-        WebhookResponse response = slackService.sendMessage("http://url", "{\"text\":\"Hello, World!\"}");
+        WebhookResponse response = slackService.sendMessage("http://url", "message");
 
         //then
         assertThat(response.getCode()).isEqualTo(200);
