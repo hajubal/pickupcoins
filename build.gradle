@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'me.synology.hajubal'
-version = '1.0.6'
+version = '1.0.7'
 sourceCompatibility = '17'
 
 configurations {
@@ -62,6 +62,13 @@ dependencies {
 //tasks.named('test') {
 //	useJUnitPlatform()
 //}
+test {
+	// 테스트 결과의 상세한 정보를 출력
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+
 
 tasks.withType(Test).configureEach {
 	useJUnitPlatform()

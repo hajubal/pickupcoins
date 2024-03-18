@@ -3,8 +3,15 @@ package me.synology.hajubal.coins.service;
 import me.synology.hajubal.coins.code.SiteName;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.entity.PointUrl;
+import me.synology.hajubal.coins.entity.PointUrlCookie;
+import me.synology.hajubal.coins.entity.SavedPoint;
+import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.exception.SlackServiceException;
 import me.synology.hajubal.coins.respository.CookieRepository;
+import me.synology.hajubal.coins.respository.PointUrlCookieRepository;
+import me.synology.hajubal.coins.respository.PointUrlRepository;
+import me.synology.hajubal.coins.respository.SavedPointRepository;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +36,15 @@ class CookieServiceTest {
 
     @MockBean
     private SlackService slackService;
+
+    @Autowired
+    private PointUrlCookieRepository pointUrlCookieRepository;
+
+    @Autowired
+    private PointUrlRepository pointUrlRepository;
+
+    @Autowired
+    private SavedPointRepository savedPointRepository;
 
     @DisplayName("cookie 생성 테스트")
     @Test
@@ -83,6 +99,31 @@ class CookieServiceTest {
         //then
         Cookie cookie = cookieService.getCookie(cookieId);
         assertThat(cookie.getIsValid()).isFalse();
+    }
+
+    @DisplayName("cookie 삭제 테스트")
+    @Test
+    void deleteTest() throws Exception {
+        //given
+        //insert cookie, pointUrlCookie, savedPoint
+        Long cookieId = createCookie();
+        Cookie cookie = cookieService.getCookie(cookieId);
+
+        PointUrl pointUrl = PointUrl.builder().pointUrlType(POINT_URL_TYPE.NAVER).url("url").name("name").build();
+        pointUrlRepository.save(pointUrl);
+
+        PointUrlCookie pointUrlCookie = PointUrlCookie.builder().pointUrl(pointUrl).cookie(cookie).build();
+        pointUrlCookieRepository.save(pointUrlCookie);
+
+        SavedPoint savedPoint = SavedPoint.builder().point("10").responseBody("body").cookie(cookie).build();
+        savedPointRepository.save(savedPoint);
+
+        //when
+        cookieService.deleteCookie(cookieId);
+
+        //then
+        assertThat(pointUrlCookieRepository.findById(pointUrlCookie.getId()).isEmpty()).isTrue();
+        assertThat(savedPointRepository.findById(savedPoint.getId()).isEmpty()).isTrue();
     }
 
 

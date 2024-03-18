@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert @DynamicUpdate
@@ -34,6 +36,12 @@ public class Cookie extends BaseDataEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_user_id")
     private SiteUser siteUser;
+
+    @OneToMany(mappedBy = "cookie", cascade = CascadeType.REMOVE)
+    private List<PointUrlCookie> pointUrlCookies;
+
+    @OneToMany(mappedBy = "cookie", cascade = CascadeType.REMOVE)
+    private List<SavedPoint> savedPoints;
 
     @Builder
     public Cookie(@NotNull SiteUser siteUser, String userName, String siteName, String cookie, Boolean isValid) {
