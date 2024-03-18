@@ -55,11 +55,16 @@ class SiteUserServiceTest {
         //when
         SiteUser updateSiteUser = siteUserService.getSiteUser(beforeSiteUser.getLoginId());
 
-        System.out.println("beforeSiteUser = " + beforeSiteUser);
-        System.out.println("updateSiteUser = " + updateSiteUser);
-
         //then
-        assertThat(updateSiteUser).isEqualTo(beforeSiteUser);
+        assertThat(updateSiteUser.getUserName()).isEqualTo(beforeSiteUser.getUserName());
+        assertThat(updateSiteUser.getPassword()).isEqualTo(beforeSiteUser.getPassword());
+        assertThat(updateSiteUser.getLoginId()).isEqualTo(beforeSiteUser.getLoginId());
+        assertThat(updateSiteUser.getId()).isEqualTo(beforeSiteUser.getId());
+        assertThat(updateSiteUser.getSlackWebhookUrl()).isEqualTo(beforeSiteUser.getSlackWebhookUrl());
+        assertThat(updateSiteUser.getCreatedBy()).isEqualTo(beforeSiteUser.getCreatedBy());
+        assertThat(updateSiteUser.getCreatedDate()).isEqualTo(beforeSiteUser.getCreatedDate());
+        assertThat(updateSiteUser.getLastModifiedBy()).isEqualTo(beforeSiteUser.getLastModifiedBy());
+
     }
 
     @DisplayName("비밀번호 수정 테스트")
