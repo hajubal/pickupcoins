@@ -55,6 +55,9 @@ class SiteUserServiceTest {
         //when
         SiteUser updateSiteUser = siteUserRepository.findById(beforeSiteUser.getId()).orElseThrow();
 
+        System.out.println("beforeSiteUser = " + beforeSiteUser);
+        System.out.println("updateSiteUser = " + updateSiteUser);
+
         //then
         assertThat(updateSiteUser).isEqualTo(beforeSiteUser);
     }
