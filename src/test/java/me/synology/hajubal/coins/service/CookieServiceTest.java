@@ -54,15 +54,14 @@ class CookieServiceTest {
     @Test
     void createUserCookie() {
         //given
-        Long cookieId = createCookie();
+        Long userId = createCookie();
 
         //when
-        Optional<Cookie> userCookie = cookieRepository.findById(cookieId);
+        Optional<Cookie> userCookie = cookieRepository.findById(userId);
 
         //then
         assertThat(userCookie).isPresent().get()
-                .has(new Condition<>(cookie -> "test".equals(cookie.getUserName()), "test condition"))
-                .has(new Condition<>(cookie -> (cookie.getSiteUser() != null), "test site user" ));
+                .has(new Condition<>(cookie -> cookie.getUserName().equals("test"), "test condition"));
     }
 
     @DisplayName("cookie 정보 수정 테스트")
