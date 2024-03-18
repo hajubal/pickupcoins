@@ -239,3 +239,5 @@ application-dev.yml
 application-test.yml
 application-local.yml
 gradle.properties
+.DS_Store
+*.gz

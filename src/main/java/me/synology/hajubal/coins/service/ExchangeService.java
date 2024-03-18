@@ -1,12 +1,10 @@
 package me.synology.hajubal.coins.service;
 
-import com.slack.api.webhook.WebhookResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
-import me.synology.hajubal.coins.respository.PointUrlUserCookieRepository;
-import me.synology.hajubal.coins.respository.SavedPointRepository;
+import me.synology.hajubal.coins.respository.PointUrlCookieRepository;
 import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +24,7 @@ import java.net.URI;
 @Transactional(readOnly = true)
 @Service
 public class ExchangeService {
-    private final PointUrlUserCookieRepository pointUrlUserCookieRepository;
+    private final PointUrlCookieRepository pointUrlCookieRepository;
 
     private final PointUrlCallLogRepository pointUrlCallLogRepository;
 
@@ -96,7 +94,7 @@ public class ExchangeService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveLog(PointUrl url, Cookie cookie, ResponseEntity<String> response) {
         //사용자 별 호출 url 정보 저장
-        pointUrlUserCookieRepository.save(PointUrlCookie.builder()
+        pointUrlCookieRepository.save(PointUrlCookie.builder()
                 .pointUrl(url)
                 .cookie(cookie)
                 .build());
