@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.CookieRepository;
+import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,9 @@ public class CookieService {
     private final CookieRepository cookieRepository;
 
     private final SlackService slackService;
+
+    private final SiteUserService siteUserService;
+
 
     /**
      * 쿠키 업데이트
@@ -66,10 +71,12 @@ public class CookieService {
      * @return
      */
     @Transactional
-    public Long insertCookie(UserCookieDto.InsertDto insertDto) {
+    public Long insertCookie(UserCookieDto.InsertDto insertDto, String loginId) {
         log.info("cookieInsertDto: {}", insertDto);
 
-        Cookie cookie = cookieRepository.save(insertDto.toEntity());
+        SiteUser siteUser = siteUserService.getSiteUser(loginId);
+
+        Cookie cookie = cookieRepository.save(insertDto.toEntity(siteUser));
 
         return cookie.getId();
     }

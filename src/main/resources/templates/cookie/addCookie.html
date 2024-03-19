@@ -25,7 +25,7 @@
 
       <div class="mb-3">
         <label for="siteName" class="form-label" th:text="#{cookie.siteName}">사이트 이름</label>
-        <select th:field="*{siteName}" class="form-select" aria-label="사이트 이름">
+        <select th:field="*{siteName}" id="siteName" class="form-select" aria-label="사이트 이름">
           <option th:each="name : ${siteName}" th:value="${name}"
                   th:text="${name}">siteName</option>
         </select>
