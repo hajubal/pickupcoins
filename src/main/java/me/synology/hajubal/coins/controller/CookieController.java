@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.code.SiteName;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.service.CookieService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class CookieController {
 
     @ModelAttribute("siteName")
     public List<SiteName> deliveryCodes() {
-        return Arrays.stream(SiteName.values()).collect(Collectors.toList());
+        return Arrays.stream(SiteName.values()).toList();
     }
 
     @GetMapping("/cookies")
@@ -66,13 +67,15 @@ public class CookieController {
 
     @PostMapping("/addCookie")
     public String addCookie(@Validated @ModelAttribute("cookie") UserCookieDto.InsertDto insertDto
-            , BindingResult bindingResult) {
+            , Authentication authentication, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "cookie/addCookie";
         }
 
-        Long userId = cookieService.insertCookie(insertDto);
+        SiteUser siteUser = (SiteUser) authentication.getPrincipal();
+
+        Long userId = cookieService.insertCookie(insertDto, siteUser.getLoginId());
 
         return "redirect:/cookie/" + userId;
     }

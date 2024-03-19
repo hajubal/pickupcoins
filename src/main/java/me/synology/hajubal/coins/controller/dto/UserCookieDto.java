@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import me.synology.hajubal.coins.entity.Cookie;
+import me.synology.hajubal.coins.entity.SiteUser;
 
 public class UserCookieDto {
 
@@ -21,12 +22,13 @@ public class UserCookieDto {
         @NotBlank
         private String cookie;
 
-        public Cookie toEntity() {
+        public Cookie toEntity(SiteUser siteUser) {
             return Cookie.builder()
                     .userName(userName)
                     .siteName(siteName)
                     .cookie(cookie)
                     .isValid(Boolean.TRUE)
+                    .siteUser(siteUser)
                     .build();
         }
     }

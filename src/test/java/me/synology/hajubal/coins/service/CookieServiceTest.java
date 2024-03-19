@@ -2,17 +2,12 @@ package me.synology.hajubal.coins.service;
 
 import me.synology.hajubal.coins.code.SiteName;
 import me.synology.hajubal.coins.controller.dto.UserCookieDto;
-import me.synology.hajubal.coins.entity.Cookie;
-import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.PointUrlCookie;
-import me.synology.hajubal.coins.entity.SavedPoint;
+import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.exception.SlackServiceException;
-import me.synology.hajubal.coins.respository.CookieRepository;
-import me.synology.hajubal.coins.respository.PointUrlCookieRepository;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.respository.SavedPointRepository;
+import me.synology.hajubal.coins.respository.*;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +41,28 @@ class CookieServiceTest {
     @Autowired
     private SavedPointRepository savedPointRepository;
 
+    @Autowired
+    private SiteUserRepository siteUserRepository;
+
+    @BeforeEach
+    void setup() {
+        cookieRepository.deleteAll();
+        siteUserRepository.deleteAll();
+    }
+
     @DisplayName("cookie 생성 테스트")
     @Test
     void createUserCookie() {
         //given
-        Long userId = createCookie();
+        Long cookieId = createCookie();
 
         //when
-        Optional<Cookie> userCookie = cookieRepository.findById(userId);
+        Optional<Cookie> userCookie = cookieRepository.findById(cookieId);
 
         //then
         assertThat(userCookie).isPresent().get()
-                .has(new Condition<>(cookie -> cookie.getUserName().equals("test"), "test condition"));
+                .has(new Condition<>(cookie -> "test".equals(cookie.getUserName()), "test condition"))
+                .has(new Condition<>(cookie -> (cookie.getSiteUser() != null), "test site user" ));
     }
 
     @DisplayName("cookie 정보 수정 테스트")
@@ -131,11 +136,14 @@ class CookieServiceTest {
      * cookie 생성 핼퍼 함수
      */
     private Long createCookie() {
+        SiteUser siteUser = SiteUser.builder().userName("name").loginId("loginId").slackWebhookUrl("url").password("pw").build();
+        siteUserRepository.save(siteUser);
+
         UserCookieDto.InsertDto insertDto = new UserCookieDto.InsertDto();
         insertDto.setUserName("test");
         insertDto.setSiteName(SiteName.NAVER.name());
         insertDto.setCookie("cookie");
 
-        return cookieService.insertCookie(insertDto);
+        return cookieService.insertCookie(insertDto, siteUser.getLoginId());
     }
 }
