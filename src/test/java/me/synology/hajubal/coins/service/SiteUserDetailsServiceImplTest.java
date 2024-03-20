@@ -45,7 +45,7 @@ class SiteUserDetailsServiceImplTest {
     @DisplayName("사용자 조회 테스트")
     @Test
     void findUser() {
-        SiteUser siteUser = SiteUser.builder().loginId("loginId").password("password").userName("userName").build();
+        SiteUser siteUser = createSiteUser();
 
         //given
         userRepository.save(siteUser);
@@ -55,6 +55,10 @@ class SiteUserDetailsServiceImplTest {
 
         //then
         assertThat(userDetails.getUsername()).isEqualTo(siteUser.getLoginId());
+    }
+
+    private static SiteUser createSiteUser() {
+        return SiteUser.builder().loginId("loginId").password("password").userName("userName").build();
     }
 
 }

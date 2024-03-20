@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
@@ -20,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+
+@ActiveProfiles("test")
 @SpringBootTest
 class CookieServiceTest {
 
@@ -72,12 +75,7 @@ class CookieServiceTest {
         Long id = createCookie();
 
         //when
-        UserCookieDto.UpdateDto updateDto = new UserCookieDto.UpdateDto();
-        updateDto.setId(id);
-        updateDto.setCookie("updateCookie");
-        updateDto.setIsValid(Boolean.TRUE);
-        updateDto.setUserName("updateUserName");
-        updateDto.setSiteName(SiteName.KAKAO.name());
+        UserCookieDto.UpdateDto updateDto = createUpdateDto(id);
 
         cookieService.updateCookie(id, updateDto);
 
@@ -90,6 +88,8 @@ class CookieServiceTest {
         assertThat(cookie.getIsValid()).isEqualTo(updateDto.getIsValid());
         assertThat(cookie.getSiteName()).isEqualTo(updateDto.getSiteName());
     }
+
+
 
     @DisplayName("invalid 호출 중 slack 전송시 예외 발생시 invalid 되는지 테스트")
     @Test
@@ -134,6 +134,8 @@ class CookieServiceTest {
 
     /**
      * cookie 생성 핼퍼 함수
+     *
+     * @return cookie id
      */
     private Long createCookie() {
         SiteUser siteUser = SiteUser.builder().userName("name").loginId("loginId").slackWebhookUrl("url").password("pw").build();
@@ -145,5 +147,21 @@ class CookieServiceTest {
         insertDto.setCookie("cookie");
 
         return cookieService.insertCookie(insertDto, siteUser.getLoginId());
+    }
+
+    /**
+     * update 생성 핼퍼 함수
+     *
+     * @param id
+     * @return UserCookieDto.UpdateDto
+     */
+    private static UserCookieDto.UpdateDto createUpdateDto(Long id) {
+        UserCookieDto.UpdateDto updateDto = new UserCookieDto.UpdateDto();
+        updateDto.setId(id);
+        updateDto.setCookie("updateCookie");
+        updateDto.setIsValid(Boolean.TRUE);
+        updateDto.setUserName("updateUserName");
+        updateDto.setSiteName(SiteName.KAKAO.name());
+        return updateDto;
     }
 }

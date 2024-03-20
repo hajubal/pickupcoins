@@ -4,17 +4,16 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import me.synology.hajubal.coins.controller.dto.SiteUserDto;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class SiteUserServiceTest {
 
@@ -25,7 +24,7 @@ class SiteUserServiceTest {
     private SiteUserRepository siteUserRepository;
 
 
-    @DisplayName("사용자 이름, slackurl 수정 테스트")
+    @DisplayName("사용자 이름, slack url 수정 테스트")
     @Test
     void updateSiteUserTest() {
         //given

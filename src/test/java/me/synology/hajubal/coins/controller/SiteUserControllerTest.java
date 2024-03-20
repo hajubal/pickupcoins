@@ -4,33 +4,30 @@ import me.synology.hajubal.coins.controller.dto.SiteUserDto;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.service.SiteUserService;
 import me.synology.hajubal.coins.util.QueryStringUtils;
-import org.hamcrest.Matchers;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@AutoConfigureMockMvc
-//@SpringBootTest
+@ActiveProfiles("test")
 @WebMvcTest(SiteUserController.class)
 class SiteUserControllerTest {
     @MockBean
     private SiteUserService siteUserService;
-//
-//    @MockBean
-//    private UserDetailsService userDetailsService;
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,8 +42,8 @@ class SiteUserControllerTest {
     @WithMockUser(username="loginId")
     void updateUser() throws Exception {
         //given
-        SiteUserDto.UpdateDto updateDto = createUpdateDto("loginId");
-        SiteUser siteUser = createSiteUser("loginId");
+        SiteUserDto.UpdateDto updateDto = createUpdateDto();
+        SiteUser siteUser = createSiteUser();
 
         given(siteUserService.getSiteUser(updateDto.getLoginId())).willReturn(siteUser);
 
@@ -58,23 +55,23 @@ class SiteUserControllerTest {
 
         //then
         perform.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("siteUser/editUser"))
-                .andExpect(MockMvcResultMatchers.model().attribute("siteUser", Matchers.equalTo(updateDto)));
+                .andExpect(view().name("siteUser/editUser"))
+                .andExpect(model().attribute("siteUser", equalTo(updateDto)));
     }
 
     @NotNull
-    private static SiteUser createSiteUser(String loginId) {
-        SiteUser siteUser = SiteUser.builder().userName("name").password("password").slackWebhookUrl("url").loginId(loginId).build();
+    private static SiteUser createSiteUser() {
+        SiteUser siteUser = SiteUser.builder().userName("name").password("password").slackWebhookUrl("url").loginId("loginId").build();
         ReflectionTestUtils.setField(siteUser, "id", 1L);
 
         return siteUser;
     }
 
     @NotNull
-    private static SiteUserDto.UpdateDto createUpdateDto(String loginId) {
+    private static SiteUserDto.UpdateDto createUpdateDto() {
         SiteUserDto.UpdateDto updateDto = new SiteUserDto.UpdateDto();
         updateDto.setId(1L);
-        updateDto.setLoginId(loginId);
+        updateDto.setLoginId("loginId");
         updateDto.setUserName("name");
         updateDto.setSlackWebhookUrl("url");
         return updateDto;
