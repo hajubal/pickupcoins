@@ -14,6 +14,7 @@
 2. SpringData, JPA
 3. MySql
 4. Slack API
+5. Docker compose
 
 ## 시나리오
 
@@ -22,6 +23,11 @@
 3. 포인트 URL을 로그인 쿠키정보를 포함하여 호출
 
 ## 릴리즈
+### v1.0.7
+- cookie 삭제시 오류 수정
+- table 화면 페이징 처리
+- cookie 추가시 site_user_id 입력안되는 문제 수정
+
 ### v1.0.4
 Docker compose 기반으로 어플리케이션 구동 방식 변경
 
