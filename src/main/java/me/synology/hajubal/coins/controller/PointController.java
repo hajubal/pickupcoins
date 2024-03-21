@@ -2,6 +2,7 @@ package me.synology.hajubal.coins.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.PointUrlCallLog;
 import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
@@ -26,8 +27,27 @@ public class PointController {
     private final Schedulers schedulers;
 
     @GetMapping("/pointUrl")
-    public String pointUrl(Model model) {
-        model.addAttribute("items", pointUrlRepository.findAll());
+    public String pointUrl(Model model, @PageableDefault(page = 0, size = 10, sort = "createdDate"
+            , direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PointUrl> page = pointUrlRepository.findAll(pageable);
+
+        /**
+         * blockLimit : page 개수 설정
+         * 현재 사용자가 선택한 페이지 앞 뒤로 3페이지씩만 보여준다.
+         * ex : 현재 사용자가 4페이지라면 2, 3, (4), 5, 6
+         */
+        int blockLimit = pageable.getPageSize();
+        int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() + 1) / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = Math.min((startPage + blockLimit - 1), Math.max(page.getTotalPages(), 1));
+
+        log.info("Page number: {}", page.getNumber());
+        log.info("Start page: {}", startPage);
+        log.info("End page: {}", endPage);
+
+        model.addAttribute("items", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         return "point/pointUrl";
     }
 
@@ -46,22 +66,17 @@ public class PointController {
     @GetMapping("/savePointLog")
     public String savePointLog(Model model, @PageableDefault(page = 0, size = 10, sort = "createdDate"
             , direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PointUrlCallLog> list = pointUrlCallLogRepository.findAll(pageable);
+        Page<PointUrlCallLog> page = pointUrlCallLogRepository.findAll(pageable);
 
-        /**
-         * blockLimit : page 개수 설정
-         * 현재 사용자가 선택한 페이지 앞 뒤로 3페이지씩만 보여준다.
-         * ex : 현재 사용자가 4페이지라면 2, 3, (4), 5, 6
-         */
         int blockLimit = pageable.getPageSize();
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() + 1) / blockLimit))) - 1) * blockLimit + 1;
-        int endPage = Math.min((startPage + blockLimit - 1), list.getTotalPages());
+        int endPage = Math.min((startPage + blockLimit - 1), Math.max(page.getTotalPages(), 1));
 
-        log.info("Page number: {}", list.getNumber());
+        log.info("Page number: {}", page.getNumber());
         log.info("Start page: {}", startPage);
         log.info("End page: {}", endPage);
 
-        model.addAttribute("items", list);
+        model.addAttribute("items", page);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
