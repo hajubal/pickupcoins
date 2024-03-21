@@ -20,7 +20,7 @@ services:
   coin-mysql:
     container_name: coin-mysql
     image: mysql:8.0
-    restart: no
+    restart: always
     hostname: coin-mysql
     ports:
       - "3306:3306"
