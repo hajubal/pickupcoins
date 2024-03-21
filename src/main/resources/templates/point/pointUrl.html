@@ -30,6 +30,27 @@
             </tr>
           </tbody>
         </table>
+        <div>
+          <nav aria-label="...">
+            <ul class="pagination">
+              <li th:class="${items.first} ? 'page-item  disable' : 'page-item'">
+                <a class="page-link" th:href="${items.first} ? '#' : @{/pointUrl(page=${items.number - 1})}">Previous</a>
+              </li>
+              <th:block th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                <li th:if="${page - 1 == items.number}" class="page-item active" href="#">
+                  <a class="page-link" href="#" th:text="${page}"></a>
+                </li>
+                <!-- 현재페이지 링크 X, 다른 페이지번호에는 링크를 보여준다 -->
+                <li th:unless="${page - 1 == items.number}" class="page-item" aria-current="page">
+                  <a th:href="@{/pointUrl(page=${page - 1})}" th:text="${page}" class="page-link"></a>
+                </li>
+              </th:block>
+              <li th:class="${items.last} ? 'page-item disable' : 'page-item'">
+                <a class="page-link" th:href="${items.last} ? '#' : @{/pointUrl(page=${items.number + 1})}">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </main>
   </body>
