@@ -23,7 +23,6 @@ class PointUrlCookieRepositoryTest {
     void saveTest() {
         PointUrl pointUrl = PointUrl.builder()
                 .url("url")
-                .name("name")
                 .build();
 
         Cookie cookie = Cookie.builder()

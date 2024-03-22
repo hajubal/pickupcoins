@@ -8,6 +8,8 @@ import me.synology.hajubal.coins.entity.Site;
 import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.respository.SiteRepository;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,31 +56,29 @@ public class RuliwebCrawler implements WebCrawler {
      * 게시글 목록에서 네이버 포인트 url 조회
      *
      * @param domain
-     * @param pointPostUrl
+     * @param pointPostUrls
      * @return
      */
-    private Set<PointUrl> extractPointUrls(String domain, Set<String> pointPostUrl) throws IOException {
+    private Set<PointUrl> extractPointUrls(String domain, Set<String> pointPostUrls) throws IOException {
         //포인트 url
-        Set<PointUrl> pointUrl = new HashSet<>();
+        Set<PointUrl> pointUrls = new HashSet<>();
 
-        for (String postUrl : pointPostUrl) {
+        for (String url : pointPostUrls) {
             //게시글 내용에 링크
-            Jsoup.connect(domain + postUrl).get().select(".board_main_view a").forEach(aTag -> {
-                String pointHref = aTag.attr("href");
+            Elements articleElements = Jsoup.connect(domain + url).get().select(".board_main_view a");
 
-                log.debug("Ruliweb point url: {}", pointHref);
+            for (Element element : articleElements) {
+                String href = element.attr("href");
 
-                POINT_URL_TYPE pointType = POINT_URL_TYPE.classifyUrlType(pointHref);
+                log.debug("Ruliweb point url: {}", href);
 
-                pointUrl.add(PointUrl.builder()
-                        .pointUrlType(pointType)
-                        .url(pointHref)
-                        .name(pointType.name())
+                pointUrls.add(PointUrl.builder()
+                        .url(href)
                         .build());
-            });
+            }
         }
 
-        return pointUrl;
+        return pointUrls;
     }
 
 }

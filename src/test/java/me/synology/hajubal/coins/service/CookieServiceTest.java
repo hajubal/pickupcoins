@@ -113,7 +113,7 @@ class CookieServiceTest {
         Long cookieId = createCookie();
         Cookie cookie = cookieService.getCookie(cookieId);
 
-        PointUrl pointUrl = PointUrl.builder().pointUrlType(POINT_URL_TYPE.NAVER).url("url").name("name").build();
+        PointUrl pointUrl = PointUrl.builder().url("url").build();
         pointUrlRepository.save(pointUrl);
 
         PointUrlCookie pointUrlCookie = PointUrlCookie.builder().pointUrl(pointUrl).cookie(cookie).build();
