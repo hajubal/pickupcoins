@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'me.synology.hajubal'
-version = '1.0.7'
+version = '1.0.8'
 sourceCompatibility = '17'
 
 configurations {
@@ -53,6 +53,7 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'commons-beanutils:commons-beanutils:1.9.4'
