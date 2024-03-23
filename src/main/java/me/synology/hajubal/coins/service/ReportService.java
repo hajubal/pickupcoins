@@ -3,16 +3,22 @@ package me.synology.hajubal.coins.service;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.SiteUser;
+import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * 포인트 배치 작업 결과 리포팅 서비스
+ */
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
@@ -25,30 +31,40 @@ public class ReportService {
 
     private final SiteUserRepository siteUserRepository;
 
+    private final CookieRepository cookieRepository;
+
     public void report() {
         //신규로 등록된 URL
         List<PointUrl> pointUrls = pointUrlRepository.findByCreatedDateBetween(
-                LocalDateTime.now().minusDays(1).with(LocalDateTime.MIN),
-                LocalDateTime.now().with(LocalDateTime.MIN));
+                LocalDateTime.now().minusDays(1).with(LocalTime.MIN),
+                LocalDateTime.now().with(LocalTime.MIN));
 
         log.info("Point urls size: {}", pointUrls.size());
 
-        //수집 성공한 URL
+        //TODO: 수집 성공한 URL
+        int successCount = 0;
 
         //현재 로그 인/아웃된 cookie
+        List<Cookie> cookies = cookieRepository.findAll();
+        long invalidCookieCount = cookies.stream().filter(cookie -> cookie.getIsValid().equals(Boolean.FALSE)).count();
 
         //정보 알림 전송
         String message = MessageBuilder.builder()
                 .urlCount(pointUrls.size())
+                .successCount(successCount)
+                .totalCookieCount(cookies.size())
+                .logoutCookieCount((int)invalidCookieCount)
                 .build().format();
 
         //FIXME 사이트 사용자들 기준으로 로그 조회 해서 슬랙 발송되도록 수정 필요
         SiteUser siteUser = siteUserRepository.findAll().get(0);
 
-        slackService.sendMessage("", message);
+        log.info("SiteUser info: {}", siteUser);
+
+        slackService.sendMessage(siteUser.getSlackWebhookUrl(), message);
     }
 
-    static class MessageBuilder {
+    public static class MessageBuilder {
         private final int urlCount;
         private final int successCount;
         private final int totalCookieCount;
