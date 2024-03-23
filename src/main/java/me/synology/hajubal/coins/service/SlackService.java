@@ -2,6 +2,7 @@ package me.synology.hajubal.coins.service;
 
 import com.slack.api.Slack;
 import com.slack.api.webhook.WebhookResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.exception.SlackConfigException;
@@ -31,7 +32,7 @@ public class SlackService {
      * @throws SlackServiceException 전송 오류
      * @throws SlackConfigException slack 설정 오류
      */
-    public WebhookResponse sendMessage(String slackWebhookUrl, String message) throws SlackConfigException, SlackServiceException {
+    public WebhookResponse sendMessage(@NotNull String slackWebhookUrl,@NotNull String message) throws SlackConfigException, SlackServiceException {
         if(!StringUtils.hasText(slackWebhookUrl)) {
             throw new SlackConfigException("Slack web hook url not set.");
         }

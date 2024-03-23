@@ -22,6 +22,9 @@ public class WebCrawlerService {
 
     private final PointUrlRepository pointUrlRepository;
 
+    /**
+     * 등록된 사이트 들에 save point url 저장
+     */
     public void crawling() {
         savePointUrls(crawlPointUrls());
     }
@@ -43,8 +46,7 @@ public class WebCrawlerService {
             try {
                 pointUrlSet.addAll(crawler.crawling());
             } catch (IOException e) {
-                log.error("Crawling fail.");
-                log.error(e.getMessage(), e);
+                log.error("Crawling fail.", e);
             }
         });
 

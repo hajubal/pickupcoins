@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -28,4 +29,6 @@ public interface PointUrlRepository extends JpaRepository<PointUrl, Long> {
             "                      where pu.name = :siteName )"
             )
     List<PointUrl> findByNotCalledUrl(@Param("siteName") String siteName, @Param("userName") String userName);
+
+    List<PointUrl> findByCreatedDateBetween(LocalDateTime startTime, LocalDateTime endTime);
 }

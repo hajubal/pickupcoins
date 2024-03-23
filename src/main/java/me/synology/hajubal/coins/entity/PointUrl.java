@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -36,10 +37,10 @@ public class PointUrl extends BaseDataEntity {
     private Boolean permanent;
 
     @Builder
-    public PointUrl(String name, String url, POINT_URL_TYPE pointUrlType, Boolean permanent) {
-        this.name = name;
+    public PointUrl(String url, Boolean permanent) {
         this.url = url;
-        this.pointUrlType = pointUrlType;
+        this.pointUrlType = POINT_URL_TYPE.classifyUrlType(url);
+        this.name = this.pointUrlType.name();
         this.permanent = permanent;
     }
 }
