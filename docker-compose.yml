@@ -10,6 +10,8 @@ services:
     restart: always
     ports:
       - 7070:8080
+    environment:
+      - TZ=Asia/Seoul
     volumes:
       - /var/services/homes/hajubal/dockerfile/pickupcoins/logs:/logs
     networks:
@@ -28,6 +30,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_LOWER_CASE_TABLE_NAMES=1
+      - TZ=Asia/Seoul
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
