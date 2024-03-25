@@ -19,7 +19,7 @@ public class PointExtractTest {
 
         assertThat(matcher.find()).isTrue();
         String number = matcher.group();
-        String amount = number.replace("원이 적립 됩니다.", "");
+        String amount = number.replace("원이 적립 됩니다.", "").trim();
         assertThat(amount).isEqualTo("15");
     }
 }

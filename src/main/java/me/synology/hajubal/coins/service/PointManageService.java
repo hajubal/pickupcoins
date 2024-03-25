@@ -48,7 +48,7 @@ public class PointManageService {
         Matcher matcher = pattern.matcher(body);
 
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group().replace("원이 적립 됩니다.", ""));
+            return Integer.parseInt(matcher.group().replace("원이 적립 됩니다.", "").trim());
         }
 
         return 0;
