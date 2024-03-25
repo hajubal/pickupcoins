@@ -15,16 +15,16 @@ public class SavedPoint extends BaseDataEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Cookie cookie;
 
-    private String point;
+    private int amount;
 
     @Lob
     @Column(columnDefinition = "MEDIUMTEXT")
     private String responseBody;
 
     @Builder
-    public SavedPoint(Cookie cookie, String point, String responseBody) {
+    public SavedPoint(Cookie cookie, int amount, String responseBody) {
         this.cookie = cookie;
-        this.point = point;
+        this.amount = amount;
         this.responseBody = responseBody;
     }
 }

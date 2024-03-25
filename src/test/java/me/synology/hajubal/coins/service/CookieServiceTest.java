@@ -119,7 +119,7 @@ class CookieServiceTest {
         PointUrlCookie pointUrlCookie = PointUrlCookie.builder().pointUrl(pointUrl).cookie(cookie).build();
         pointUrlCookieRepository.save(pointUrlCookie);
 
-        SavedPoint savedPoint = SavedPoint.builder().point("10").responseBody("body").cookie(cookie).build();
+        SavedPoint savedPoint = SavedPoint.builder().amount(10).responseBody("body").cookie(cookie).build();
         savedPointRepository.save(savedPoint);
 
         //when

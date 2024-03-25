@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
@@ -34,9 +37,20 @@ public class PointManageService {
 
         //getBody() 는 "10원이 적립 되었습니다." 라는 문자열을 포함하고 있음.
         savedPointRepository.save(SavedPoint.builder()
-                .point("코드 수정 필요")
+                .amount(extractAmount(response.getBody()))
                 .cookie(cookie)
                 .responseBody(response.getBody())
                 .build());
+    }
+
+    private int extractAmount(String body) {
+        Pattern pattern = Pattern.compile("\\s\\d+원이 적립 됩니다.");
+        Matcher matcher = pattern.matcher(body);
+
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group().replace("원이 적립 됩니다.", ""));
+        }
+
+        return 0;
     }
 }
