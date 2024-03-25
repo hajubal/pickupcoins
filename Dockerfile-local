@@ -2,9 +2,12 @@ FROM bellsoft/liberica-openjdk-alpine-musl:17
 LABEL description="coin pick server"
 MAINTAINER hajubal@gmail.com
 
+#RUN apk add tzdata \
+#    && ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
 ARG VERSION
 
-ADD ./build/libs/pickupcoins-$VERSION.jar  /pickupcoins.jar
+COPY ./build/libs/pickupcoins-$VERSION.jar  /pickupcoins.jar
 
 RUN mkdir /logs
 
