@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
+import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
+import me.synology.hajubal.coins.respository.SavedPointRepository;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,8 @@ public class ReportService {
 
     private final CookieRepository cookieRepository;
 
+    private final SavedPointRepository savedPointRepository;
+
     public void report() {
         //신규로 등록된 URL
         List<PointUrl> pointUrls = pointUrlRepository.findByCreatedDateBetween(
@@ -41,8 +45,14 @@ public class ReportService {
 
         log.info("Point urls size: {}", pointUrls.size());
 
-        //TODO: 수집 성공한 URL
-        int successCount = 0;
+        //수집 성공한 포인트
+        List<SavedPoint> savedPoints = savedPointRepository.findAllByCreatedDateBetween(
+                LocalDateTime.now().minusDays(1).with(LocalTime.MIN),
+                LocalDateTime.now().with(LocalTime.MIN));
+
+        int successCount = savedPoints.size();
+
+        int dayAmount = savedPoints.stream().mapToInt(SavedPoint::getAmount).sum();
 
         //현재 로그 인/아웃된 cookie
         List<Cookie> cookies = cookieRepository.findAll();
@@ -52,6 +62,7 @@ public class ReportService {
         String message = MessageBuilder.builder()
                 .urlCount(pointUrls.size())
                 .successCount(successCount)
+                .amount(dayAmount)
                 .totalCookieCount(cookies.size())
                 .logoutCookieCount((int)invalidCookieCount)
                 .build().format();
@@ -69,23 +80,27 @@ public class ReportService {
         private final int successCount;
         private final int totalCookieCount;
         private final int logoutCookieCount;
+        private final int amount;
 
         private static final String FORMAT = """
         - 수집한 URL: %d 개
         - 수집 성공한 URL: %d 개
         - 전체 쿠키 수(로그아웃 수): %d (%d)
+        - 수집한 금액: %d
         """;
 
         @Builder
-        public MessageBuilder(int urlCount, int successCount, int totalCookieCount, int logoutCookieCount) {
+        public MessageBuilder(int urlCount, int successCount, int totalCookieCount, int logoutCookieCount, int amount) {
             this.urlCount = urlCount;
             this.successCount = successCount;
             this.totalCookieCount = totalCookieCount;
             this.logoutCookieCount = logoutCookieCount;
+            this.amount = amount;
         }
 
         public String format() {
-            return FORMAT.formatted(this.urlCount, this.successCount, this.totalCookieCount, this.logoutCookieCount);
+            return FORMAT.formatted(this.urlCount, this.successCount, this.totalCookieCount, this.logoutCookieCount
+                    , this.amount);
         }
     }
 

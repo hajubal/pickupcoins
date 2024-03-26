@@ -2,9 +2,11 @@ package me.synology.hajubal.coins.service;
 
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
+import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
+import me.synology.hajubal.coins.respository.SavedPointRepository;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class ReportServiceTest {
     @Autowired
     private SiteUserRepository siteUserRepository;
 
+    @Autowired
+    private SavedPointRepository savedPointRepository;
+
     @MockBean
     private SlackService slackService;
 
@@ -55,6 +60,7 @@ public class ReportServiceTest {
         cookieRepository.deleteAll();
         pointUrlRepository.deleteAll();
         siteUserRepository.deleteAll();
+        savedPointRepository.deleteAll();
         entityManager.flush();
 
         //given
@@ -81,7 +87,12 @@ public class ReportServiceTest {
         Cookie invalidCookie = Cookie.builder().userName("user2").siteName("naver").cookie("invalidCookie").siteUser(siteUser).isValid(Boolean.FALSE).build();
         cookieRepository.save(invalidCookie);
 
-        pointUrlRepository.findAll().stream().forEach(pointUrl1 -> System.out.println("pointUrl1 = " + pointUrl1));
+        jdbcTemplate.update("insert into SAVED_POINT (ID, AMOUNT, COOKIE_ID, CREATED_DATE) values ( ?, ?, ?, ? )"
+                , 1L, 200, 1L, LocalDateTime.now().minusDays(1));
+
+        pointUrlRepository.findAll().forEach(pointUrl1 -> System.out.println("pointUrl1 = " + pointUrl1));
+
+//        savedPointRepository.save(SavedPoint.builder().cookie(validCookie).responseBody("body").amount(200).build());
 
         //when
         reportService.report();
@@ -90,7 +101,8 @@ public class ReportServiceTest {
                 .urlCount(1)
                 .totalCookieCount(2)
                 .logoutCookieCount(1)
-                .successCount(0)
+                .successCount(1)
+                .amount(200)
                 .build().format();
 
         //then
