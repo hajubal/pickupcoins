@@ -19,7 +19,7 @@ public class MainController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/dashboard";
+        return "redirect:dashboard";
     }
 
     @GetMapping("/dashboard")
@@ -30,5 +30,10 @@ public class MainController {
         model.addAttribute("items", all);
 
         return "dashboard";
+    }
+
+    @GetMapping("/demo")
+    public String demo() {
+        return "index";
     }
 }
