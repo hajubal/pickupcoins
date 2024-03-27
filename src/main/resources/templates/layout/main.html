@@ -1,6 +1,8 @@
 <!doctype html>
 <html th:fragment="layout (title, content)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
+
+    <!-- legacy start -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -20,114 +22,148 @@
     <!-- Custom styles for this template -->
     <link th:href="@{/css/dashboard.css}" href="../static/css/dashboard.css" rel="stylesheet">
     <link th:href="@{/css/custom.css}" href="../static/css/custom.css" rel="stylesheet">
+    <!-- legacy end -->
+
+
+
+
+
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/img/favicon/favicon.ico}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+            rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/fonts/boxicons.css}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/core.css}" class="template-customizer-core-css" />
+    <link rel="stylesheet" th:href="@{/assets/vendor/css/theme-default.css}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}" />
+
+    <link rel="stylesheet" th:href="@{/assets/vendor/libs/apex-charts/apex-charts.css}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script th:src="@{/assets/vendor/js/helpers.js}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script th:src="@{/assets/js/config.js}"></script>
+
+
+
+
+
   </head>
   <body>
     
-<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">Pick up coin</a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
-  <div class="navbar-nav">
-    <div class="nav-item text-nowrap">
-      <a sec:authorize="isAuthenticated()" id="logout" class="nav-link px-3" th:href="@{/logout}">Sign out</a>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">Pick up coin</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input class="form-control form-control-dark w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a sec:authorize="isAuthenticated()" id="logout" class="nav-link px-3" th:href="@{/logout}">Sign out</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="position-sticky pt-3 sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/dashboard')} ? 'active' : ''" class="nav-link" aria-current="page" href="/dashboard">
+                  <span data-feather="home" class="align-text-bottom"></span>
+                  Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/siteUser')} ? 'active' : ''" class="nav-link" href="/siteUser">
+                  <span data-feather="siteUser" class="align-text-bottom"></span>
+                  사이트 사용자
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/users')} ? 'active' : ''" class="nav-link" href="/cookies">
+                  <span data-feather="users" class="align-text-bottom"></span>
+                  사용자 쿠키
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/sites')} ? 'active' : ''" class="nav-link" href="/sites">
+                  <span data-feather="file" class="align-text-bottom"></span>
+                  사이트
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/pointUrl')} ? 'active' : ''" class="nav-link" href="/pointUrl">
+                  <span data-feather="bar-chart-2" class="align-text-bottom"></span>
+                  포인트 URL
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/savePointLog')} ? 'active' : ''" class="nav-link" href="/savePointLog">
+                  <span data-feather="bar-chart-2" class="align-text-bottom"></span>
+                  포인트 로그
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" th:replace="${content}">
+        </main>
+      </div>
     </div>
-  </div>
-</header>
 
-<div class="container-fluid">
-  </form>
-  <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-      <div class="position-sticky pt-3 sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/dashboard')} ? 'active' : ''" class="nav-link" aria-current="page" href="/dashboard">
-              <span data-feather="home" class="align-text-bottom"></span>
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/siteUser')} ? 'active' : ''" class="nav-link" href="/siteUser">
-              <span data-feather="siteUser" class="align-text-bottom"></span>
-              사이트 사용자
-            </a>
-          </li>
-          <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/users')} ? 'active' : ''" class="nav-link" href="/cookies">
-              <span data-feather="users" class="align-text-bottom"></span>
-              사용자 쿠키
-            </a>
-          </li>
-          <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/sites')} ? 'active' : ''" class="nav-link" href="/sites">
-              <span data-feather="file" class="align-text-bottom"></span>
-              사이트
-            </a>
-          </li>
-          <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/pointUrl')} ? 'active' : ''" class="nav-link" href="/pointUrl">
-              <span data-feather="bar-chart-2" class="align-text-bottom"></span>
-              포인트 URL
-            </a>
-          </li>
-          <li class="nav-item">
-            <a th:classappend="${#ctx.springRequestContext.requestUri.equals('/savePointLog')} ? 'active' : ''" class="nav-link" href="/savePointLog">
-              <span data-feather="bar-chart-2" class="align-text-bottom"></span>
-              포인트 로그
-            </a>
-          </li>
-          <!--
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="shopping-cart" class="align-text-bottom"></span>
-              포인트 URL
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers" class="align-text-bottom"></span>
-              Integrations
-            </a>
-          </li>
-          -->
-        </ul>
-      </div>
-    </nav>
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" th:replace="${content}">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
-      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+    <script th:src="@{/js/dashboard.js}" src="../static/js/dashboard.js"></script>
 
-      <h2>호출 통계</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">User Name</th>
-              <th scope="col">Status Code</th>
-              <th scope="col">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="item : ${items}">
-              <td th:text="${item.id}">id</td>
-              <td th:text="${item.userName}">userName</td>
-              <td th:text="${item.responseStatusCode}">status code</td>
-              <td th:text="${item.createdDate}">create date</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
-</div>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
-      <script th:src="@{/js/dashboard.js}" src="../static/js/dashboard.js"></script>
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+    <script th:src="@{/assets/vendor/libs/popper/popper.js}"></script>
+    <script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+
+    <script th:src="@{/assets/vendor/js/menu.js}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script th:src="@{/assets/vendor/libs/apex-charts/apexcharts.js}"></script>
+
+    <!-- Main JS -->
+    <script th:src="@{/assets/js/main.js}"></script>
+
+    <!-- Page JS -->
+    <script th:src="@{/assets/js/dashboards-analytics.js}"></script>
   </body>
 </html>
