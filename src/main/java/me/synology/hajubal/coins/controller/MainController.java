@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
+import me.synology.hajubal.coins.service.DashboardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,8 @@ public class MainController {
 
     private final SavedPointRepository savedPointRepository;
 
+    private final DashboardService dashboardService;
+
     @GetMapping("/")
     public String index() {
         return "redirect:/dashboard";
@@ -24,11 +27,7 @@ public class MainController {
 
     @GetMapping("/dashboard")
     public String dashBoard(Model model) {
-
-        List<SavedPoint> all = savedPointRepository.findAll();
-
-        model.addAttribute("items", all);
-
+        model.addAttribute("dashboardDto", dashboardService.getDashboard());
         return "dashboard";
     }
 

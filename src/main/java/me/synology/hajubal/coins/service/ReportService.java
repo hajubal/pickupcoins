@@ -7,15 +7,10 @@ import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
-import me.synology.hajubal.coins.respository.CookieRepository;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.respository.SavedPointRepository;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -27,35 +22,32 @@ import java.util.List;
 @Service
 public class ReportService {
 
-    private final PointUrlRepository pointUrlRepository;
-
     private final SlackService slackService;
 
     private final SiteUserRepository siteUserRepository;
 
-    private final CookieRepository cookieRepository;
+    private final PointUrlService pointUrlService;
 
-    private final SavedPointRepository savedPointRepository;
+    private final SavedPointService savedPointService;
+
+    private final CookieService cookieService;
 
     public void report() {
         //신규로 등록된 URL
-        List<PointUrl> pointUrls = pointUrlRepository.findByCreatedDateBetween(
-                LocalDateTime.now().minusDays(1).with(LocalTime.MIN),
-                LocalDateTime.now().with(LocalTime.MIN));
+        List<PointUrl> pointUrls = pointUrlService.findPointUrl(1);
 
         log.info("Point urls size: {}", pointUrls.size());
 
         //수집 성공한 포인트
-        List<SavedPoint> savedPoints = savedPointRepository.findAllByCreatedDateBetween(
-                LocalDateTime.now().minusDays(1).with(LocalTime.MIN),
-                LocalDateTime.now().with(LocalTime.MIN));
+        List<SavedPoint> savedPoints = savedPointService.findSavedPoint(1);
 
         int successCount = savedPoints.size();
 
         int dayAmount = savedPoints.stream().mapToInt(SavedPoint::getAmount).sum();
 
         //현재 로그 인/아웃된 cookie
-        List<Cookie> cookies = cookieRepository.findAll();
+        List<Cookie> cookies = cookieService.getAll();
+
         long invalidCookieCount = cookies.stream().filter(cookie -> cookie.getIsValid().equals(Boolean.FALSE)).count();
 
         //정보 알림 전송
