@@ -1,32 +1,23 @@
 package me.synology.hajubal.coins.service;
 
 import me.synology.hajubal.coins.entity.Cookie;
-import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
 import me.synology.hajubal.coins.respository.SiteUserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.auditing.AuditingHandler;
-import org.springframework.data.auditing.config.AuditingBeanDefinitionRegistrarSupport;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 
-@DataJpaTest
-@Import(ReportService.class)
+@SpringBootTest
 public class ReportServiceTest {
 
     @Autowired
@@ -48,21 +39,19 @@ public class ReportServiceTest {
     private SlackService slackService;
 
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Transactional
-    @Test
-    void reportTest() {
+    @BeforeEach
+    void setup() {
         //init.sql 에 저장된 데이터 삭제
         cookieRepository.deleteAll();
         pointUrlRepository.deleteAll();
         siteUserRepository.deleteAll();
         savedPointRepository.deleteAll();
-        entityManager.flush();
+    }
 
+    @Test
+    void reportTest() {
         //given
         /**
          * FIXME 해당 테스트를 단독으로 실행 했을 때는 TestEntityManager 사용시 @EnableJpaAuditing 작동하지 않아 아래 로직으로
@@ -88,7 +77,7 @@ public class ReportServiceTest {
         cookieRepository.save(invalidCookie);
 
         jdbcTemplate.update("insert into SAVED_POINT (ID, AMOUNT, COOKIE_ID, CREATED_DATE) values ( ?, ?, ?, ? )"
-                , 1L, 200, 1L, LocalDateTime.now().minusDays(1));
+                , 1L, 200, validCookie.getId(), LocalDateTime.now().minusDays(1));
 
         pointUrlRepository.findAll().forEach(pointUrl1 -> System.out.println("pointUrl1 = " + pointUrl1));
 
