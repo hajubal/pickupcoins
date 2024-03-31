@@ -30,6 +30,11 @@ public class DashboardService {
         List<SavedPoint> savedPointDay = savedPointService.findSavedPoint(1);
         List<SavedPoint> savedPointWeek = savedPointService.findSavedPoint(7);
 
+        int dayPoint = savedPointDay.stream().mapToInt(SavedPoint::getAmount).sum();
+        int weekPoint = savedPointWeek.stream().mapToInt(SavedPoint::getAmount).sum();
+
+        List<Integer> points = savedPointWeek.stream().map(SavedPoint::getAmount).toList();
+
         List<Cookie> cookies = cookieService.getAll();
 
         int count = cookies.stream().filter(Cookie::getIsValid).toList().size();
@@ -39,8 +44,9 @@ public class DashboardService {
                 .totalCookieCnt(cookies.size())
                 .pointUrlDayCnt(pointUrlDay.size())
                 .pointUrlWeekCnt(pointUrlWeek.size())
-                .savedDayPoint(savedPointDay.size())
-                .savedWeekPoint(savedPointWeek.size())
+                .savedDayPoint(dayPoint)
+                .savedWeekPoint(weekPoint)
+                .points(points)
                 .build();
     }
 }
