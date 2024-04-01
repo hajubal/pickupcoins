@@ -28,10 +28,20 @@ public class DashboardService {
         List<PointUrl> pointUrlWeek = pointUrlService.findPointUrl(7);
 
         List<SavedPoint> savedPointDay = savedPointService.findSavedPoint(1);
+        List<SavedPoint> savedPoint2Day = savedPointService.findSavedPoint(2);
         List<SavedPoint> savedPointWeek = savedPointService.findSavedPoint(7);
+        List<SavedPoint> savedPoint2Week = savedPointService.findSavedPoint(14);
 
         int dayPoint = savedPointDay.stream().mapToInt(SavedPoint::getAmount).sum();
+        int day2Point = savedPoint2Day.stream().mapToInt(SavedPoint::getAmount).sum();
         int weekPoint = savedPointWeek.stream().mapToInt(SavedPoint::getAmount).sum();
+        int week2Point = savedPoint2Week.stream().mapToInt(SavedPoint::getAmount).sum();
+
+        double beforeDayPoint = day2Point - dayPoint; //2일 전 포인트
+        double beforeWeekPoint = week2Point - weekPoint; //2주 전 포인트
+
+        double dayPointRatioDayBefore = beforeDayPoint == 0 ? 0 : (dayPoint / beforeDayPoint) * 100 - 100;
+        double dayPointRatioWeekBefore = beforeWeekPoint == 0 ? 0 : (weekPoint / beforeWeekPoint) * 100 - 100;
 
         List<Integer> points = savedPointWeek.stream().map(SavedPoint::getAmount).toList();
 
@@ -46,8 +56,17 @@ public class DashboardService {
                 .pointUrlWeekCnt(pointUrlWeek.size())
                 .savedDayPoint(dayPoint)
                 .savedWeekPoint(weekPoint)
+                .savedDayPointRatioDayBefore(dayPointRatioDayBefore)
+                .savedWeekPointRatioWeekBefore(dayPointRatioWeekBefore)
                 .points(points)
                 .build();
+    }
+
+    public static void main(String[] args) {
+        double a = 5;
+        double b = 12;
+
+        System.out.println(((a / b) * 100) - 100);
     }
 }
 

@@ -13,7 +13,7 @@
                       <div class="card-title d-flex align-items-start justify-content-between">
                         <div class="avatar flex-shrink-0">
                           <img
-                                  th:src="@{/assets/img/icons/unicons/chart-success.png}"
+                                  th:src="@{/assets/img/icons/unicons/paypal.png}"
                                   alt="chart success"
                                   class="rounded"
                           />
@@ -31,13 +31,14 @@
                           </button>
                           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
                             <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                           </div>
                         </div>
                       </div>
                       <span class="fw-semibold d-block mb-1">Day Point</span>
-                      <h3 class="card-title mb-2" th:text="${dashboardDto.getSavedDayPoint()}">$12,628</h3>
-                      <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                      <h3 class="card-title mb-2" th:text="${dashboardDto.getSavedDayPoint()}">0</h3>
+                      <small class="fw-semibold" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'text-success' : 'text-danger'">
+                        <i class="bx" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt'"></i>
+                        <span th:text="${dashboardDto.getSavedDayPointRatioDayBefore()}">0</span>%</small>
                     </div>
                   </div>
                 </div>
@@ -47,7 +48,7 @@
                       <div class="card-title d-flex align-items-start justify-content-between">
                         <div class="avatar flex-shrink-0">
                           <img
-                                  th:src="@{/assets/img/icons/unicons/wallet-info.png}"
+                                  th:src="@{/assets/img/icons/unicons/paypal.png}"
                                   alt="Credit Card"
                                   class="rounded"
                           />
@@ -65,13 +66,14 @@
                           </button>
                           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
                             <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                           </div>
                         </div>
                       </div>
                       <span>Week Point</span>
-                      <h3 class="card-title text-nowrap mb-1" th:text="${dashboardDto.getSavedWeekPoint()}">$4,679</h3>
-                      <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+                      <h3 class="card-title text-nowrap mb-1" th:text="${dashboardDto.getSavedWeekPoint()}">0</h3>
+                      <small class="fw-semibold" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'text-success' : 'text-danger'">
+                        <i class="bx" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt'"></i>
+                        <span th:text="${dashboardDto.getSavedDayPointRatioDayBefore()}">0</span>%</small>
                     </div>
                   </div>
                 </div>
@@ -80,7 +82,7 @@
                     <div class="card-body">
                       <div class="card-title d-flex align-items-start justify-content-between">
                         <div class="avatar flex-shrink-0">
-                          <img th:src="@{/assets/img/icons/unicons/paypal.png}" alt="Credit Card" class="rounded" />
+                          <img th:src="@{/assets/img/icons/unicons/cc-primary.png}" alt="Credit Card" class="rounded" />
                         </div>
                         <div class="dropdown">
                           <button
@@ -95,13 +97,11 @@
                           </button>
                           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4">
                             <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                           </div>
                         </div>
                       </div>
                       <span class="d-block mb-1">Day Point Url</span>
-                      <h3 class="card-title text-nowrap mb-2" th:text="${dashboardDto.getPointUrlDayCnt()}">$2,456</h3>
-                      <small class="text-danger fw-semibold"><i class="bx bx-down-arrow-alt"></i> -14.82%</small>
+                      <h3 class="card-title text-nowrap mb-2" th:text="${dashboardDto.getPointUrlDayCnt()}">0</h3>
                     </div>
                   </div>
                 </div>
@@ -125,13 +125,11 @@
                           </button>
                           <div class="dropdown-menu" aria-labelledby="cardOpt1">
                             <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                           </div>
                         </div>
                       </div>
                       <span class="fw-semibold d-block mb-1">Week Point Url</span>
-                      <h3 class="card-title mb-2" th:text="${dashboardDto.getPointUrlWeekCnt()}">$14,857</h3>
-                      <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
+                      <h3 class="card-title mb-2" th:text="${dashboardDto.getPointUrlWeekCnt()}">0</h3>
                     </div>
                   </div>
                 </div>
@@ -144,9 +142,7 @@
                             <h5 class="text-nowrap mb-2">Point Report</h5>
                             <span class="badge bg-label-warning rounded-pill">Week</span>
                           </div>
-                          <div class="mt-sm-auto">
-                            <small class="text-success text-nowrap fw-semibold"><i class="bx bx-chevron-up"></i> 68.2%</small>
-                            <h3 class="mb-0" th:text="${dashboardDto.getSavedWeekPoint()}">$84,686k</h3>
+                            <h3 class="mb-0" th:text="${dashboardDto.getSavedWeekPoint()}">0</h3>
                           </div>
                         </div>
                         <div id="pointReportChart"></div>

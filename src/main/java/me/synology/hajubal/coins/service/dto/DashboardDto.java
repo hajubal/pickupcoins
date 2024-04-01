@@ -13,9 +13,13 @@ public class DashboardDto {
 
     private final int savedDayPoint;
 
+    private final double savedDayPointRatioDayBefore;
+
     private final int pointUrlWeekCnt;
 
     private final int savedWeekPoint;
+
+    private final double savedWeekPointRatioWeekBefore;
 
     private final int totalCookieCnt;
 
