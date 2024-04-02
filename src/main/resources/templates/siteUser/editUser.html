@@ -1,53 +1,141 @@
 <!doctype html>
-<html th:replace="~{layout/main :: layout(~{::title}, ~{::main})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::.content-wrapper})}" xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">사용자</h1>
-  </div>
-  <h2>정보 변경</h2>
-  <div class="table-responsive">
-    <form th:action="@{/siteUser}" th:object="${siteUser}" method="post">
+  <!-- Content wrapper -->
+  <div class="content-wrapper">
+    <!-- Content -->
 
-      <div th:if="${#fields.hasGlobalErrors()}">
-        <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
-      </div>
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="fw-bold py-3 mb-4">Site User</h4>
 
-      <div class="mb-3">
-        <label for="id" class="form-label" th:text="#{siteUser.id}">사용자 ID</label>
-        <input type="text" class="form-control disabled-input" id="id" th:field="*{id}" readonly
-               th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
-      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card mb-4">
+            <h5 class="card-header">Profile Details</h5>
+            <!-- Account -->
+            <div class="card-body">
+              <div class="d-flex align-items-start align-items-sm-center gap-4">
+                <img
+                        src="../assets/img/avatars/1.png"
+                        alt="user-avatar"
+                        class="d-block rounded"
+                        height="100"
+                        width="100"
+                        id="uploadedAvatar"
+                />
+                <div class="button-wrapper">
+                  <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                    <span class="d-none d-sm-block">Upload new photo</span>
+                    <i class="bx bx-upload d-block d-sm-none"></i>
+                    <input
+                            type="file"
+                            id="upload"
+                            class="account-file-input"
+                            hidden
+                            accept="image/png, image/jpeg"
+                    />
+                  </label>
+                  <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                    <i class="bx bx-reset d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Reset</span>
+                  </button>
 
-      <div class="mb-3">
-        <label for="loginId" class="form-label" th:text="#{siteUser.loginId}">사용자 로그인 ID</label>
-        <input type="text" class="form-control disabled-input" id="loginId" th:field="*{loginId}" readonly
-               th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
-      </div>
+                  <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+                </div>
+              </div>
+            </div>
+            <hr class="my-0" />
+            <div class="card-body">
+              <form id="formAccountSettings" th:action="@{/siteUser}" th:object="${siteUser}" method="post">
+                <div th:if="${#fields.hasGlobalErrors()}">
+                  <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+                </div>
 
-      <div class="mb-3">
-        <label for="userName" class="form-label" th:text="#{siteUser.userName}">사용자 이름</label>
-        <input type="text" class="form-control" id="userName" th:field="*{userName}"
-               th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
-        <div class="field-error" th:errors="*{userName}">
-          사용자 이름 오류
+                <div class="row">
+                  <div class="mb-3 col-md-6">
+                    <label for="id" class="form-label" th:text="#{siteUser.id}">ID</label>
+                    <input
+                            class="form-control"
+                            type="text"
+                            id="id"
+                            th:field="*{id}"
+                            readonly
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="loginId" class="form-label" th:text="#{siteUser.loginId}">사용자 로그인 ID</label>
+                    <input
+                            class="form-control"
+                            type="text"
+                            id="loginId"
+                            th:field="*{loginId}"
+                            readonly
+
+                    />
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="userName" class="form-label" th:text="#{siteUser.userName}">사용자 이름</label>
+                    <input class="form-control" type="text" name="lastName" id="userName" th:field="*{userName}"
+                           th:errorclass="field-error" placeholder="사용자 이름을 입력하세요" autofocus/>
+                    <div class="field-error" th:errors="*{userName}">
+                      사용자 이름 오류
+                    </div>
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="slackWebhookUrl" class="form-label" th:text="#{siteUser.slackWebhookUrl}">SlackWebhookUrl</label>
+                    <input
+                            class="form-control"
+                            type="text"
+                            id="slackWebhookUrl" th:field="*{slackWebhookUrl}"
+                            th:errorclass="field-error" placeholder="SlackWebhookUr을 입력하세요"/>
+                    <div class="field-error" th:errors="*{slackWebhookUrl}">
+                      WebHookUrl 오류
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                  <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/updatePassword}'|">Password Change</button>
+                  <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                </div>
+              </form>
+            </div>
+            <!-- /Account -->
+          </div>
+          <div class="card">
+            <h5 class="card-header">Delete Account</h5>
+            <div class="card-body">
+              <div class="mb-3 col-12 mb-0">
+                <div class="alert alert-warning">
+                  <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete your account?</h6>
+                  <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+                </div>
+              </div>
+              <form id="formAccountDeactivation" onsubmit="return false">
+                <div class="form-check mb-3">
+                  <input
+                          class="form-check-input"
+                          type="checkbox"
+                          name="accountActivation"
+                          id="accountActivation"
+                  />
+                  <label class="form-check-label" for="accountActivation"
+                  >I confirm my account deactivation</label
+                  >
+                </div>
+                <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+    <!-- / Content -->
 
-      <div class="mb-3">
-        <label for="cookie" class="form-label" th:text="#{siteUser.slackWebhookUrl}">SlackWebhookUrl</label>
-        <input type="text" class="form-control" id="cookie" th:field="*{slackWebhookUrl}"
-               th:errorclass="field-error" placeholder="SlackWebhookUr을 입력하세요">
-        <div class="field-error" th:errors="*{slackWebhookUrl}">
-          WebHookUrl 오류
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/updatePassword}'|">Password Change</button>
-    </form>
+    <div class="content-backdrop fade"></div>
   </div>
-</main>
+  <!-- Content wrapper -->
+
 </body>
 </html>
