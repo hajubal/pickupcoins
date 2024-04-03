@@ -44,7 +44,7 @@ dependencies {
 
 	implementation 'com.slack.api:slack-api-client:1.27.1'
 	implementation 'org.jsoup:jsoup:1.15.3'
-	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
