@@ -112,24 +112,46 @@
                   <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
                 </div>
               </div>
-              <form id="formAccountDeactivation" onsubmit="return false">
-                <div class="form-check mb-3">
-                  <input
-                          class="form-check-input"
-                          type="checkbox"
-                          name="accountActivation"
-                          id="accountActivation"
-                  />
-                  <label class="form-check-label" for="accountActivation"
-                  >I confirm my account deactivation</label
-                  >
-                </div>
-                <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
-              </form>
+              <div class="form-check mb-3">
+                <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="accountActivation"
+                        id="accountActivation"
+                />
+                <label class="form-check-label" for="accountActivation"
+                >I confirm my account deactivation</label
+                >
+              </div>
+              <button type="button" class="btn btn-danger deactivate-account" th:onclick="inactivate()">Deactivate Account</button>
             </div>
           </div>
         </div>
       </div>
+
+      <script>
+        function inactivate() {
+          const csrfToken = $("meta[name='_csrf']").attr("content");
+          const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+          if($("#accountActivation").is(":checked")) {
+            $.ajax({
+              url: '[[@{/siteUser}]]', // Replace with your endpoint URL
+              type: 'DELETE',
+              beforeSend: function(xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+              },
+              success: function(result) {
+                console.log(result)
+              },
+              error: function(error) {
+                alert(error)
+              }
+            });
+          }
+        }
+
+      </script>
     </div>
     <!-- / Content -->
 

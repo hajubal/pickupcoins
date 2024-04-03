@@ -33,6 +33,9 @@ public class SiteUser extends BaseDataEntity {
     @Column
     private String slackWebhookUrl;
 
+    @Column
+    private Boolean active = Boolean.TRUE;
+
     @JsonCreator
     public SiteUser(Long id, String loginId, String userName, String password, String slackWebhookUrl) {
         this.id = id;
@@ -60,5 +63,9 @@ public class SiteUser extends BaseDataEntity {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void inActivate() {
+        this.active = Boolean.FALSE;
     }
 }

@@ -61,4 +61,16 @@ public class SiteUserService {
 
         siteUser.updatePassword(encoded);
     }
+
+    /**
+     * 사용자 비활성화
+     *
+     * @param loginId
+     */
+    @Transactional
+    public void inActivate(String loginId) {
+        SiteUser siteUser = siteUserRepository.findByLoginId(loginId).orElseThrow();
+
+        siteUser.inActivate();
+    }
 }

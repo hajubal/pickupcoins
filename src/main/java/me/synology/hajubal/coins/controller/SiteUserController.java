@@ -15,9 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -91,5 +89,14 @@ public class SiteUserController {
         siteUserService.updatePassword(((SiteUser) userDetails).getId(), passwordUpdateDto.getNewPassword());
 
         return "siteUser/updatePassword";
+    }
+
+    @ResponseBody
+    @DeleteMapping("/siteUser")
+    public String inactivate(Authentication authentication) {
+
+        siteUserService.inActivate(authentication.getName());
+
+        return "ok";
     }
 }
