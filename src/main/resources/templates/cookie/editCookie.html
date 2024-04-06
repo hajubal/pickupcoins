@@ -1,77 +1,95 @@
 <!doctype html>
-<html th:replace="~{layout/main :: layout(~{::title}, ~{::main})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::.content-wrapper})}" xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">사용자</h1>
+<!-- Content wrapper -->
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">Cookie</h4>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <h5 class="card-header">추가</h5>
+          <!-- Account -->
+
+          <hr class="my-0" />
+          <div class="card-body">
+
+            <form th:action="@{/cookie/{id}(id=${cookie.id})}" th:object="${cookie}" method="post">
+
+              <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+              </div>
+
+              <div class="mb-3">
+                <label for="userName" class="form-label" th:text="#{cookie.id}">쿠키 ID</label>
+                <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
+              </div>
+
+              <div class="mb-3">
+                <label for="userName" class="form-label" th:text="#{cookie.userName}">사용자 이름</label>
+                <input type="text" class="form-control" id="userName" th:field="*{userName}"
+                       th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
+                <div class="field-error" th:errors="*{userName}">
+                  사용자 이름 오류
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="siteName" class="form-label" th:text="#{cookie.siteName}">사이트 이름</label>
+                <select th:field="*{siteName}" class="form-select" aria-label="사이트 이름">
+                  <option th:each="name : ${siteName}" th:value="${name}" th:selected="${name == cookie.siteName}"
+                          th:text="${name}">siteName</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="cookie" class="form-label" th:text="#{cookie.cooke}">쿠키</label>
+                <input type="text" class="form-control" id="cookie" th:field="*{cookie}"
+                       th:errorclass="field-error" placeholder="쿠키값을 입력하세요">
+                <div class="field-error" th:errors="*{cookie}">
+                  쿠키값 오류
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="cookie" class="form-label" th:text="#{cookie.isValid}">유효성</label>
+                <input type="text" class="form-control" id="isValid" th:field="*{isValid}"
+                       th:errorclass="field-error" placeholder="유효성 값을 입력하세요">
+                <div class="field-error" th:errors="*{isValid}">
+                  유효성 오류
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/cookies}'|">List</button>
+              <button type="button" class="btn btn-primary" th:userId="${cookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
+            </form>
+            <form id="deleteUser" th:action="@{/cookie/{id}(id=${cookie.id})}" th:method="delete">
+            </form>
+
+            <script>
+              function deleteUser(userId) {
+                console.log('userId' + userId);
+                let form = document.getElementById("deleteUser");
+                form.submit();
+              }
+
+            </script>
+          </div>
+          <!-- /Account -->
+        </div>
+      </div>
+    </div>
   </div>
-  <h2>쿠키 수정</h2>
-  <div class="table-responsive">
-    <form th:action="@{/cookie/{id}(id=${cookie.id})}" th:object="${cookie}" method="post">
+  <!-- / Content -->
 
-      <div th:if="${#fields.hasGlobalErrors()}">
-        <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
-      </div>
-
-      <div class="mb-3">
-        <label for="userName" class="form-label" th:text="#{cookie.id}">쿠키 ID</label>
-        <input type="text" class="form-control" id="id" th:field="*{id}" readonly>
-      </div>
-
-      <div class="mb-3">
-        <label for="userName" class="form-label" th:text="#{cookie.userName}">사용자 이름</label>
-        <input type="text" class="form-control" id="userName" th:field="*{userName}"
-               th:errorclass="field-error" placeholder="사용자 이름을 입력하세요">
-        <div class="field-error" th:errors="*{userName}">
-          사용자 이름 오류
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label for="siteName" class="form-label" th:text="#{cookie.siteName}">사이트 이름</label>
-        <select th:field="*{siteName}" class="form-select" aria-label="사이트 이름">
-          <option th:each="name : ${siteName}" th:value="${name}" th:selected="${name == cookie.siteName}"
-                  th:text="${name}">siteName</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label for="cookie" class="form-label" th:text="#{cookie.cooke}">쿠키</label>
-        <input type="text" class="form-control" id="cookie" th:field="*{cookie}"
-               th:errorclass="field-error" placeholder="쿠키값을 입력하세요">
-        <div class="field-error" th:errors="*{cookie}">
-          쿠키값 오류
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label for="cookie" class="form-label" th:text="#{cookie.isValid}">유효성</label>
-        <input type="text" class="form-control" id="isValid" th:field="*{isValid}"
-               th:errorclass="field-error" placeholder="유효성 값을 입력하세요">
-        <div class="field-error" th:errors="*{isValid}">
-          유효성 오류
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-      <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/cookies}'|">List</button>
-      <button type="button" class="btn btn-primary" th:userId="${cookie.id}" th:onclick="deleteUser(this.getAttribute('userId'))">Delete</button>
-    </form>
-    <form id="deleteUser" th:action="@{/cookie/{id}(id=${cookie.id})}" th:method="delete">
-    </form>
-  </div>
-
-  <script>
-    function deleteUser(userId) {
-      console.log('userId' + userId);
-      let form = document.getElementById("deleteUser");
-      form.submit();
-    }
-
-  </script>
-
-</main>
+  <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
 
 </body>
 </html>
