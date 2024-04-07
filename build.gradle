@@ -52,6 +52,11 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java:8.0.30'
 	runtimeOnly 'com.h2database:h2'
 
+
+	if (System.getProperty("os.name") == "Mac OS X" && System.getProperty("os.arch") == "aarch64") {
+		runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.94.Final:osx-aarch_64")
+	}
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-jdbc'
