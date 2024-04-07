@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -56,7 +57,7 @@ public class ExchangeService {
 
         //호출 결과 처리
         mono.subscribe(response -> {
-            if(response == null || response.getBody() == null) {
+            if(response == null || !StringUtils.hasText(response.getBody())) {
                 log.info("Exchange response is empty.");
                 return;
             }
@@ -71,10 +72,7 @@ public class ExchangeService {
 
             log.debug("Response body: {} ", response.getBody());
 
-            //TODO 리팩토링 필요
-            Cookie cookie = cookieService.getCookie(exchangeDto.getCookieId());
-
-            saveLog(url, cookie, response);
+            saveLog(url, exchangeDto.getCookieId(), response);
         });
     }
 
@@ -92,7 +90,9 @@ public class ExchangeService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveLog(PointUrl url, Cookie cookie, ResponseEntity<String> response) {
+    public void saveLog(PointUrl url, Long cookieId, ResponseEntity<String> response) {
+        Cookie cookie = cookieService.getCookie(cookieId);
+
         //사용자 별 호출 url 정보 저장
         pointUrlCookieRepository.save(PointUrlCookie.builder()
                 .pointUrl(url)
@@ -112,6 +112,5 @@ public class ExchangeService {
                 .build()
         );
     }
-
 
 }
