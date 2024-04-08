@@ -33,4 +33,8 @@ public class SavedPointService {
                 LocalDateTime.now().with(LocalTime.MIN));
     }
 
+    public List<SavedPoint> findSavedPoint(Long siteUserId, int dayBefore) {
+        return savedPointRepository.findBySiteUser(siteUserId, dayBefore);
+    }
+
 }

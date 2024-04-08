@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface SavedPointRepository extends JpaRepository<SavedPoint, Long> {
+public interface SavedPointRepository extends JpaRepository<SavedPoint, Long>, SavedPointRepositoryCustom {
     List<SavedPoint> findAllByCreatedDateBetween(LocalDateTime with, LocalDateTime with1);
 }

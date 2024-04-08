@@ -62,11 +62,5 @@ public class DashboardService {
                 .build();
     }
 
-    public static void main(String[] args) {
-        double a = 5;
-        double b = 12;
-
-        System.out.println(((a / b) * 100) - 100);
-    }
 }
 

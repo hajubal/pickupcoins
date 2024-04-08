@@ -43,7 +43,7 @@ public class ReportService {
         for (SiteUser siteUser : activeSiteUser) {
             //FIXME 사이트 사용자들 기준으로 로그 조회 해서 슬랙 발송 되도록 수정 필요
             //수집 성공한 포인트
-            List<SavedPoint> savedPoints = savedPointService.findSavedPoint(1);
+            List<SavedPoint> savedPoints = savedPointService.findSavedPoint(siteUser.getId(), 1);
 
             int successCount = savedPoints.size();
 
