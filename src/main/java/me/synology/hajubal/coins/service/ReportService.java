@@ -38,33 +38,36 @@ public class ReportService {
 
         log.info("Point urls size: {}", pointUrls.size());
 
-        //수집 성공한 포인트
-        List<SavedPoint> savedPoints = savedPointService.findSavedPoint(1);
+        List<SiteUser> activeSiteUser = siteUserRepository.findAllByActiveIsTrue();
 
-        int successCount = savedPoints.size();
+        for (SiteUser siteUser : activeSiteUser) {
+            //FIXME 사이트 사용자들 기준으로 로그 조회 해서 슬랙 발송 되도록 수정 필요
+            //수집 성공한 포인트
+            List<SavedPoint> savedPoints = savedPointService.findSavedPoint(1);
 
-        int dayAmount = savedPoints.stream().mapToInt(SavedPoint::getAmount).sum();
+            int successCount = savedPoints.size();
 
-        //현재 로그 인/아웃된 cookie
-        List<Cookie> cookies = cookieService.getAll();
+            int dayAmount = savedPoints.stream().mapToInt(SavedPoint::getAmount).sum();
 
-        long invalidCookieCount = cookies.stream().filter(cookie -> cookie.getIsValid().equals(Boolean.FALSE)).count();
+            //현재 로그 인/아웃된 cookie
+            List<Cookie> cookies = cookieService.getAll();
 
-        //정보 알림 전송
-        String message = MessageBuilder.builder()
-                .urlCount(pointUrls.size())
-                .successCount(successCount)
-                .amount(dayAmount)
-                .totalCookieCount(cookies.size())
-                .logoutCookieCount((int)invalidCookieCount)
-                .build().format();
+            long invalidCookieCount = cookies.stream().filter(cookie -> cookie.getIsValid().equals(Boolean.FALSE)).count();
 
-        //FIXME 사이트 사용자들 기준으로 로그 조회 해서 슬랙 발송되도록 수정 필요
-        SiteUser siteUser = siteUserRepository.findAll().get(0);
+            //정보 알림 전송
+            String message = MessageBuilder.builder()
+                    .urlCount(pointUrls.size())
+                    .successCount(successCount)
+                    .amount(dayAmount)
+                    .totalCookieCount(cookies.size())
+                    .logoutCookieCount((int)invalidCookieCount)
+                    .build().format();
 
-        log.info("SiteUser info: {}", siteUser);
+            log.info("SiteUser info: {}", siteUser);
 
-        slackService.sendMessage(siteUser.getSlackWebhookUrl(), message);
+            slackService.sendMessage(siteUser.getSlackWebhookUrl(), message);
+        }
+
     }
 
     public static class MessageBuilder {
