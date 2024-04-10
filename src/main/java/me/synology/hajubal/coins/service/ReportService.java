@@ -41,7 +41,6 @@ public class ReportService {
         List<SiteUser> activeSiteUser = siteUserRepository.findAllByActiveIsTrue();
 
         for (SiteUser siteUser : activeSiteUser) {
-            //FIXME 사이트 사용자들 기준으로 로그 조회 해서 슬랙 발송 되도록 수정 필요
             //수집 성공한 포인트
             List<SavedPoint> savedPoints = savedPointService.findSavedPoint(siteUser.getId(), 1);
 
@@ -50,7 +49,7 @@ public class ReportService {
             int dayAmount = savedPoints.stream().mapToInt(SavedPoint::getAmount).sum();
 
             //현재 로그 인/아웃된 cookie
-            List<Cookie> cookies = cookieService.getAll();
+            List<Cookie> cookies = cookieService.getAll(siteUser.getId());
 
             long invalidCookieCount = cookies.stream().filter(cookie -> cookie.getIsValid().equals(Boolean.FALSE)).count();
 

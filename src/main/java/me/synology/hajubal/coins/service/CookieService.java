@@ -90,6 +90,10 @@ public class CookieService {
         return cookieRepository.findAll();
     }
 
+    public List<Cookie> getAll(Long siteUserId) {
+        return cookieRepository.findAllBySiteUser_Id(siteUserId);
+    }
+
     public Cookie getCookie(Long cookieId) {
         return cookieRepository.findById(cookieId).orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
     }
