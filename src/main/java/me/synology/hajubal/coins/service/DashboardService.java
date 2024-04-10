@@ -56,8 +56,8 @@ public class DashboardService {
                 .pointUrlWeekCnt(pointUrlWeek.size())
                 .savedDayPoint(dayPoint)
                 .savedWeekPoint(weekPoint)
-                .savedDayPointRatioDayBefore(dayPointRatioDayBefore)
-                .savedWeekPointRatioWeekBefore(dayPointRatioWeekBefore)
+                .savedDayPointRatioDayBefore(Math.round(dayPointRatioDayBefore))
+                .savedWeekPointRatioWeekBefore(Math.round(dayPointRatioWeekBefore))
                 .points(points)
                 .build();
     }

@@ -89,42 +89,42 @@
 
           <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item" th:classappend="${#ctx.springRequestContext.requestUri.equals('/dashboard')} ? 'active' : ''">
+            <li class="menu-item">
               <a th:href="@{/dashboard}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
 
-            <li class="menu-item" th:classappend="${#ctx.springRequestContext.requestUri.equals('/siteUser')} ? 'active' : ''">
+            <li class="menu-item">
               <a th:href="@{/siteUser}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div>Site User</div>
               </a>
             </li>
 
-            <li class="menu-item" th:classappend="${#ctx.springRequestContext.requestUri.equals('/cookies')} ? 'active' : ''">
+            <li class="menu-item">
               <a th:href="@{/cookies}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div>Cookies</div>
               </a>
             </li>
 
-            <li class="menu-item" th:classappend="${#ctx.springRequestContext.requestUri.equals('/sites')} ? 'active' : ''">
+            <li class="menu-item">
               <a th:href="@{/sites}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div>Sites</div>
               </a>
             </li>
 
-            <li class="menu-item" th:classappend="${#ctx.springRequestContext.requestUri.equals('/pointUrl')} ? 'active' : ''">
+            <li class="menu-item">
               <a th:href="@{/pointUrl}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                 <div>Point Urls</div>
               </a>
             </li>
 
-            <li class="menu-item" th:classappend="${#ctx.springRequestContext.requestUri.equals('/savePointLog')} ? 'active' : ''">
+            <li class="menu-item">
               <a th:href="@{/savePointLog}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-cube-alt"></i>
                 <div>Log</div>
