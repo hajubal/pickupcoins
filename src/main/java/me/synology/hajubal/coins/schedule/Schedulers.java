@@ -48,7 +48,7 @@ public class Schedulers {
      * 매일 아침 9시에 어제 하루 동안 작업 알림
      */
     @Profile("!local")
-    @Scheduled(cron = "0 0 9 * * *")
+    @Scheduled(cron = "0 0 7 * * *")
     public void dailyReport() {
         log.info("Daily report.");
 

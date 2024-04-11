@@ -14,7 +14,7 @@ plugins {
 }
 
 group = 'me.synology.hajubal'
-version = '1.0.12'
+version = '1.0.13'
 sourceCompatibility = '17'
 
 configurations {
