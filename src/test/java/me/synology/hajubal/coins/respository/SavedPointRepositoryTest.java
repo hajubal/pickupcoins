@@ -1,6 +1,5 @@
 package me.synology.hajubal.coins.respository;
 
-import jakarta.persistence.EntityManager;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +31,7 @@ class SavedPointRepositoryTest {
     private CookieRepository cookieRepository;
 
     @Autowired
-    private EntityManager entityManager;
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     void findBySiteUser() {
@@ -59,13 +58,8 @@ class SavedPointRepositoryTest {
 
         cookieRepository.save(cookie);
 
-        SavedPoint savedPoint = SavedPoint.builder()
-                .amount(10)
-                .cookie(cookie)
-                .build();
-
-        ReflectionTestUtils.setField(savedPoint, "createdDate", createdDate);
-        entityManager.persist(savedPoint);
+        jdbcTemplate.update("insert into SAVED_POINT (AMOUNT, COOKIE_ID, CREATED_DATE) values ( ?, ?, ? )"
+                , 200, cookie.getId(), createdDate);
     }
 
     private @NotNull SiteUser createSiteUser() {

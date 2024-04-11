@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
+@ToString
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert @DynamicUpdate
@@ -37,9 +38,11 @@ public class Cookie extends BaseDataEntity {
     @JoinColumn(name = "site_user_id")
     private SiteUser siteUser;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "cookie", cascade = CascadeType.REMOVE)
     private List<PointUrlCookie> pointUrlCookies;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "cookie", cascade = CascadeType.REMOVE)
     private List<SavedPoint> savedPoints;
 
@@ -72,15 +75,6 @@ public class Cookie extends BaseDataEntity {
         this.userName = userName;
     }
 
-    @Override
-    public String toString() {
-        return "Cookie{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", siteName='" + siteName + '\'' +
-                ", cookie='" + cookie + '\'' +
-                ", isValid=" + isValid +
-                '}';
-    }
+
 
 }
