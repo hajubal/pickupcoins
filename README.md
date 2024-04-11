@@ -23,6 +23,13 @@
 3. 포인트 URL을 로그인 쿠키정보를 포함하여 호출
 
 ## 릴리즈
+### v1.1.0
+- 대시보드 소수점 자리수 수정
+- Report 시간 변경 9시 -> 7시
+- 사이트 사용자들 기준으로 Report 발송
+- SpringBoot version 3.0 -> 3.2
+- QueryDSL 적용
+
 ### v1.0.12
 - Admin 디자인 적용
 - Dashboard 적용
