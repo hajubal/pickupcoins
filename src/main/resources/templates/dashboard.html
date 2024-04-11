@@ -152,76 +152,75 @@
                 </div>
               </div>
             </div>
-          </div>
 
-          <script>
-            // Profit Report Line Chart
-            // --------------------------------------------------------------------
-            const pointReportChartEl = document.querySelector('#pointReportChart'),
-                    pointReportChartConfig = {
-                      chart: {
-                        height: 80,
-                        // width: 175,
-                        type: 'line',
-                        toolbar: {
-                          show: false
+            <script>
+              // Profit Report Line Chart
+              // --------------------------------------------------------------------
+              const pointReportChartEl = document.querySelector('#pointReportChart'),
+                      pointReportChartConfig = {
+                        chart: {
+                          height: 80,
+                          // width: 175,
+                          type: 'line',
+                          toolbar: {
+                            show: false
+                          },
+                          dropShadow: {
+                            enabled: true,
+                            top: 10,
+                            left: 5,
+                            blur: 3,
+                            color: config.colors.warning,
+                            opacity: 0.15
+                          },
+                          sparkline: {
+                            enabled: true
+                          }
                         },
-                        dropShadow: {
-                          enabled: true,
-                          top: 10,
-                          left: 5,
-                          blur: 3,
-                          color: config.colors.warning,
-                          opacity: 0.15
+                        grid: {
+                          show: false,
+                          padding: {
+                            right: 8
+                          }
                         },
-                        sparkline: {
-                          enabled: true
-                        }
-                      },
-                      grid: {
-                        show: false,
-                        padding: {
-                          right: 8
-                        }
-                      },
-                      colors: [config.colors.warning],
-                      dataLabels: {
-                        enabled: false
-                      },
-                      stroke: {
-                        width: 5,
-                        curve: 'smooth'
-                      },
-                      series: [
-                        {
-                          data: [[${dashboardDto.getPoints()}]]
-                        }
-                      ],
-                      xaxis: {
-                        show: false,
-                        lines: {
-                          show: false
+                        colors: [config.colors.warning],
+                        dataLabels: {
+                          enabled: false
                         },
-                        labels: {
-                          show: false
+                        stroke: {
+                          width: 5,
+                          curve: 'smooth'
                         },
-                        axisBorder: {
+                        series: [
+                          {
+                            data: [[${dashboardDto.getPoints()}]]
+                          }
+                        ],
+                        xaxis: {
+                          show: false,
+                          lines: {
+                            show: false
+                          },
+                          labels: {
+                            show: false
+                          },
+                          axisBorder: {
+                            show: false
+                          }
+                        },
+                        yaxis: {
                           show: false
                         }
-                      },
-                      yaxis: {
-                        show: false
-                      }
-                    };
-            if (typeof pointReportChartEl !== undefined && pointReportChartEl !== null) {
-              const pointReportChart = new ApexCharts(pointReportChartEl, pointReportChartConfig);
-              pointReportChart.render();
-            }
+                      };
 
-          </script>
+              if (typeof pointReportChartEl !== undefined && pointReportChartEl !== null) {
+                const pointReportChart = new ApexCharts(pointReportChartEl, pointReportChartConfig);
+                pointReportChart.render();
+              }
+
+            </script>
         </div>
         <!-- / Content -->
-
     <!-- / Layout page -->
   </body>
 </html>

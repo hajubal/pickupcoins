@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -43,7 +46,12 @@ public class DashboardService {
         double dayPointRatioDayBefore = beforeDayPoint == 0 ? 0 : (dayPoint / beforeDayPoint) * 100 - 100;
         double dayPointRatioWeekBefore = beforeWeekPoint == 0 ? 0 : (weekPoint / beforeWeekPoint) * 100 - 100;
 
-        List<Integer> points = savedPointWeek.stream().map(SavedPoint::getAmount).toList();
+        //요일별 포인트 합산
+        Map<Integer, List<SavedPoint>> dayGroup = new TreeMap<>(savedPointWeek.stream()
+                .collect(Collectors.groupingBy(savedPoint -> savedPoint.getCreatedDate().getDayOfMonth())));
+
+        List<Integer> points = dayGroup.values().stream().map(savedPoints -> savedPoints.stream()
+                .mapToInt(SavedPoint::getAmount).sum()).toList();
 
         List<Cookie> cookies = cookieService.getAll();
 
