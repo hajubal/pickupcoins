@@ -31,6 +31,12 @@ configurations {
 jar {
 	//plain.jar 파일 생성되지 않도록 설정
 	enabled = false
+
+	manifest {
+		attributes(
+				'Implementation-Version': project.version
+		)
+	}
 }
 
 repositories {
