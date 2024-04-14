@@ -15,19 +15,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    /**
-     * FIXME: 설정할 경우 로그인 페이지도 접근 안되는 문제가 있음
-     * @param http
-     * @return
-     * @throws Exception
-     */
-    @Profile("local")
-    @Order(0)
-//    @Bean
-    public SecurityFilterChain h2SecurityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests().requestMatchers(toH2Console()).permitAll().and().build();
-    }
-
     @Order(1)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,7 +25,10 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
-                .formLogin(withDefaults())
+                .formLogin(configurer -> {
+                    configurer.loginPage("/login")
+                            .permitAll();
+                })
         ;
 
         return http.build();
