@@ -24,7 +24,7 @@ public class SecurityConfig {
                                 .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults())
+//                .httpBasic(withDefaults())
                 .formLogin(configurer -> {
                     configurer.loginPage("/login")
                             .permitAll();
