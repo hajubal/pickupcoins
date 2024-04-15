@@ -67,35 +67,50 @@ public class ReportServiceTest {
         jdbcTemplate.update("insert into POINT_URL (ID, NAME, URL, CREATED_DATE) values ( ?, ?, ?, ?)"
                 , 1L, "name", "url", LocalDateTime.now().minusDays(1));
 
-        SiteUser siteUser = SiteUser.builder().loginId("loginId").userName("name").password("pw").slackWebhookUrl("url").build();
-        siteUserRepository.save(siteUser);
+        SiteUser siteUser = createSiteUser();
 
-        Cookie validCookie = Cookie.builder().userName("user1").siteName("naver").cookie("validCookie").siteUser(siteUser).isValid(Boolean.TRUE).build();
-        cookieRepository.save(validCookie);
+        Cookie validCookie1 = createValidCookie("user1", siteUser);
+        Cookie validCookie2 = createValidCookie("user2", siteUser);
+        createInValidCookie("user3", siteUser);
 
-        Cookie invalidCookie = Cookie.builder().userName("user2").siteName("naver").cookie("invalidCookie").siteUser(siteUser).isValid(Boolean.FALSE).build();
-        cookieRepository.save(invalidCookie);
+        jdbcTemplate.update("insert into SAVED_POINT (AMOUNT, COOKIE_ID, CREATED_DATE) values (?, ?, ? )"
+                , 200, validCookie1.getId(), LocalDateTime.now().minusDays(1));
 
-        jdbcTemplate.update("insert into SAVED_POINT (ID, AMOUNT, COOKIE_ID, CREATED_DATE) values ( ?, ?, ?, ? )"
-                , 1L, 200, validCookie.getId(), LocalDateTime.now().minusDays(1));
-
-        pointUrlRepository.findAll().forEach(pointUrl1 -> System.out.println("pointUrl1 = " + pointUrl1));
-
-//        savedPointRepository.save(SavedPoint.builder().cookie(validCookie).responseBody("body").amount(200).build());
+        jdbcTemplate.update("insert into SAVED_POINT (AMOUNT, COOKIE_ID, CREATED_DATE) values (?, ?, ? )"
+                , 200, validCookie2.getId(), LocalDateTime.now().minusDays(1));
 
         //when
         reportService.report();
 
-        String message = ReportService.MessageBuilder.builder()
+        ReportService.MessageBuilder builder = ReportService.MessageBuilder.builder()
                 .urlCount(1)
-                .totalCookieCount(2)
+                .totalCookieCount(3)
                 .logoutCookieCount(1)
-                .successCount(1)
-                .amount(200)
-                .build().format();
+                .successCount(2)
+                .amount(400)
+                .build();
+
+        builder.addCookieAmount(validCookie1.getUserName(), 200);
+        builder.addCookieAmount(validCookie2.getUserName(), 200);
+
+        String message = builder.format();
 
         //then
         verify(slackService).sendMessage(siteUser.getSlackWebhookUrl(), message);
     }
 
+    private SiteUser createSiteUser() {
+        SiteUser siteUser = SiteUser.builder().loginId("loginId").userName("name").password("pw").slackWebhookUrl("url").build();
+        return siteUserRepository.save(siteUser);
+    }
+
+    private Cookie createValidCookie(String cookieName, SiteUser siteUser) {
+        Cookie validCookie1 = Cookie.builder().userName(cookieName).siteName("naver").cookie("validCookie").siteUser(siteUser).isValid(Boolean.TRUE).build();
+        return cookieRepository.save(validCookie1);
+    }
+
+    private Cookie createInValidCookie(String cookieName, SiteUser siteUser) {
+        Cookie validCookie1 = Cookie.builder().userName(cookieName).siteName("naver").cookie("invalidCookie").siteUser(siteUser).isValid(Boolean.FALSE).build();
+        return cookieRepository.save(validCookie1);
+    }
 }

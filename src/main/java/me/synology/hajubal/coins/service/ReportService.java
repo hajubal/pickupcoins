@@ -11,7 +11,10 @@ import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 포인트 배치 작업 결과 리포팅 서비스
@@ -54,13 +57,22 @@ public class ReportService {
             long invalidCookieCount = cookies.stream().filter(cookie -> cookie.getIsValid().equals(Boolean.FALSE)).count();
 
             //정보 알림 전송
-            String message = MessageBuilder.builder()
+            MessageBuilder messageBuilder = MessageBuilder.builder()
                     .urlCount(pointUrls.size())
                     .successCount(successCount)
                     .amount(dayAmount)
                     .totalCookieCount(cookies.size())
-                    .logoutCookieCount((int)invalidCookieCount)
-                    .build().format();
+                    .logoutCookieCount((int) invalidCookieCount)
+                    .build();
+
+            Map<String, Integer> cookiesPoint = savedPoints.stream().collect(Collectors.groupingBy(savedPoint ->
+                    savedPoint.getCookie().getUserName(), Collectors.summingInt(SavedPoint::getAmount)
+            ));
+
+            //cookie 별 포인트 메시지에 추가
+            cookiesPoint.forEach(messageBuilder::addCookieAmount);
+
+            String message = messageBuilder.format();
 
             log.info("SiteUser info: {}", siteUser);
 
@@ -83,6 +95,12 @@ public class ReportService {
         - 수집한 금액: %d
         """;
 
+        private final List<String> cookieAmounts = new ArrayList<>();
+
+        private static final String COOKIE_FORMAT = """
+                  - %s: %d
+                """;
+
         @Builder
         public MessageBuilder(int urlCount, int successCount, int totalCookieCount, int logoutCookieCount, int amount) {
             this.urlCount = urlCount;
@@ -92,9 +110,13 @@ public class ReportService {
             this.amount = amount;
         }
 
+        public void addCookieAmount(String cookie, int amount) {
+            cookieAmounts.add(COOKIE_FORMAT.formatted(cookie, amount));
+        }
+
         public String format() {
             return FORMAT.formatted(this.urlCount, this.successCount, this.totalCookieCount, this.logoutCookieCount
-                    , this.amount);
+                    , this.amount) + String.join("", cookieAmounts);
         }
     }
 
