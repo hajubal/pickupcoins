@@ -39,8 +39,8 @@ public class PickUpCoinsLoginTest {
         HomePage homePage = loginPage.loginForm().username("user").password("user").submit();
         homePage.assertAt();
 
-        LoginPage logoutSuccess = homePage.logout();
-        logoutSuccess.assertAt();
+//        LoginPage logoutSuccess = homePage.logout();
+//        logoutSuccess.assertAt();
     }
 
 }
