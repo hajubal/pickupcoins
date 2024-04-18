@@ -9,6 +9,8 @@ spring:
   sql:
     init:
       mode: always
+  thymeleaf:
+    cache: false
 
 logging:
   file:

@@ -14,6 +14,8 @@ public class SiteUserDto {
 
         private String loginId;
 
+        private Boolean active;
+
         @NotBlank
         @Size(max = 255)
         private String userName;
@@ -27,6 +29,7 @@ public class SiteUserDto {
             updateDto.setUserName(siteUser.getUserName());
             updateDto.setLoginId(siteUser.getLoginId());
             updateDto.setSlackWebhookUrl(siteUser.getSlackWebhookUrl());
+            updateDto.setActive(siteUser.getActive());
 
             return updateDto;
         }

@@ -68,4 +68,9 @@ public class SiteUser extends BaseDataEntity {
     public void inActivate() {
         this.active = Boolean.FALSE;
     }
+
+    public void activate() {
+        this.active = Boolean.TRUE;
+
+    }
 }

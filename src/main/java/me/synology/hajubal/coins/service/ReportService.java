@@ -43,6 +43,8 @@ public class ReportService {
 
         List<SiteUser> activeSiteUser = siteUserRepository.findAllByActiveIsTrue();
 
+        log.info("Active site user size: {}", activeSiteUser.size());
+
         for (SiteUser siteUser : activeSiteUser) {
             //수집 성공한 포인트
             List<SavedPoint> savedPoints = savedPointService.findSavedPoint(siteUser.getId(), 1);
