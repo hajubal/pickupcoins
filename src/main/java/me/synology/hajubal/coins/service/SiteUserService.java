@@ -31,6 +31,7 @@ public class SiteUserService {
 
         siteUser.updateUserName(updateDto.getUserName());
         siteUser.updateSlackWebhookUrl(updateDto.getSlackWebhookUrl());
+
         if(updateDto.getActive()) {
             siteUser.activate();
         } else {

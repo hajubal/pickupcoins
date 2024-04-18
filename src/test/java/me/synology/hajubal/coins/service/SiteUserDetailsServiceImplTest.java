@@ -45,7 +45,7 @@ class SiteUserDetailsServiceImplTest {
     @DisplayName("사용자 조회 테스트")
     @Test
     void findUser() {
-        SiteUser siteUser = SiteUser.builder().loginId("loginId").password("password").userName("userName").build();
+        SiteUser siteUser = SiteUser.builder().loginId("loginId"+System.currentTimeMillis()).password("password").userName("userName").build();
 
         //given
         userRepository.save(siteUser);

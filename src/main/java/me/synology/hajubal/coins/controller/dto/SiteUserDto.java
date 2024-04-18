@@ -14,7 +14,7 @@ public class SiteUserDto {
 
         private String loginId;
 
-        private Boolean active;
+        private Boolean active = Boolean.FALSE;
 
         @NotBlank
         @Size(max = 255)
