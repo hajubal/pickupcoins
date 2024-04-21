@@ -30,20 +30,24 @@ management:
     java.enabled: true
     os.enabled: true
     git.enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: info, health, metrics, prometheus
+    jmx:
+      exposure:
+        exclude: "*"
   endpoint:
     info:
       enabled: true
     health:
       enabled: true
       show-components: always
-  endpoints:
-    enabled-by-default: false
-    web:
-      exposure:
-        include: info, health
-    jmx:
-      exposure:
-        exclude: "*"
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
 
 server:
   tomcat:
