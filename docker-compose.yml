@@ -7,7 +7,7 @@ services:
         - VERSION=${VERSION}
     container_name: coin
     image: coin:${VERSION}
-    restart: always
+    restart: on-failure:5
     ports:
       - "7070:8080"
     environment:
@@ -20,7 +20,7 @@ services:
   coin-mysql:
     container_name: coin-mysql
     image: mysql:8.0
-    restart: always
+    restart: on-failure:5
     hostname: coin-mysql
     ports:
       - "3306:3306"
