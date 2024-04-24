@@ -2,10 +2,10 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.SavedPoint;
-import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +35,10 @@ public class SavedPointService {
 
     public List<SavedPoint> findSavedPoint(Long siteUserId, int dayBefore) {
         return savedPointRepository.findBySiteUser(siteUserId, dayBefore);
+    }
+
+    public Page<SavedPoint> findAllSavedPoint(Long siteUserId, Pageable pageable) {
+        return savedPointRepository.findAllBySiteUser(siteUserId, pageable);
     }
 
 }

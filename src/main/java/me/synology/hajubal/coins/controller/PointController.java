@@ -3,14 +3,16 @@ package me.synology.hajubal.coins.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.entity.PointUrl;
-import me.synology.hajubal.coins.entity.PointUrlCallLog;
-import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
+import me.synology.hajubal.coins.entity.SavedPoint;
+import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import me.synology.hajubal.coins.schedule.Schedulers;
+import me.synology.hajubal.coins.service.SavedPointService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +24,7 @@ public class PointController {
 
     private final PointUrlRepository pointUrlRepository;
 
-    private final PointUrlCallLogRepository pointUrlCallLogRepository;
+    private final SavedPointService savedPointService;
 
     private final Schedulers schedulers;
 
@@ -40,9 +42,7 @@ public class PointController {
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() + 1) / blockLimit))) - 1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), Math.max(page.getTotalPages(), 1));
 
-        log.info("Page number: {}", page.getNumber());
-        log.info("Start page: {}", startPage);
-        log.info("End page: {}", endPage);
+        log.info("Page number: {}, start page: {}, end page: {}", page.getNumber(), startPage, endPage);
 
         model.addAttribute("items", page);
         model.addAttribute("startPage", startPage);
@@ -64,17 +64,18 @@ public class PointController {
     }
 
     @GetMapping("/savePointLog")
-    public String savePointLog(Model model, @PageableDefault(page = 0, size = 10, sort = "createdDate"
+    public String savePointLog(Model model, Authentication authentication, @PageableDefault(page = 0, size = 10, sort = "createdDate"
             , direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PointUrlCallLog> page = pointUrlCallLogRepository.findAll(pageable);
+
+        SiteUser siteUser = (SiteUser) authentication.getPrincipal();
+
+        Page<SavedPoint> page = savedPointService.findAllSavedPoint(siteUser.getId(), pageable);
 
         int blockLimit = pageable.getPageSize();
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() + 1) / blockLimit))) - 1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), Math.max(page.getTotalPages(), 1));
 
-        log.info("Page number: {}", page.getNumber());
-        log.info("Start page: {}", startPage);
-        log.info("End page: {}", endPage);
+        log.info("Page number: {}, start page: {}, end page: {}", page.getNumber(), startPage, endPage);
 
         model.addAttribute("items", page);
         model.addAttribute("startPage", startPage);
