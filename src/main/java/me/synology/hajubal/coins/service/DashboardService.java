@@ -43,8 +43,10 @@ public class DashboardService {
         double beforeDayPoint = day2Point - dayPoint; //2일 전 포인트
         double beforeWeekPoint = week2Point - weekPoint; //2주 전 포인트
 
-        double dayPointRatioDayBefore = beforeDayPoint == 0 ? 0 : (dayPoint / beforeDayPoint) * 100 - 100;
-        double dayPointRatioWeekBefore = beforeWeekPoint == 0 ? 0 : (weekPoint / beforeWeekPoint) * 100 - 100;
+        log.info("dayPoint: {}, beforeDayPoint: {}, weekPoint: {}, beforeWeekPoint: {}", dayPoint, beforeDayPoint, weekPoint, beforeWeekPoint);
+
+        double dayPointRatioDayBefore = ((dayPoint - beforeDayPoint) / beforeDayPoint) * 100;
+        double dayPointRatioWeekBefore = ((weekPoint - beforeWeekPoint) / beforeWeekPoint) * 100;
 
         //요일별 포인트 합산
         Map<Integer, List<SavedPoint>> dayGroup = new TreeMap<>(savedPointWeek.stream()

@@ -73,7 +73,7 @@
                       <h3 class="card-title text-nowrap mb-1" th:text="${dashboardDto.getSavedWeekPoint()}">0</h3>
                       <small class="fw-semibold" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'text-success' : 'text-danger'">
                         <i class="bx" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt'"></i>
-                        <span th:text="${dashboardDto.getSavedDayPointRatioDayBefore()}">0</span>%</small>
+                        <span th:text="${dashboardDto.getSavedWeekPointRatioWeekBefore()}">0</span>%</small>
                     </div>
                   </div>
                 </div>

@@ -15,6 +15,7 @@
 3. MySql
 4. Slack API
 5. Docker compose
+6. Prometheus, Grafana ([Prometheus, Grafana Repository](https://github.com/hajubal/monitoring))
 
 ## 시나리오
 
@@ -23,6 +24,18 @@
 3. 포인트 URL을 로그인 쿠키정보를 포함하여 호출
 
 ## 릴리즈
+### v1.1.3
+- dashboard 포인트 증감율 버그 수정
+- Point log 페이지 url log -> point log 내용 변경
+
+### v1.1.2
+- Prometheus 설정 추가 ([Prometheus, Grafana Repository](https://github.com/hajubal/monitoring))
+- 커스텀 로그인 페이지 추가
+
+### v1.1.1
+- Report 내용: 쿠키별로 금액 세분화
+- 화면에 어플리케이션 버전 표시
+
 ### v1.1.0
 - 대시보드 소수점 자리수 수정
 - Report 시간 변경 9시 -> 7시
