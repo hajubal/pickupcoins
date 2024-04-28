@@ -11,6 +11,7 @@ plugins {
 	id 'org.hidetake.ssh' version '2.10.1'
 	id "nebula.integtest" version "8.2.0"
 	id "com.gorylenko.gradle-git-properties" version "2.4.1"
+	id 'com.google.cloud.tools.jib' version '3.4.2'
 }
 
 group = 'me.synology.hajubal'
@@ -124,6 +125,32 @@ tasks.withType(JavaCompile) {
 
 ssh.settings {
 	knownHosts = allowAnyHosts
+}
+
+jib {
+	from {
+		image = 'openjdk:17-alpine'
+	}
+	to {
+		image = 'hajubal/pickupcoin'
+		tags = [project.version.toString()]
+	}
+	container {
+		entrypoint = ['java', '--spring.profiles.active=dev', '-jar', bootJar.archiveFile.get().asFile]
+		ports = ['8080']
+
+		environment = [SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS"]
+		labels = [Iversion: project.version, name: project.name, group: project.group]
+
+		format = 'Docker'
+	}
+	extraDirectories {
+		paths {
+			path {
+				from = file('build/libs')
+			}
+		}
+	}
 }
 
 //도커 서버에 이미지 생성 및 컨테이너 실행
