@@ -136,7 +136,7 @@ jib {
 		tags = [project.version.toString()]
 	}
 	container {
-		entrypoint = ['java', '--spring.profiles.active=dev', '-jar', bootJar.archiveFile.get().asFile]
+		entrypoint = ['java', '--spring.profiles.active=dev', '-jar', bootJar.archiveFile.get().asFile.toString()]
 		ports = ['8080']
 
 		environment = [SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS"]
