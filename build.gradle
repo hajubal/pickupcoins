@@ -109,6 +109,9 @@ ext.SSH_ID = project.getProperties().getOrDefault("SSH_ID", "test")
 ext.SSH_PW = project.getProperties().getOrDefault("SSH_PW", "test")
 ext.SSH_PORT = project.getProperties().getOrDefault("SSH_PORT", "22")
 
+ext.USERNAME = project.getProperties().getOrDefault("USERNAME", "user")
+ext.PASSWORD = project.getProperties().getOrDefault("PASSWORD", "password")
+
 //서버 접속 정보
 remotes {
 	dockerServer {
@@ -131,8 +134,8 @@ jib {
 	from {
 		image = 'openjdk:17-alpine'
 		auth {
-			username = USERNAME // Defined in 'gradle.properties'.
-			password = PASSWORD
+			username = "${USERNAME}" // Defined in 'gradle.properties'.
+			password = "${PASSWORD}"
 		}
 	}
 	to {
