@@ -130,16 +130,26 @@ ssh.settings {
 jib {
 	from {
 		image = 'openjdk:17-alpine'
+		auth {
+			username = USERNAME // Defined in 'gradle.properties'.
+			password = PASSWORD
+		}
 	}
 	to {
 		image = 'hajubal/pickupcoin'
 		tags = [project.version.toString()]
 	}
 	container {
-		entrypoint = ['java', '--spring.profiles.active=dev', '-jar', bootJar.archiveFile.get().asFile.toString()]
+		// TODO 이렇게 설정하면 안되는 이유 확인.
+//		appRoot = '/app'
+//		entrypoint = ['java', 'jar', "/app/${bootJar.archiveFile.get().asFile.name}", '--spring.profiles.active=dev']
 		ports = ['8080']
 
-		environment = [SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS"]
+		environment = [
+				SPRING_OUTPUT_ANSI_ENABLED: "ALWAYS",
+				"SPRING_PROFILES_ACTIVE": "dev",
+				"TZ": "Asia/Seoul"
+		]
 		labels = [Iversion: project.version, name: project.name, group: project.group]
 
 		format = 'Docker'
