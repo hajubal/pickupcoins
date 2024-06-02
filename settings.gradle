@@ -1,1 +1,3 @@
 rootProject.name = 'pickupcoins'
+include 'pickup-server'
+include 'admin'
