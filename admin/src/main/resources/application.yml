@@ -53,6 +53,7 @@ server:
   tomcat:
     mbeanregistry:
       enabled: true
+  port: 9999
 
 decorator.datasource.p6spy:
   enable-logging: true

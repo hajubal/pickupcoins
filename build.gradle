@@ -7,19 +7,21 @@ plugins {
 	id 'com.google.cloud.tools.jib' version '3.4.2'
 }
 
-subprojects {
+allprojects {
 	group = 'me.synolgy.hajubal'
 	version = '2.0.0'
 	sourceCompatibility = '17'
 
+	repositories {
+		mavenCentral()
+	}
+}
+
+subprojects {
 	apply plugin: 'java'
 	apply plugin: 'java-library'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
-
-	repositories {
-		mavenCentral()
-	}
 
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter'
@@ -43,8 +45,8 @@ subprojects {
 	}
 }
 
-
-
+bootJar.enabled = false
+jar.enabled = false
 
 ext.SSH_HOST = project.getProperties().getOrDefault("SSH_HOST", "127.0.0.1")
 ext.SSH_ID = project.getProperties().getOrDefault("SSH_ID", "test")

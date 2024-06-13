@@ -3,11 +3,8 @@ package me.synology.hajubal.coins.service;
 import com.slack.api.webhook.WebhookResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.coins.controller.dto.UserCookieDto;
 import me.synology.hajubal.coins.entity.Cookie;
-import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.CookieRepository;
-import me.synology.hajubal.coins.respository.SiteUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,33 +23,6 @@ public class CookieService {
 
     private final SlackService slackService;
 
-    private final SiteUserService siteUserService;
-
-
-    /**
-     * 쿠키 업데이트
-     *
-     * @param cookieId
-     * @param updateDto
-     */
-    @Transactional
-    public void updateCookie(Long cookieId, UserCookieDto.UpdateDto updateDto) {
-        log.info("cookieUpdateDto: {}", updateDto);
-
-        Cookie cookie = cookieRepository.findById(cookieId)
-                .orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
-
-        cookie.updateCookie(updateDto.getCookie());
-
-        if(updateDto.getIsValid()) {
-            cookie.valid();
-        } else {
-            cookie.invalid();
-        }
-
-        cookie.updateSiteName(updateDto.getSiteName());
-        cookie.updateUserName(updateDto.getUserName());
-    }
 
     @Transactional
     public void updateCookie(Long cookieId, String cookieStr) {
@@ -62,23 +32,6 @@ public class CookieService {
                 .orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
 
         cookie.updateCookie(cookieStr);
-    }
-
-    /**
-     * 신규 사용자 쿠키 추가
-     *
-     * @param insertDto
-     * @return
-     */
-    @Transactional
-    public Long insertCookie(UserCookieDto.InsertDto insertDto, String loginId) {
-        log.info("cookieInsertDto: {}", insertDto);
-
-        SiteUser siteUser = siteUserService.getSiteUser(loginId);
-
-        Cookie cookie = cookieRepository.save(insertDto.toEntity(siteUser));
-
-        return cookie.getId();
     }
 
     @Transactional

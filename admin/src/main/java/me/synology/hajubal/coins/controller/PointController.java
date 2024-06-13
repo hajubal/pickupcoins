@@ -6,7 +6,6 @@ import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.schedule.Schedulers;
 import me.synology.hajubal.coins.service.SavedPointService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +24,6 @@ public class PointController {
     private final PointUrlRepository pointUrlRepository;
 
     private final SavedPointService savedPointService;
-
-    private final Schedulers schedulers;
 
     @GetMapping("/pointUrl")
     public String pointUrl(Model model, @PageableDefault(page = 0, size = 10, sort = "createdDate"
@@ -49,12 +46,6 @@ public class PointController {
         model.addAttribute("endPage", endPage);
 
         return "point/pointUrl";
-    }
-
-    @GetMapping("/crawling")
-    public String crawling() {
-        schedulers.webCrawlerScheduler();
-        return "redirect:/pointUrl";
     }
 
     @GetMapping("/savePoint")

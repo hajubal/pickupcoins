@@ -5,7 +5,6 @@ import me.synology.hajubal.coins.entity.SiteUser;
 import me.synology.hajubal.coins.service.SiteUserService;
 import me.synology.hajubal.coins.util.QueryStringUtils;
 import org.hamcrest.Matchers;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -62,7 +61,6 @@ class SiteUserControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attribute("siteUser", Matchers.equalTo(updateDto)));
     }
 
-    @NotNull
     private static SiteUser createSiteUser(String loginId) {
         SiteUser siteUser = SiteUser.builder().userName("name").password("password").slackWebhookUrl("url").loginId(loginId).build();
         ReflectionTestUtils.setField(siteUser, "id", 1L);
@@ -70,7 +68,6 @@ class SiteUserControllerTest {
         return siteUser;
     }
 
-    @NotNull
     private static SiteUserDto.UpdateDto createUpdateDto(String loginId) {
         SiteUserDto.UpdateDto updateDto = new SiteUserDto.UpdateDto();
         updateDto.setId(1L);

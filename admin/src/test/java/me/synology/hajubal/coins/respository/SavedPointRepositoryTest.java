@@ -3,7 +3,6 @@ package me.synology.hajubal.coins.respository;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -62,7 +61,7 @@ class SavedPointRepositoryTest {
                 , 200, cookie.getId(), createdDate);
     }
 
-    private @NotNull SiteUser createSiteUser() {
+    private SiteUser createSiteUser() {
         SiteUser siteUser = SiteUser.builder()
                 .userName("name")
                 .password("password")
