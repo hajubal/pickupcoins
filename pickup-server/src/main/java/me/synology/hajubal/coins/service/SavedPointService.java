@@ -21,24 +21,9 @@ public class SavedPointService {
 
     private final SavedPointRepository savedPointRepository;
 
-    /**
-     * 몇일 전부터 오늘 까지 수집한 point
-     *
-     * @param dayBefore 몇일 전
-     * @return 수집한 point
-     */
-    public List<SavedPoint> findSavedPoint(int dayBefore) {
-        return savedPointRepository.findAllByCreatedDateBetween(
-                LocalDateTime.now().minusDays(dayBefore).with(LocalTime.MIN),
-                LocalDateTime.now().with(LocalTime.MIN));
-    }
 
     public List<SavedPoint> findSavedPoint(Long siteUserId, int dayBefore) {
         return savedPointRepository.findBySiteUser(siteUserId, dayBefore);
-    }
-
-    public Page<SavedPoint> findAllSavedPoint(Long siteUserId, Pageable pageable) {
-        return savedPointRepository.findAllBySiteUser(siteUserId, pageable);
     }
 
 }

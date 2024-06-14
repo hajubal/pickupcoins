@@ -10,7 +10,5 @@ import java.util.Optional;
 @Repository
 public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
 
-    Optional<SiteUser> findByLoginId(String loginId);
-
     List<SiteUser> findAllByActiveIsTrue();
 }

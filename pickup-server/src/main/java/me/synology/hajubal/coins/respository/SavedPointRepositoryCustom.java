@@ -9,6 +9,4 @@ import java.util.List;
 public interface SavedPointRepositoryCustom {
 
     List<SavedPoint> findBySiteUser(Long siteUserId, int dayBefore);
-
-    Page<SavedPoint> findAllBySiteUser(Long siteUserId, Pageable pageable);
 }

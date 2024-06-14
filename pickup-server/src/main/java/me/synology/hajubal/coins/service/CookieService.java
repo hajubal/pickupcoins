@@ -34,11 +34,6 @@ public class CookieService {
         cookie.updateCookie(cookieStr);
     }
 
-    @Transactional
-    public void deleteCookie(Long cookieId) {
-        cookieRepository.deleteById(cookieId);
-    }
-
     public List<Cookie> getAll() {
         return cookieRepository.findAll();
     }
