@@ -3,7 +3,7 @@
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/> <!-- log file path -->
     <springProperty scope="context" name="LOG_PATH" source="logging.file.path"/> <!-- log file path -->
 
-    <property name="LOG_FILE_NAME" value="coin"/> <!-- err log file name -->
+    <property name="LOG_FILE_NAME" value="pickup-server"/> <!-- err log file name -->
     <property name="LOG_PATTERN"
               value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{35}:%line] - %msg%n"/>
 
