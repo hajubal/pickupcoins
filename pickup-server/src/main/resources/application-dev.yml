@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://coin-mysql:3306/coin
+    username: coin_user
+    password: password
+  sql:
+    init:
+      mode: never
+
+logging:
+  file:
+    path: /logs

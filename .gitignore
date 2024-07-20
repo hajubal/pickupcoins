@@ -280,9 +280,9 @@ generated/
 !**/src/test/**/out/
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,eclipse,maven
 
-application-dev.yml
-application-test.yml
-application-local.yml
+#application-dev.yml
+#application-test.yml
+#application-local.yml
 gradle.properties
 .DS_Store
 *.gz
