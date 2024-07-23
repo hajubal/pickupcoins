@@ -3,12 +3,14 @@ package me.synology.hajubal.coins.respository;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.entity.SiteUser;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +33,13 @@ class SavedPointRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Transactional
+    @BeforeEach
+    void setUp() {
+        cookieRepository.deleteAll();
+        siteUserRepository.deleteAll();
+    }
 
     @Test
     void findBySiteUser() {
