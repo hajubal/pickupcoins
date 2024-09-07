@@ -9,10 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
-//FIXME test profile 사용시 오류 발생
-@ActiveProfiles("local")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PickUpCoinsLoginTest {
 
@@ -31,6 +29,7 @@ public class PickUpCoinsLoginTest {
         this.driver.quit();
     }
 
+    @Sql(scripts = "/db/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     void login() {
         final LoginPage loginPage = HomePage.to(this.driver, this.port);
@@ -39,8 +38,8 @@ public class PickUpCoinsLoginTest {
         HomePage homePage = loginPage.loginForm().username("user").password("user").submit();
         homePage.assertAt();
 
-//        LoginPage logoutSuccess = homePage.logout();
-//        logoutSuccess.assertAt();
+        LoginPage logoutSuccess = homePage.logout();
+        logoutSuccess.assertAt();
     }
 
 }
