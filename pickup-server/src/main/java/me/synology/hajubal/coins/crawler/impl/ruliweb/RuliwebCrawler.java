@@ -30,9 +30,13 @@ public class RuliwebCrawler implements WebCrawler {
 
     private final SiteRepository siteRepository;
 
-    public RuliwebCrawler(RuliwebPointUrlSelector ruliwebPointUrlSelector, SiteRepository siteRepository) {
+    private final RuliwebSiteData ruliwebSiteData;
+
+    public RuliwebCrawler(RuliwebPointUrlSelector ruliwebPointUrlSelector, SiteRepository siteRepository,
+                          RuliwebSiteData ruliwebSiteData) {
         this.pointPostUrlFetcher = new PointPostUrlFetcher(ruliwebPointUrlSelector);
         this.siteRepository = siteRepository;
+        this.ruliwebSiteData = ruliwebSiteData;
     }
 
     /**
@@ -43,7 +47,7 @@ public class RuliwebCrawler implements WebCrawler {
     @Transactional
     @Override
     public Set<PointUrl> crawling() throws IOException {
-        Optional<Site> optionalSite = siteRepository.findByName("루리웹");
+        Optional<Site> optionalSite = siteRepository.findByName(ruliwebSiteData.getSiteName());
 
         if(optionalSite.isEmpty()) return Collections.emptySet();
 

@@ -3,6 +3,10 @@ package me.synology.hajubal.coins.crawler.impl.clien;
 import me.synology.hajubal.coins.crawler.SiteData;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * TODO db로 관리
+ */
 @Component
 public class ClientSiteData implements SiteData {
     @Override

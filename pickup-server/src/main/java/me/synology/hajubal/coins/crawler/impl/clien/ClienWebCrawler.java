@@ -2,6 +2,7 @@ package me.synology.hajubal.coins.crawler.impl.clien;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.crawler.PointPostUrlFetcher;
+import me.synology.hajubal.coins.crawler.SiteData;
 import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
@@ -30,9 +31,13 @@ public class ClienWebCrawler implements WebCrawler {
 
     private final SiteRepository siteRepository;
 
-    public ClienWebCrawler(ClienPointUrlSelector clienPointUrlSelector, SiteRepository siteRepository) {
+    private final ClientSiteData clientSiteData;
+
+    public ClienWebCrawler(ClienPointUrlSelector clienPointUrlSelector, SiteRepository siteRepository
+            , ClientSiteData clientSiteData) {
         this.pointPostUrlFetcher = new PointPostUrlFetcher(clienPointUrlSelector);
         this.siteRepository = siteRepository;
+        this.clientSiteData = clientSiteData;
     }
 
     /**
@@ -43,7 +48,7 @@ public class ClienWebCrawler implements WebCrawler {
     @Transactional
     @Override
     public Set<PointUrl> crawling() throws IOException {
-        Optional<Site> optionalSite = siteRepository.findByName("클리앙");
+        Optional<Site> optionalSite = siteRepository.findByName(clientSiteData.getSiteName());
 
         if(optionalSite.isEmpty()) return Collections.emptySet();
 
