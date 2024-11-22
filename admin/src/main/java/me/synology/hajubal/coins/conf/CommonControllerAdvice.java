@@ -1,4 +1,4 @@
-package me.synology.hajubal.coins.controller;
+package me.synology.hajubal.coins.conf;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -82,8 +82,6 @@ public class CommonControllerAdvice {
 
         return new ModelAndView("error/403");
     }
-
-
 
     @ExceptionHandler(value = {NoSuchAlgorithmException.class, IOException.class})
     @ResponseBody

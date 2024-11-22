@@ -1,6 +1,7 @@
 package me.synology.hajubal.coins.service;
 
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.synology.hajubal.coins.controller.dto.SiteUserDto;
 import me.synology.hajubal.coins.entity.SiteUser;
@@ -75,6 +76,13 @@ public class SiteUserService {
      */
     @Transactional
     public void inActivate(String loginId) {
+        //사용자가 한명뿐일 때는 허용하지 않는다.
+        List<SiteUser> userList = siteUserRepository.findAllByActiveIsTrue();
+
+        if(userList.size() == 1) {
+          throw new IllegalStateException("Only one active user cannot be inactivated");
+        }
+
         SiteUser siteUser = siteUserRepository.findByLoginId(loginId).orElseThrow();
 
         siteUser.inActivate();

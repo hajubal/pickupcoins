@@ -34,10 +34,6 @@ public class CookieService {
         cookie.updateCookie(cookieStr);
     }
 
-    public List<Cookie> getAll() {
-        return cookieRepository.findAll();
-    }
-
     public List<Cookie> getAll(Long siteUserId) {
         return cookieRepository.findAllBySiteUser_Id(siteUserId);
     }
