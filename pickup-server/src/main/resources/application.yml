@@ -42,6 +42,7 @@ management:
 
 server:
   tomcat:
+    # tomcat 의 메트릭 정보 오픈
     mbeanregistry:
       enabled: true
   port: 9990
