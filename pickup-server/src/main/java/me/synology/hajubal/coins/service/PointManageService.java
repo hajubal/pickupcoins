@@ -28,12 +28,12 @@ public class PointManageService {
     public void savePointPostProcess(ExchangeDto exchangeDto, ResponseEntity<String> response) {
         //cookie session값 갱신
         if(response.getHeaders().containsKey("cookie")) {
-            log.info("cookie 갱신 user: {}", exchangeDto.getUserName());
-            cookieService.updateCookie(exchangeDto.getCookieId(), response.getHeaders().getFirst("cookie"));
+            log.info("cookie 갱신 user: {}", exchangeDto.userName());
+            cookieService.updateCookie(exchangeDto.cookieId(), response.getHeaders().getFirst("cookie"));
         }
 
         //TODO 리팩토링 필요
-        Cookie cookie = cookieService.getCookie(exchangeDto.getCookieId());
+        Cookie cookie = cookieService.getCookie(exchangeDto.cookieId());
 
         //getBody() 는 "10원이 적립 되었습니다." 라는 문자열을 포함하고 있음.
         savedPointRepository.save(SavedPoint.builder()

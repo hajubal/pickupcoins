@@ -18,7 +18,6 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 @Service
 public class NaverSavePointService {
 
@@ -33,18 +32,19 @@ public class NaverSavePointService {
      */
     @Transactional
     public void savePoint() {
-        List<Cookie> cookies = cookieRepository.findBySiteNameIgnoreCaseAndIsValid(SiteName.NAVER.name(), true);
+        List<Cookie> cookies = cookieRepository.findBySiteNameAndIsValid(SiteName.NAVER.name(), true);
 
         log.debug("UserCookies: {}", cookies);
 
         List<ExchangeDto> exchangeDtoList = cookies.stream().map(ExchangeDto::from).toList();
 
-        exchangeDtoList.forEach(exchangeDto -> {
-            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(SiteName.NAVER.name(), exchangeDto.getUserName());
+        for (ExchangeDto exchangeDto : exchangeDtoList) {
+            List<PointUrl> pointUrls = pointUrlRepository.findByNotCalledUrl(SiteName.NAVER.name(), exchangeDto.userName());
 
             log.info("Not called url size: {}", pointUrls.size());
 
             pointUrls.forEach(pointUrl -> exchangeService.exchange(pointUrl, exchangeDto));
-        });
+        }
     }
+
 }
