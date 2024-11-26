@@ -6,13 +6,16 @@ import me.synology.hajubal.coins.crawler.WebCrawler;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * crawling에 등록된 사이트에서 point url들을 수집하여 저장.
+ */
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -25,31 +28,30 @@ public class WebCrawlerService {
     /**
      * 등록된 사이트 들에 save point url 저장
      */
-    public void crawling() {
-        savePointUrls(crawlPointUrls());
-    }
+    @Transactional
+    public void savingPointUrl() {
+        Set<PointUrl> pointUrls = crawlPointUrls();
 
-    private void savePointUrls(List<PointUrl> pointUrls) {
-        pointUrls.forEach(pointUrl -> {
+        for (PointUrl pointUrl : pointUrls) {
             if(pointUrlRepository.findByUrl(pointUrl.getUrl()).isEmpty()) {
                 log.info("save point url: {}", pointUrl);
 
                 pointUrlRepository.save(pointUrl);
             }
-        });
+        }
     }
 
-    private List<PointUrl> crawlPointUrls() {
+    private Set<PointUrl> crawlPointUrls() {
         Set<PointUrl> pointUrlSet = new HashSet<>();
 
-        webCrawlers.forEach(crawler -> {
+        for (WebCrawler crawler : webCrawlers) {
             try {
                 pointUrlSet.addAll(crawler.crawling());
             } catch (IOException e) {
                 log.error("Crawling fail.", e);
             }
-        });
+        }
 
-        return new ArrayList<>(pointUrlSet);
+        return pointUrlSet;
     }
 }

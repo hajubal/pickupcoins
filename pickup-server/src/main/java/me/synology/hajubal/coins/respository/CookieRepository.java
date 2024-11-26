@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface CookieRepository extends JpaRepository<Cookie, Long> {
 
-    List<Cookie> findBySiteNameIgnoreCaseAndIsValid(String siteName, Boolean isValid);
+    List<Cookie> findBySiteNameAndIsValid(String siteName, Boolean isValid);
 
     List<Cookie> findAllBySiteUser_Id(Long siteUserId);
 }

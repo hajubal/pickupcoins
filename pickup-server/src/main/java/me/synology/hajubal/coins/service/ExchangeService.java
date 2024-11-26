@@ -43,14 +43,14 @@ public class ExchangeService {
      */
     @Transactional
     public void exchange(PointUrl url, ExchangeDto exchangeDto) {
-        log.info("Call point url: {}. user name: {}", url.getUrl(), exchangeDto.getUserName());
+        log.info("Call point url: {}. user name: {}", url.getUrl(), exchangeDto.userName());
 
         WebClient webClient = webClientBuilder.build();
 
         Mono<ResponseEntity<String>> mono = webClient
                 .get()
                 .uri(URI.create(url.getUrl()))
-                .headers(httpHeaders -> setCookieHeaders(httpHeaders, exchangeDto.getCookie()))
+                .headers(httpHeaders -> setCookieHeaders(httpHeaders, exchangeDto.cookie()))
                 .retrieve()
                 .toEntity(String.class)
                 ;
@@ -65,14 +65,14 @@ public class ExchangeService {
             String body = response.getBody();
 
             if(isInvalidCookie(body)) {
-                cookieService.invalid(exchangeDto.getCookieId(), exchangeDto.getWebHookUrl());
+                cookieService.invalid(exchangeDto.cookieId(), exchangeDto.webHookUrl());
             } else if(isSavePoint(body)) {
                 pointManageService.savePointPostProcess(exchangeDto, response);
             }
 
             log.debug("Response body: {} ", response.getBody());
 
-            saveLog(url, exchangeDto.getCookieId(), response);
+            saveLog(url, exchangeDto.cookieId(), response);
         });
     }
 

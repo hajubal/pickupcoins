@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @EnableScheduling
+@Profile("{dev}")
 @Component
 public class Schedulers {
 
@@ -26,18 +27,17 @@ public class Schedulers {
     /**
      * 5분 마다 웹 사이트 클롤링
      */
-    @Profile("{!local, !test}")
+
     @Scheduled(fixedDelay = 1000 * 60 * 5)
     public void webCrawlerScheduler() {
         log.info("Call webCrawlerScheduler.");
 
-        webCrawlerService.crawling();
+        webCrawlerService.savingPointUrl();
     }
 
     /**
      * 5분 마다 웹 사이트 포인트 적립 요청
      */
-    @Profile("{!local, !test}")
     @Scheduled(fixedDelay = 1000 * 60 * 5)
     public void pointScheduler() {
         log.info("Call pointScheduler.");
@@ -48,7 +48,6 @@ public class Schedulers {
     /**
      * 매일 아침 9시에 어제 하루 동안 작업 알림
      */
-    @Profile("{!local, !test}")
     @Scheduled(cron = "0 0 7 * * *")
     public void dailyReport() {
         log.info("Daily report.");
