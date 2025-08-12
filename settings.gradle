@@ -1,3 +1,13 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    plugins {
+        id 'com.diffplug.spotless' version '6.0.0'
+    }
+}
+
 rootProject.name = 'pickupcoins'
 include 'pickup-server'
 include 'admin-server'

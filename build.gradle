@@ -5,6 +5,11 @@ plugins {
 	id 'org.hidetake.ssh' version '2.10.1'
 	id 'com.gorylenko.gradle-git-properties' version '2.4.1'
 	id 'com.google.cloud.tools.jib' version '3.4.2'
+    id 'com.diffplug.spotless' version '6.0.0'
+}
+
+repositories {
+    mavenCentral()
 }
 
 allprojects {
@@ -43,6 +48,14 @@ subprojects {
 	test {
 		useJUnitPlatform()
 	}
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+        importOrder()
+        removeUnusedImports()
+    }
 }
 
 bootJar.enabled = false
