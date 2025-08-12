@@ -33,9 +33,9 @@ public class ClienWebCrawler implements WebCrawler {
 
     private final ClientSiteData clientSiteData;
 
-    public ClienWebCrawler(ClienPointUrlSelector clienPointUrlSelector, SiteRepository siteRepository
+    public ClienWebCrawler(PointPostUrlFetcher pointPostUrlFetcher, SiteRepository siteRepository
             , ClientSiteData clientSiteData) {
-        this.pointPostUrlFetcher = new PointPostUrlFetcher(clienPointUrlSelector);
+        this.pointPostUrlFetcher = pointPostUrlFetcher;
         this.siteRepository = siteRepository;
         this.clientSiteData = clientSiteData;
     }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @EnableScheduling
-@Profile("{dev}")
+@Profile("dev")
 @Component
 public class Schedulers {
 

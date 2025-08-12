@@ -32,9 +32,9 @@ public class RuliwebCrawler implements WebCrawler {
 
     private final RuliwebSiteData ruliwebSiteData;
 
-    public RuliwebCrawler(RuliwebPointUrlSelector ruliwebPointUrlSelector, SiteRepository siteRepository,
+    public RuliwebCrawler(PointPostUrlFetcher pointPostUrlFetcher, SiteRepository siteRepository,
                           RuliwebSiteData ruliwebSiteData) {
-        this.pointPostUrlFetcher = new PointPostUrlFetcher(ruliwebPointUrlSelector);
+        this.pointPostUrlFetcher = pointPostUrlFetcher;
         this.siteRepository = siteRepository;
         this.ruliwebSiteData = ruliwebSiteData;
     }

@@ -44,7 +44,7 @@ public class CookieService {
 
     @Transactional
     public void invalid(Long cookieId, String webhookUrl) {
-        Cookie cookie = cookieRepository.findById(cookieId).orElseThrow();
+        Cookie cookie = cookieRepository.findById(cookieId).orElseThrow(() -> new IllegalArgumentException("Not found cookie."));
         cookie.invalid();
 
         log.info("[{}] 로그인 풀림.", cookie.getUserName());

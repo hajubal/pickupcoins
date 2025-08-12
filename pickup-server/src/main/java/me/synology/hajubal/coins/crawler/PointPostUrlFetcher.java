@@ -2,12 +2,14 @@ package me.synology.hajubal.coins.crawler;
 
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Component
 public class PointPostUrlFetcher {
 
     private final PointUrlSelector pointUrlSelector;

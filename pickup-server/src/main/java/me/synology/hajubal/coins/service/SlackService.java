@@ -1,5 +1,6 @@
 package me.synology.hajubal.coins.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slack.api.Slack;
 import com.slack.api.webhook.WebhookResponse;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Slack message 전송 서비스
@@ -22,6 +25,7 @@ import java.io.IOException;
 public class SlackService {
 
     private final Slack slack;
+    private final ObjectMapper objectMapper;
 
     /**
      * 지정된 slack webhook url로 message 전송
@@ -42,7 +46,11 @@ public class SlackService {
         }
 
         try {
-            WebhookResponse webhookResponse = slack.send(slackWebhookUrl, "{\"text\":\"" + message + "\"}");
+            Map<String, String> payload = new HashMap<>();
+            payload.put("text", message);
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+
+            WebhookResponse webhookResponse = slack.send(slackWebhookUrl, jsonPayload);
 
             log.info(webhookResponse.toString());
 
