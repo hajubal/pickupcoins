@@ -2,222 +2,302 @@
 <html th:replace="~{layout/main :: layout(~{::title}, ~{::div#layout-container-page})}" xmlns:th="http://www.thymeleaf.org">
   <head></head>
   <body>
-        <!-- Content -->
-        <div id="layout-container-page" class="container-xxl flex-grow-1 container-p-y">
-          <div class="row">
-            <div class="col-lg col-md-4 order-1">
-              <div class="row">
-                <div class="col-lg-6 col-md-12 col-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                          <img
-                                  th:src="@{/assets/img/icons/unicons/paypal.png}"
-                                  alt="chart success"
-                                  class="rounded"
-                          />
-                        </div>
-                        <div class="dropdown">
-                          <button
-                                  class="btn p-0"
-                                  type="button"
-                                  id="cardOpt3"
-                                  data-bs-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                          >
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                            <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                          </div>
-                        </div>
-                      </div>
-                      <span class="fw-semibold d-block mb-1">Day Point</span>
-                      <h3 class="card-title mb-2" th:text="${dashboardDto.getSavedDayPoint()}">0</h3>
-                      <small class="fw-semibold" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'text-success' : 'text-danger'">
-                        <i class="bx" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt'"></i>
-                        <span th:text="${dashboardDto.getSavedDayPointRatioDayBefore()}">0</span>%</small>
-                    </div>
+    <div id="layout-container-page" class="max-w-7xl mx-auto">
+      <!-- Header Section -->
+      <div class="mb-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="space-y-1">
+            <h1 class="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p class="text-muted-foreground">Welcome back! Here's what's happening with your points.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button class="btn btn-outline btn-sm">
+              <i class="bx bx-refresh h-4 w-4 mr-2"></i>
+              Refresh
+            </button>
+            <div class="badge badge-default">
+              <i class="bx bx-time h-3 w-3 mr-1"></i>
+              Live Data
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <!-- Day Point Card -->
+        <div class="card">
+          <div class="card-content p-6">
+            <div class="flex items-center justify-between">
+              <div class="space-y-2">
+                <p class="text-sm font-medium text-muted-foreground">Today's Points</p>
+                <div class="flex items-baseline space-x-2">
+                  <p class="text-2xl font-bold" th:text="${dashboardDto.getSavedDayPoint()}">0</p>
+                  <div class="flex items-center text-xs" 
+                       th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'text-emerald-600' : 'text-destructive'">
+                    <i class="bx h-3 w-3 mr-1" 
+                       th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'bx-trending-up' : 'bx-trending-down'"></i>
+                    <span th:text="${dashboardDto.getSavedDayPointRatioDayBefore()} + '%'">0%</span>
                   </div>
                 </div>
-                <div class="col-lg-6 col-md-12 col-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                          <img
-                                  th:src="@{/assets/img/icons/unicons/paypal.png}"
-                                  alt="Credit Card"
-                                  class="rounded"
-                          />
-                        </div>
-                        <div class="dropdown">
-                          <button
-                                  class="btn p-0"
-                                  type="button"
-                                  id="cardOpt6"
-                                  data-bs-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                          >
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
-                            <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                          </div>
-                        </div>
-                      </div>
-                      <span>Week Point</span>
-                      <h3 class="card-title text-nowrap mb-1" th:text="${dashboardDto.getSavedWeekPoint()}">0</h3>
-                      <small class="fw-semibold" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'text-success' : 'text-danger'">
-                        <i class="bx" th:classappend="${dashboardDto.getSavedDayPointRatioDayBefore() >= 0} ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt'"></i>
-                        <span th:text="${dashboardDto.getSavedWeekPointRatioWeekBefore()}">0</span>%</small>
-                    </div>
+                <p class="text-xs text-muted-foreground">from yesterday</p>
+              </div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                <i class="bx bx-trending-up h-6 w-6"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Week Point Card -->
+        <div class="card">
+          <div class="card-content p-6">
+            <div class="flex items-center justify-between">
+              <div class="space-y-2">
+                <p class="text-sm font-medium text-muted-foreground">Weekly Points</p>
+                <div class="flex items-baseline space-x-2">
+                  <p class="text-2xl font-bold" th:text="${dashboardDto.getSavedWeekPoint()}">0</p>
+                  <div class="flex items-center text-xs" 
+                       th:classappend="${dashboardDto.getSavedWeekPointRatioWeekBefore() >= 0} ? 'text-emerald-600' : 'text-destructive'">
+                    <i class="bx h-3 w-3 mr-1" 
+                       th:classappend="${dashboardDto.getSavedWeekPointRatioWeekBefore() >= 0} ? 'bx-trending-up' : 'bx-trending-down'"></i>
+                    <span th:text="${dashboardDto.getSavedWeekPointRatioWeekBefore()} + '%'">0%</span>
                   </div>
                 </div>
-                <div class="col-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                          <img th:src="@{/assets/img/icons/unicons/cc-primary.png}" alt="Credit Card" class="rounded" />
-                        </div>
-                        <div class="dropdown">
-                          <button
-                                  class="btn p-0"
-                                  type="button"
-                                  id="cardOpt4"
-                                  data-bs-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                          >
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt4">
-                            <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                          </div>
-                        </div>
-                      </div>
-                      <span class="d-block mb-1">Day Point Url</span>
-                      <h3 class="card-title text-nowrap mb-2" th:text="${dashboardDto.getPointUrlDayCnt()}">0</h3>
-                    </div>
-                  </div>
+                <p class="text-xs text-muted-foreground">from last week</p>
+              </div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
+                <i class="bx bx-calendar h-6 w-6"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day Point URL Card -->
+        <div class="card">
+          <div class="card-content p-6">
+            <div class="flex items-center justify-between">
+              <div class="space-y-2">
+                <p class="text-sm font-medium text-muted-foreground">Daily URLs</p>
+                <div class="flex items-baseline space-x-2">
+                  <p class="text-2xl font-bold" th:text="${dashboardDto.getPointUrlDayCnt()}">0</p>
+                  <span class="text-xs text-muted-foreground">collected</span>
                 </div>
-                <div class="col-6 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                          <img th:src="@{/assets/img/icons/unicons/cc-primary.png}" alt="Credit Card" class="rounded" />
-                        </div>
-                        <div class="dropdown">
-                          <button
-                                  class="btn p-0"
-                                  type="button"
-                                  id="cardOpt1"
-                                  data-bs-toggle="dropdown"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                          >
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="cardOpt1">
-                            <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                          </div>
-                        </div>
-                      </div>
-                      <span class="fw-semibold d-block mb-1">Week Point Url</span>
-                      <h3 class="card-title mb-2" th:text="${dashboardDto.getPointUrlWeekCnt()}">0</h3>
-                    </div>
-                  </div>
+                <p class="text-xs text-muted-foreground">URLs found today</p>
+              </div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50 text-purple-600">
+                <i class="bx bx-link h-6 w-6"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Week Point URL Card -->
+        <div class="card">
+          <div class="card-content p-6">
+            <div class="flex items-center justify-between">
+              <div class="space-y-2">
+                <p class="text-sm font-medium text-muted-foreground">Weekly URLs</p>
+                <div class="flex items-baseline space-x-2">
+                  <p class="text-2xl font-bold" th:text="${dashboardDto.getPointUrlWeekCnt()}">0</p>
+                  <span class="text-xs text-muted-foreground">collected</span>
                 </div>
-                <div class="col-12 mb-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
-                        <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
-                          <div class="card-title">
-                            <h5 class="text-nowrap mb-2">Point Report</h5>
-                            <span class="badge bg-label-warning rounded-pill">Week</span>
-                          </div>
-                            <h3 class="mb-0" th:text="${dashboardDto.getSavedWeekPoint()}">0</h3>
-                          </div>
-                        </div>
-                        <div id="pointReportChart"></div>
-                      </div>
-                    </div>
-                  </div>
+                <p class="text-xs text-muted-foreground">URLs found this week</p>
+              </div>
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+                <i class="bx bx-collection h-6 w-6"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="grid gap-6 md:grid-cols-2 mb-8">
+        <!-- Point Report Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="flex items-center justify-between">
+              <div class="space-y-1">
+                <div class="card-title">Point Report</div>
+                <div class="card-description">Weekly point collection overview</div>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="badge badge-secondary">
+                  <i class="bx bx-calendar h-3 w-3 mr-1"></i>
+                  Weekly
                 </div>
               </div>
             </div>
+          </div>
+          <div class="card-content">
+            <div class="text-3xl font-bold mb-2" th:text="${dashboardDto.getSavedWeekPoint()}">0</div>
+            <div id="pointReportChart" class="h-24"></div>
+          </div>
+        </div>
+
+        <!-- Additional Stats Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="space-y-1">
+              <div class="card-title">Performance Overview</div>
+              <div class="card-description">Key metrics and performance indicators</div>
+            </div>
+          </div>
+          <div class="card-content space-y-4">
+            <div class="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+              <div class="flex items-center space-x-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
+                  <i class="bx bx-chart h-5 w-5 text-blue-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Average Daily</p>
+                  <p class="text-xs text-muted-foreground">Points per day</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold" th:text="${dashboardDto.getSavedWeekPoint() / 7}">0</p>
+                <p class="text-xs text-muted-foreground">avg/day</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+              <div class="flex items-center space-x-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-50">
+                  <i class="bx bx-target-lock h-5 w-5 text-green-600"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Collection Rate</p>
+                  <p class="text-xs text-muted-foreground">URLs to points ratio</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold" th:text="${dashboardDto.getPointUrlWeekCnt() > 0 ? (dashboardDto.getSavedWeekPoint() / dashboardDto.getPointUrlWeekCnt()) : 0}">0</p>
+                <p class="text-xs text-muted-foreground">pts/url</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <div class="flex items-center justify-between">
+            <div class="space-y-1">
+              <div class="card-title">Quick Actions</div>
+              <div class="card-description">Common tasks and shortcuts</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="grid gap-4 md:grid-cols-3">
+            <button class="btn btn-outline p-6 h-auto flex flex-col items-center space-y-2" 
+                    onclick="window.location.href='/savePointLog'">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
+                <i class="bx bx-history h-6 w-6 text-blue-600"></i>
+              </div>
+              <div class="text-center">
+                <div class="font-medium">View Point Log</div>
+                <div class="text-xs text-muted-foreground">Check transaction history</div>
+              </div>
+            </button>
+
+            <button class="btn btn-outline p-6 h-auto flex flex-col items-center space-y-2" 
+                    onclick="window.location.href='/pointUrl'">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
+                <i class="bx bx-link h-6 w-6 text-green-600"></i>
+              </div>
+              <div class="text-center">
+                <div class="font-medium">Manage URLs</div>
+                <div class="text-xs text-muted-foreground">Configure point URLs</div>
+              </div>
+            </button>
+
+            <button class="btn btn-outline p-6 h-auto flex flex-col items-center space-y-2" 
+                    onclick="window.location.href='/cookies'">
+              <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50">
+                <i class="bx bx-cookie h-6 w-6 text-purple-600"></i>
+              </div>
+              <div class="text-center">
+                <div class="font-medium">Manage Cookies</div>
+                <div class="text-xs text-muted-foreground">Update authentication</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
             <script>
-              // Profit Report Line Chart
-              // --------------------------------------------------------------------
-              const pointReportChartEl = document.querySelector('#pointReportChart'),
-                      pointReportChartConfig = {
-                        chart: {
-                          height: 80,
-                          // width: 175,
-                          type: 'line',
-                          toolbar: {
-                            show: false
-                          },
-                          dropShadow: {
-                            enabled: true,
-                            top: 10,
-                            left: 5,
-                            blur: 3,
-                            color: config.colors.warning,
-                            opacity: 0.15
-                          },
-                          sparkline: {
-                            enabled: true
-                          }
-                        },
-                        grid: {
-                          show: false,
-                          padding: {
-                            right: 8
-                          }
-                        },
-                        colors: [config.colors.warning],
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          width: 5,
-                          curve: 'smooth'
-                        },
-                        series: [
-                          {
-                            data: [[${dashboardDto.getPoints()}]]
-                          }
-                        ],
-                        xaxis: {
-                          show: false,
-                          lines: {
-                            show: false
-                          },
-                          labels: {
-                            show: false
-                          },
-                          axisBorder: {
-                            show: false
-                          }
-                        },
-                        yaxis: {
-                          show: false
-                        }
-                      };
+              function toggleDropdown(id) {
+                const dropdown = document.getElementById(id);
+                dropdown.classList.toggle('hidden');
+              }
 
-              if (typeof pointReportChartEl !== undefined && pointReportChartEl !== null) {
+              // Close dropdowns when clicking outside
+              document.addEventListener('click', function(event) {
+                const dropdowns = document.querySelectorAll('[id^="dropdown"]');
+                dropdowns.forEach(dropdown => {
+                  if (!dropdown.contains(event.target) && !event.target.closest('button[onclick*="' + dropdown.id + '"]')) {
+                    dropdown.classList.add('hidden');
+                  }
+                });
+              });
+
+              // Point Report Line Chart
+              const pointReportChartEl = document.querySelector('#pointReportChart');
+              if (pointReportChartEl) {
+                const pointReportChartConfig = {
+                  chart: {
+                    height: 80,
+                    type: 'line',
+                    toolbar: {
+                      show: false
+                    },
+                    sparkline: {
+                      enabled: true
+                    }
+                  },
+                  grid: {
+                    show: false,
+                    padding: {
+                      right: 8
+                    }
+                  },
+                  colors: ['#f59e0b'],
+                  dataLabels: {
+                    enabled: false
+                  },
+                  stroke: {
+                    width: 3,
+                    curve: 'smooth'
+                  },
+                  series: [
+                    {
+                      data: [[${dashboardDto.getPoints()}]]
+                    }
+                  ],
+                  xaxis: {
+                    show: false,
+                    lines: {
+                      show: false
+                    },
+                    labels: {
+                      show: false
+                    },
+                    axisBorder: {
+                      show: false
+                    }
+                  },
+                  yaxis: {
+                    show: false
+                  }
+                };
+
                 const pointReportChart = new ApexCharts(pointReportChartEl, pointReportChartConfig);
                 pointReportChart.render();
               }
-
             </script>
         </div>
         <!-- / Content -->

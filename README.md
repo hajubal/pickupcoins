@@ -16,6 +16,7 @@
 4. Slack API
 5. Docker compose
 6. Prometheus, Grafana ([Prometheus, Grafana Repository](https://github.com/hajubal/monitoring))
+7. Tailwind CSS (UI Framework)
 
 ## 시나리오
 
@@ -23,7 +24,29 @@
 2. 어플리케이션에 주기적으로 등록된 사이트들의 게시판을 크롤링하여 포인트 URL 수집
 3. 포인트 URL을 로그인 쿠키정보를 포함하여 호출
 
+## 개발 및 빌드
+
+### Tailwind CSS 개발
+```bash
+# admin-server 디렉토리에서 실행
+cd admin-server
+
+# 의존성 설치 (최초 1회)
+npm install
+
+# 개발 중 CSS 변경사항 실시간 빌드
+npm run build-css
+
+# 프로덕션 빌드 (압축된 CSS 생성)
+npm run build
+```
+
 ## 릴리즈
+### v1.2.0
+- UI를 Tailwind CSS 기반으로 변경
+- 모던한 디자인 시스템 적용
+- 반응형 레이아웃 구현
+
 ### v1.1.3
 - dashboard 포인트 증감율 버그 수정
 - Point log 페이지 url log -> point log 내용 변경

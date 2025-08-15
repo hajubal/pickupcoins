@@ -286,3 +286,14 @@ generated/
 gradle.properties
 .DS_Store
 *.gz
+
+# Node.js & NPM
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Tailwind CSS generated files
+admin-server/src/main/resources/static/css/output.css

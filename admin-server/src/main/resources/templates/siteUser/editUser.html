@@ -1,138 +1,278 @@
 <!doctype html>
-<html th:replace="~{layout/main :: layout(~{::title}, ~{::.content-wrapper})}" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::div#layout-container-page})}" xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <!-- Content wrapper -->
-  <div class="content-wrapper">
-    <!-- Content -->
+  <div id="layout-container-page" class="max-w-4xl mx-auto">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="space-y-1">
+        <h1 class="text-3xl font-bold tracking-tight">Account Settings</h1>
+        <p class="text-muted-foreground">Manage your account information and preferences</p>
+      </div>
+    </div>
 
-    <div class="container-xxl flex-grow-1 container-p-y">
-      <h4 class="fw-bold py-3 mb-4">Site User</h4>
+    <!-- Profile Status -->
+    <div class="mb-6">
+      <div th:if="${siteUser.active}" class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-green-50 border-green-200 text-green-700">
+        <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+        Active Account
+      </div>
+      <div th:unless="${siteUser.active}" class="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-gray-50 border-gray-200 text-gray-700">
+        <div class="w-2 h-2 rounded-full bg-gray-500 mr-2"></div>
+        Inactive Account
+      </div>
+    </div>
 
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card mb-4">
-            <h5 class="card-header">Profile Details</h5>
-            <!-- Account -->
-            <hr class="my-0" />
-            <div class="card-body">
-              <form id="formAccountSettings" th:action="@{/siteUser}" th:object="${siteUser}" method="post">
-                <div th:if="${#fields.hasGlobalErrors()}">
-                  <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
-                </div>
-
-                <div class="row">
-                  <div class="mb-3 col-md-6">
-                    <label for="id" class="form-label" th:text="#{siteUser.id}">ID</label>
-                    <input
-                            class="form-control"
-                            type="text"
-                            id="id"
-                            th:field="*{id}"
-                            readonly
-                    />
-                  </div>
-                  <div class="mb-3 col-md-6">
-                    <label for="loginId" class="form-label" th:text="#{siteUser.loginId}">사용자 로그인 ID</label>
-                    <input
-                            class="form-control"
-                            type="text"
-                            id="loginId"
-                            th:field="*{loginId}"
-                            readonly
-
-                    />
-                  </div>
-                  <div class="mb-3 col-md-6">
-                    <label for="userName" class="form-label" th:text="#{siteUser.userName}">사용자 이름</label>
-                    <input class="form-control" type="text" name="lastName" id="userName" th:field="*{userName}"
-                           th:errorclass="field-error" placeholder="사용자 이름을 입력하세요" autofocus/>
-                    <div class="field-error" th:errors="*{userName}">
-                      사용자 이름 오류
-                    </div>
-                  </div>
-                  <div class="mb-3 col-md-6">
-                    <label for="slackWebhookUrl" class="form-label" th:text="#{siteUser.slackWebhookUrl}">SlackWebhookUrl</label>
-                    <input
-                            class="form-control"
-                            type="text"
-                            id="slackWebhookUrl" th:field="*{slackWebhookUrl}"
-                            th:errorclass="field-error" placeholder="SlackWebhookUr을 입력하세요"/>
-                    <div class="field-error" th:errors="*{slackWebhookUrl}">
-                      WebHookUrl 오류
-                    </div>
-                  </div>
-                  <div class="mb-3 col-md-6">
-                    <div class="form-check form-switch mb-2">
-                      <input class="form-check-input" type="checkbox" id="active" th:checked="${siteUser.active}"/>
-                      <label class="form-check-label" for="active">Activate</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-2">
-                  <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                  <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/updatePassword}'|">Password Change</button>
-                  <button type="reset" class="btn btn-outline-secondary">Cancel</button>
-                </div>
-              </form>
+    <div class="grid gap-6">
+      <!-- Profile Information Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Profile Information</div>
+          <div class="card-description">Update your account details and personal information</div>
+        </div>
+        
+        <div class="card-content">
+          <form id="profileForm" th:action="@{/siteUser}" th:object="${siteUser}" method="post" class="space-y-6">
+            
+            <!-- Global Errors -->
+            <div th:if="${#fields.hasGlobalErrors()}" class="space-y-2">
+              <div class="alert alert-danger" th:each="err : ${#fields.globalErrors()}">
+                <i class="bx bx-error-circle h-4 w-4 mr-2"></i>
+                <span th:text="${err}">Global error message</span>
+              </div>
             </div>
-            <!-- /Account -->
-          </div>
-          <div class="card">
-            <h5 class="card-header">Delete Account</h5>
-            <div class="card-body">
-              <div class="mb-3 col-12 mb-0">
-                <div class="alert alert-warning">
-                  <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete your account?</h6>
-                  <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- ID Field (Read-only) -->
+              <div class="space-y-2">
+                <label for="id" class="label" th:text="#{siteUser.id}">ID</label>
+                <input 
+                  type="text" 
+                  id="id" 
+                  th:field="*{id}"
+                  class="input bg-muted" 
+                  readonly
+                />
+                <div class="form-description">Your unique user identifier</div>
+              </div>
+
+              <!-- Login ID Field (Read-only) -->
+              <div class="space-y-2">
+                <label for="loginId" class="label" th:text="#{siteUser.loginId}">Login ID</label>
+                <input 
+                  type="text" 
+                  id="loginId" 
+                  th:field="*{loginId}"
+                  class="input bg-muted" 
+                  readonly
+                />
+                <div class="form-description">Your login username</div>
+              </div>
+
+              <!-- User Name Field -->
+              <div class="space-y-2">
+                <label for="userName" class="label" th:text="#{siteUser.userName}">Display Name</label>
+                <input 
+                  type="text" 
+                  id="userName" 
+                  th:field="*{userName}"
+                  th:classappend="${#fields.hasErrors('userName')} ? 'border-destructive' : ''"
+                  class="input" 
+                  placeholder="Enter your display name"
+                />
+                <div th:if="${#fields.hasErrors('userName')}" class="form-error">
+                  <i class="bx bx-error-circle h-4 w-4 mr-1"></i>
+                  <span th:errors="*{userName}">Username error</span>
                 </div>
               </div>
-              <div class="form-check mb-3">
-                <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="accountActivation"
-                        id="accountActivation"
+
+              <!-- Slack Webhook URL Field -->
+              <div class="space-y-2">
+                <label for="slackWebhookUrl" class="label" th:text="#{siteUser.slackWebhookUrl}">Slack Webhook URL</label>
+                <input 
+                  type="url" 
+                  id="slackWebhookUrl" 
+                  th:field="*{slackWebhookUrl}"
+                  th:classappend="${#fields.hasErrors('slackWebhookUrl')} ? 'border-destructive' : ''"
+                  class="input" 
+                  placeholder="https://hooks.slack.com/services/..."
                 />
-                <label class="form-check-label" for="accountActivation"
-                >I confirm my account deactivation</label
-                >
+                <div class="form-description">Get notifications via Slack (optional)</div>
+                <div th:if="${#fields.hasErrors('slackWebhookUrl')}" class="form-error">
+                  <i class="bx bx-error-circle h-4 w-4 mr-1"></i>
+                  <span th:errors="*{slackWebhookUrl}">Webhook URL error</span>
+                </div>
               </div>
-              <button type="button" class="btn btn-danger deactivate-account" th:onclick="inactivate()">Deactivate Account</button>
+            </div>
+
+            <!-- Account Status Toggle -->
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 border rounded-lg">
+                <div class="space-y-1">
+                  <h3 class="font-medium">Account Status</h3>
+                  <p class="text-sm text-muted-foreground">Enable or disable your account</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <input 
+                    type="checkbox" 
+                    id="active" 
+                    name="active"
+                    th:checked="${siteUser.active}"
+                    class="w-4 h-4 text-primary bg-background border-2 border-input rounded focus:ring-2 focus:ring-primary"
+                  />
+                  <label for="active" class="text-sm font-medium">Active</label>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="card-footer">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <button type="button" class="btn btn-outline w-full sm:w-auto" th:onclick="|location.href='@{/updatePassword}'|">
+              <i class="bx bx-lock h-4 w-4 mr-2"></i>
+              Change Password
+            </button>
+            <div class="flex items-center space-x-3 w-full sm:w-auto">
+              <button type="reset" form="profileForm" class="btn btn-ghost flex-1 sm:flex-none">
+                <i class="bx bx-refresh h-4 w-4 mr-2"></i>
+                Reset
+              </button>
+              <button type="submit" form="profileForm" class="btn btn-default flex-1 sm:flex-none">
+                <i class="bx bx-save h-4 w-4 mr-2"></i>
+                Save Changes
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <script>
-        function inactivate() {
-          const csrfToken = $("meta[name='_csrf']").attr("content");
-          const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+      <!-- Danger Zone Card -->
+      <div class="card border-destructive">
+        <div class="card-header">
+          <div class="flex items-center space-x-2">
+            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-red-50">
+              <i class="bx bx-error h-3 w-3 text-red-600"></i>
+            </div>
+            <div class="card-title text-destructive">Danger Zone</div>
+          </div>
+          <div class="card-description">Irreversible and destructive actions</div>
+        </div>
+        
+        <div class="card-content space-y-4">
+          <div class="border border-red-200 rounded-lg p-4 bg-red-50">
+            <div class="flex items-start space-x-3">
+              <i class="bx bx-info-circle h-5 w-5 text-red-600 mt-0.5"></i>
+              <div class="space-y-1">
+                <h4 class="font-medium text-red-900">Account Deactivation</h4>
+                <p class="text-sm text-red-700">
+                  Once you deactivate your account, there is no going back. Please be certain.
+                  All your data will be permanently removed from our servers.
+                </p>
+              </div>
+            </div>
+          </div>
 
-          if($("#accountActivation").is(":checked")) {
-            $.ajax({
-              url: '[[@{/siteUser}]]', // Replace with your endpoint URL
-              type: 'DELETE',
-              beforeSend: function(xhr) {
-                xhr.setRequestHeader(csrfHeader, csrfToken);
-              },
-              success: function(result) {
-                console.log(result)
-              },
-              error: function(error) {
-                alert(error)
-              }
-            });
-          }
-        }
-
-      </script>
+          <div class="flex items-center space-x-3">
+            <input 
+              type="checkbox" 
+              id="confirmDeactivation" 
+              class="w-4 h-4 text-red-600 bg-background border-2 border-red-300 rounded focus:ring-2 focus:ring-red-500"
+            />
+            <label for="confirmDeactivation" class="text-sm font-medium text-red-900">
+              I understand the consequences and want to deactivate my account
+            </label>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <button 
+            type="button" 
+            id="deactivateBtn"
+            class="btn btn-destructive" 
+            onclick="handleDeactivation()"
+            disabled
+          >
+            <i class="bx bx-trash h-4 w-4 mr-2"></i>
+            Deactivate Account
+          </button>
+        </div>
+      </div>
     </div>
-    <!-- / Content -->
-
-    <div class="content-backdrop fade"></div>
   </div>
-  <!-- Content wrapper -->
+
+  <script>
+    // Enable/disable deactivate button based on checkbox
+    document.getElementById('confirmDeactivation').addEventListener('change', function() {
+      const deactivateBtn = document.getElementById('deactivateBtn');
+      deactivateBtn.disabled = !this.checked;
+    });
+
+    function handleDeactivation() {
+      const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+      const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+      const deactivateBtn = document.getElementById('deactivateBtn');
+      const originalText = deactivateBtn.innerHTML;
+      
+      deactivateBtn.disabled = true;
+      deactivateBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin h-4 w-4 mr-2"></i>Deactivating...';
+
+      fetch('[[@{/siteUser}]]', {
+        method: 'DELETE',
+        headers: {
+          [csrfHeader]: csrfToken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Show success message and redirect
+          showNotification('Account deactivated successfully', 'success');
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+        } else {
+          throw new Error('Deactivation failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to deactivate account. Please try again.', 'error');
+        deactivateBtn.disabled = false;
+        deactivateBtn.innerHTML = originalText;
+      });
+    }
+
+    // Form validation feedback
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      const submitBtn = document.querySelector('button[form="profileForm"][type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin h-4 w-4 mr-2"></i>Saving...';
+      
+      // Re-enable button after 3 seconds if form doesn't submit
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }, 3000);
+    });
+
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-md shadow-lg transition-opacity duration-300 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  </script>
 
 </body>
 </html>
