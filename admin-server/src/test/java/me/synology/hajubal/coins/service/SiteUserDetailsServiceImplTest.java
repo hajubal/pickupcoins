@@ -29,8 +29,6 @@ class SiteUserDetailsServiceImplTest {
     void generatePassword() {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         String encodedPassword = encoder.encode("user");
-
-        System.out.println("encodedPassword = " + encodedPassword);
     }
 
     @DisplayName("사용자 조회 테스트")
