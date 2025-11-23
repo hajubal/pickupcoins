@@ -1,4 +1,4 @@
-package me.synology.hajubal.coins.service.dto;
+package me.synology.hajubal.coins.dto;
 
 import me.synology.hajubal.coins.entity.Cookie;
 

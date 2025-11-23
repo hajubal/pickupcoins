@@ -2,10 +2,10 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.dto.ExchangeDto;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
-import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

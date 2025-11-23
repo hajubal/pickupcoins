@@ -2,10 +2,10 @@ package me.synology.hajubal.coins.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.coins.dto.ExchangeDto;
 import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
 import me.synology.hajubal.coins.respository.PointUrlCookieRepository;
-import me.synology.hajubal.coins.service.dto.ExchangeDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,9 @@ public class ExchangeService {
 
     private final WebClient.Builder webClientBuilder;
 
-    private final CookieService cookieService;
+    private final me.synology.hajubal.coins.service.CookieService cookieService;
+
+    private final CookieNotificationService cookieNotificationService;
 
     /**
      * point url을 호출.
@@ -65,7 +67,7 @@ public class ExchangeService {
             String body = response.getBody();
 
             if(isInvalidCookie(body)) {
-                cookieService.invalid(exchangeDto.cookieId(), exchangeDto.webHookUrl());
+                cookieNotificationService.invalidateAndNotify(exchangeDto.cookieId(), exchangeDto.webHookUrl());
             } else if(isSavePoint(body)) {
                 pointManageService.savePointPostProcess(exchangeDto, response);
             }
