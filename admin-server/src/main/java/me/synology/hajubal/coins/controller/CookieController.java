@@ -53,7 +53,7 @@ public class CookieController {
             return "cookie/editCookie";
         }
 
-        cookieService.updateCookie(cookieId, editDto);
+        cookieService.updateCookie(cookieId, editDto.getCookie(), editDto.getUserName(), editDto.getSiteName(), editDto.getIsValid());
 
         return "redirect:/cookie/" + cookieId;
     }
@@ -75,7 +75,7 @@ public class CookieController {
 
         SiteUser siteUser = (SiteUser) authentication.getPrincipal();
 
-        Long userId = cookieService.insertCookie(insertDto, siteUser.getLoginId());
+        Long userId = cookieService.insertCookie(siteUser.getLoginId(), insertDto.getCookie(), insertDto.getUserName(), insertDto.getSiteName(), Boolean.TRUE);
 
         return "redirect:/cookie/" + userId;
     }
