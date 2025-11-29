@@ -298,11 +298,7 @@ yarn.lock
 # Frontend build outputs
 admin-web/dist/
 
-# Tailwind CSS generated files
-admin-server/src/main/resources/static/css/output.css
-
 pickup-common/bin/
-admin-server/bin/
 pickup-server/bin/
 pickup-server/target/
 pickup-common/target/

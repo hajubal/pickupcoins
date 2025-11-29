@@ -22,7 +22,8 @@ PickupCoins는 클리앙, 루리웹 등의 커뮤니티 사이트에서 네이�
 pickupcoins/
 ├── pickup-common/     # 공통 모듈 (엔티티, 리포지토리, 설정)
 ├── pickup-server/     # 포인트 수집 서버 (크롤링, 적립, 스케줄링)
-└── admin-server/      # 관리자 웹 애플리케이션 (대시보드, 사용자 관리)
+├── admin-api/         # 관리자 REST API 서버 (JWT 인증)
+└── admin-web/         # 관리자 웹 프론트엔드 (React SPA)
 ```
 
 ### 모듈 설명
@@ -39,11 +40,15 @@ pickupcoins/
 - 스케줄러 (크롤링, 포인트 적립, 일일 리포트)
 - Slack 알림 서비스
 
-#### admin-server
-- Spring Security 기반 인증/인가
-- Thymeleaf 기반 웹 UI
-- 대시보드 (포인트 적립 통계, 차트)
-- 사용자 관리 (쿠키, 사이트 설정)
+#### admin-api
+- REST API 서버 (JWT 기반 인증)
+- Swagger/OpenAPI 문서 제공
+- 관리자 기능 API (대시보드, 쿠키, 포인트, 사이트, 사용자 관리)
+
+#### admin-web
+- React + TypeScript 기반 SPA
+- admin-api와 통신하여 관리자 기능 제공
+- 모던한 UI/UX (Tailwind CSS)
 
 ## 기술 스택
 
@@ -55,9 +60,10 @@ pickupcoins/
 - Spring WebFlux (WebClient)
 
 ### Frontend
-- Thymeleaf
+- React 19 + TypeScript
+- Vite
 - Tailwind CSS
-- HTML/CSS/JavaScript
+- React Router, React Query, Zustand
 
 ### Database
 - MySQL 8.0
@@ -109,7 +115,7 @@ spring:
     password: your_password
 ```
 
-`admin-server/src/main/resources/application-local.yml`
+`admin-api/src/main/resources/application-local.yml`
 ```yaml
 spring:
   datasource:
@@ -118,19 +124,19 @@ spring:
     password: your_password
 ```
 
-### Tailwind CSS 빌드
+### Frontend 개발 서버 실행
 
 ```bash
-# admin-server 디렉토리에서 실행
-cd admin-server
+# admin-web 디렉토리에서 실행
+cd admin-web
 
 # 의존성 설치 (최초 1회)
 npm install
 
-# 개발 중 CSS 변경사항 실시간 빌드
-npm run build-css
+# 개발 서버 실행 (포트 5173)
+npm run dev
 
-# 프로덕션 빌드 (압축된 CSS 생성)
+# 프로덕션 빌드
 npm run build
 ```
 
@@ -143,8 +149,8 @@ npm run build
 # pickup-server 실행
 ./gradlew :pickup-server:bootRun
 
-# admin-server 실행
-./gradlew :admin-server:bootRun
+# admin-api 실행
+./gradlew :admin-api:bootRun
 ```
 
 ### Docker 실행
@@ -162,7 +168,11 @@ docker-compose up -d
 ### 1. 관리자 페이지 접속
 
 ```
-http://localhost:8081
+# React 프론트엔드 (개발 서버)
+http://localhost:5173
+
+# REST API 서버
+http://localhost:8082
 ```
 
 ### 2. 사용자 등록
@@ -220,16 +230,16 @@ naver:
 
 ### Actuator 엔드포인트
 
-pickup-server와 admin-server 모두 Spring Boot Actuator를 통해 모니터링 가능합니다.
+pickup-server와 admin-api 모두 Spring Boot Actuator를 통해 모니터링 가능합니다.
 
 ```
 # Health Check
 http://localhost:8080/actuator/health
-http://localhost:8081/actuator/health
+http://localhost:8082/actuator/health
 
 # Metrics (Prometheus)
 http://localhost:8080/actuator/prometheus
-http://localhost:8081/actuator/prometheus
+http://localhost:8082/actuator/prometheus
 ```
 
 ### Prometheus & Grafana
@@ -273,8 +283,8 @@ spotless {
 # 단위 테스트 실행
 ./gradlew test
 
-# 통합 테스트 실행 (admin-server만 해당)
-./gradlew integrationTest
+# 통합 테스트 실행
+./gradlew test
 
 # 모든 테스트 실행
 ./gradlew build
