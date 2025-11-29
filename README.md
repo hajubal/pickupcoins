@@ -1,32 +1,125 @@
-# 포인트 수집기
-## 개요
+# PickupCoins
 
-네이버 포인트를 자동으로 수집하는 어플리케이션
+네이버 포인트 자동 수집 시스템
 
-## 기능 목록
+## 프로젝트 개요
 
-1. 등록된 사이트의 게시판을 크롤링 하면서 네이버 포인트 URL을 수집
-2. 네이버 포인트 URL을 호출
+PickupCoins는 클리앙, 루리웹 등의 커뮤니티 사이트에서 네이버 포인트 적립 URL을 자동으로 크롤링하고, 등록된 사용자 계정으로 포인트를 자동 적립하는 시스템입니다.
+
+### 주요 기능
+
+- 커뮤니티 사이트 크롤링을 통한 네이버 포인트 URL 수집
+- 등록된 쿠키를 이용한 자동 포인트 적립
+- 포인트 적립 현황 대시보드 제공
+- Slack 웹훅을 통한 실시간 알림
+- 사용자별 포인트 적립 통계
+
+## 아키텍처
+
+이 프로젝트는 멀티 모듈 구조로 설계되었습니다:
+
+```
+pickupcoins/
+├── pickup-common/     # 공통 모듈 (엔티티, 리포지토리, 설정)
+├── pickup-server/     # 포인트 수집 서버 (크롤링, 적립, 스케줄링)
+└── admin-server/      # 관리자 웹 애플리케이션 (대시보드, 사용자 관리)
+```
+
+### 모듈 설명
+
+#### pickup-common
+- JPA 엔티티 정의 (Cookie, PointUrl, SavedPoint, Site, SiteUser 등)
+- Repository 인터페이스 및 QueryDSL 구현
+- 공통 설정 클래스 (Properties, Exception)
+- 추상 클래스 (AbstractWebCrawler, BaseCookieService)
+
+#### pickup-server
+- 웹 크롤링 서비스 (클리앙, 루리웹)
+- 포인트 교환 서비스
+- 스케줄러 (크롤링, 포인트 적립, 일일 리포트)
+- Slack 알림 서비스
+
+#### admin-server
+- Spring Security 기반 인증/인가
+- Thymeleaf 기반 웹 UI
+- 대시보드 (포인트 적립 통계, 차트)
+- 사용자 관리 (쿠키, 사이트 설정)
 
 ## 기술 스택
 
-1. SpringBoot
-2. SpringData, JPA
-3. MySql
-4. Slack API
-5. Docker compose
-6. Prometheus, Grafana ([Prometheus, Grafana Repository](https://github.com/hajubal/monitoring))
-7. Tailwind CSS (UI Framework)
+### Backend
+- Spring Boot 3.2.0
+- Spring Data JPA
+- QueryDSL 5.0.0
+- Spring Security
+- Spring WebFlux (WebClient)
 
-## 시나리오
+### Frontend
+- Thymeleaf
+- Tailwind CSS
+- HTML/CSS/JavaScript
 
-1. 사용자가 네이버 로그인 쿠키정보를 저장
-2. 어플리케이션에 주기적으로 등록된 사이트들의 게시판을 크롤링하여 포인트 URL 수집
-3. 포인트 URL을 로그인 쿠키정보를 포함하여 호출
+### Database
+- MySQL 8.0
+- H2 (테스트용)
 
-## 개발 및 빌드
+### Build & Deploy
+- Gradle 8.5
+- Java 17
+- Docker & Docker Compose
+- Jib (컨테이너 이미지 빌드)
 
-### Tailwind CSS 개발
+### Monitoring
+- Prometheus
+- Grafana
+- Spring Boot Actuator
+
+### External APIs
+- Slack API
+- Jsoup (웹 크롤링)
+
+## 시작하기
+
+### 사전 요구사항
+
+- JDK 17 이상
+- MySQL 8.0 이상
+- Gradle 8.5 이상
+- Node.js (Tailwind CSS 빌드용)
+
+### 환경 설정
+
+1. 데이터베이스 설정
+
+```sql
+CREATE DATABASE pickupcoins DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'pickupcoins'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON pickupcoins.* TO 'pickupcoins'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+2. 애플리케이션 설정 파일 생성
+
+`pickup-server/src/main/resources/application-local.yml`
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/pickupcoins
+    username: pickupcoins
+    password: your_password
+```
+
+`admin-server/src/main/resources/application-local.yml`
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/pickupcoins
+    username: pickupcoins
+    password: your_password
+```
+
+### Tailwind CSS 빌드
+
 ```bash
 # admin-server 디렉토리에서 실행
 cd admin-server
@@ -41,7 +134,230 @@ npm run build-css
 npm run build
 ```
 
-## 릴리즈
+### 빌드 및 실행
+
+```bash
+# 전체 프로젝트 빌드
+./gradlew clean build
+
+# pickup-server 실행
+./gradlew :pickup-server:bootRun
+
+# admin-server 실행
+./gradlew :admin-server:bootRun
+```
+
+### Docker 실행
+
+```bash
+# Docker 이미지 빌드
+./gradlew jibDockerBuild
+
+# Docker Compose 실행
+docker-compose up -d
+```
+
+## 사용 방법
+
+### 1. 관리자 페이지 접속
+
+```
+http://localhost:8081
+```
+
+### 2. 사용자 등록
+
+- 사용자 계정 생성
+- Slack 웹훅 URL 설정 (선택)
+
+### 3. 쿠키 등록
+
+- 네이버 로그인 후 쿠키 정보 복사
+- 관리자 페이지에서 쿠키 등록
+- 사이트별로 여러 쿠키 등록 가능
+
+### 4. 자동 수집 시작
+
+pickup-server가 자동으로 다음 작업을 수행합니다:
+- 5분마다 커뮤니티 사이트 크롤링
+- 발견된 포인트 URL로 자동 적립
+- 매일 오전 7시 일일 리포트 전송 (Slack)
+
+### 5. 대시보드 확인
+
+- 포인트 적립 현황
+- 일별/주별 통계
+- 최근 적립 내역
+
+## 주요 설정
+
+### 크롤링 설정
+
+`pickup-common/src/main/resources/application-common.yml`
+
+```yaml
+crawler:
+  timeout: 10000  # HTTP 연결 타임아웃 (ms)
+
+schedule:
+  crawler-fixed-delay: 300000  # 크롤링 주기 (5분)
+  point-fixed-delay: 300000    # 포인트 적립 주기 (5분)
+  daily-report-cron: "0 0 7 * * *"  # 일일 리포트 시간 (매일 오전 7시)
+```
+
+### 네이버 포인트 설정
+
+```yaml
+naver:
+  point:
+    save-keyword: "적립"
+    invalid-cookie-keyword: "로그인이 필요"
+    amount-pattern: "\\s\\d+원이 적립 됩니다."
+    user-agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+```
+
+## 모니터링
+
+### Actuator 엔드포인트
+
+pickup-server와 admin-server 모두 Spring Boot Actuator를 통해 모니터링 가능합니다.
+
+```
+# Health Check
+http://localhost:8080/actuator/health
+http://localhost:8081/actuator/health
+
+# Metrics (Prometheus)
+http://localhost:8080/actuator/prometheus
+http://localhost:8081/actuator/prometheus
+```
+
+### Prometheus & Grafana
+
+별도 모니터링 스택: [Prometheus, Grafana Repository](https://github.com/hajubal/monitoring)
+
+### 로그 확인
+
+로그 레벨 및 포맷은 `LOGGING_GUIDELINES.md` 참조
+
+## 개발 가이드
+
+### 코드 스타일
+
+- Google Java Format 적용
+- Spotless 플러그인으로 자동 포맷팅
+- Import 정리 및 미사용 import 자동 제거
+
+```bash
+# 코드 포맷 확인
+./gradlew spotlessCheck
+
+# 코드 포맷 적용
+./gradlew spotlessApply
+```
+
+Spotless 설정 (build.gradle):
+```gradle
+spotless {
+    java {
+        googleJavaFormat()
+        importOrder()
+        removeUnusedImports()
+    }
+}
+```
+
+### 테스트
+
+```bash
+# 단위 테스트 실행
+./gradlew test
+
+# 통합 테스트 실행 (admin-server만 해당)
+./gradlew integrationTest
+
+# 모든 테스트 실행
+./gradlew build
+```
+
+### 로깅 가이드라인
+
+로그 작성 규칙은 `LOGGING_GUIDELINES.md` 참조
+
+주요 로깅 규칙:
+- ERROR: 시스템 오류, 즉시 조치 필요
+- WARN: 잠재적 문제, 모니터링 필요
+- INFO: 주요 비즈니스 이벤트, 상태 변경
+- DEBUG: 상세 디버깅 정보 (개발 환경에서만 활성화)
+
+로그 레벨별 환경 설정:
+- 개발: DEBUG 레벨까지 모두 출력
+- 프로덕션: INFO 레벨 이상만 출력
+
+## 성능 최적화
+
+### 데이터베이스 인덱스
+
+주요 테이블에 다음 인덱스가 적용되어 있습니다:
+- Cookie: (siteName, isValid), (site_user_id)
+- SavedPoint: (created_date)
+- PointUrl: (name, permanent), (created_date)
+
+### N+1 쿼리 해결
+
+- SavedPoint 조회 시 fetchJoin 사용
+- CookieRepository에 @EntityGraph 적용
+
+### 캐싱
+
+- WebClient 싱글톤 패턴 적용
+
+## 보안
+
+### Spring Security 설정
+
+- Form 로그인 기반 인증
+- CSRF 보호 활성화
+- XSS Protection 헤더
+- Content Security Policy (CSP) 적용
+- 세션 관리 (최대 1개 세션, 중복 로그인 방지)
+
+### 민감 정보 관리
+
+- 쿠키 값은 암호화되지 않으므로 데이터베이스 접근 제어 필요
+- 프로덕션 환경에서는 환경 변수를 통한 설정 권장
+
+## 트러블슈팅
+
+### 자주 발생하는 문제
+
+1. **쿠키 무효화**
+   - 네이버 로그인 세션이 만료되면 자동으로 쿠키 무효 처리
+   - Slack 알림을 통해 재등록 필요 알림
+
+2. **크롤링 실패**
+   - 사이트 구조 변경 시 크롤러 수정 필요
+   - 로그 확인: `Failed to crawl URL`
+
+3. **포인트 적립 실패**
+   - 응답 본문에서 금액 추출 실패 시 0원으로 저장
+   - 로그 확인: `Failed to extract amount`
+
+## 버전 정보
+
+- Current Version: 2.0.0
+- Java Version: 17
+- Spring Boot Version: 3.2.0
+
+## 릴리즈 노트
+
+### v2.0.0 (2025)
+- 멀티 모듈 리팩토링 (pickup-common 분리)
+- 성능 최적화 (N+1 쿼리 해결, 인덱스 추가)
+- Security 설정 강화 (XSS, CSP, 세션 관리)
+- 코드 품질 개선 (추상 클래스, 중복 제거)
+- 단위 테스트 추가
+
 ### v1.2.0
 - UI를 Tailwind CSS 기반으로 변경
 - 모던한 디자인 시스템 적용
@@ -52,7 +368,7 @@ npm run build
 - Point log 페이지 url log -> point log 내용 변경
 
 ### v1.1.2
-- Prometheus 설정 추가 ([Prometheus, Grafana Repository](https://github.com/hajubal/monitoring))
+- Prometheus 설정 추가
 - 커스텀 로그인 페이지 추가
 
 ### v1.1.1
@@ -70,22 +386,14 @@ npm run build
 - Admin 디자인 적용
 - Dashboard 적용
 
-### v1.0.11
-- 일 수집 정보에 포인트 정보 추가
+## 라이선스
 
-### v1.0.9
-- actuator 적용
+이 프로젝트는 개인 학습 및 사용 목적으로 제작되었습니다.
 
-### v1.0.8
-- 일 수집 요약 정보 slack 알람 전송
+## 기여
 
-### v1.0.7
-- cookie 삭제시 오류 수정
-- table 화면 페이징 처리
-- cookie 추가시 site_user_id 입력안되는 문제 수정
+버그 리포트나 기능 제안은 GitHub Issues를 통해 제출해주세요.
 
-### v1.0.4
-Docker compose 기반으로 어플리케이션 구동 방식 변경
+## 문의
 
-### v1.0.0
-2분 간격으로 application.yml에 설정된 정보를 기준으로 포인트 수집
+프로젝트 관련 문의사항이 있으시면 이슈를 생성해주세요.

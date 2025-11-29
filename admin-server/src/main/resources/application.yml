@@ -3,6 +3,8 @@ spring:
     name: coin
   profiles:
     active: local
+  config:
+    import: optional:classpath:application-common.yml
   jpa:
     properties:
       hibernate:

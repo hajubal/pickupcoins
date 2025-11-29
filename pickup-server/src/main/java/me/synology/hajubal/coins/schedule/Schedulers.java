@@ -17,41 +17,55 @@ import org.springframework.stereotype.Component;
 @Component
 public class Schedulers {
 
-    private final NaverSavePointService naverSavePointService;
+  private final NaverSavePointService naverSavePointService;
+  private final WebCrawlerService webCrawlerService;
+  private final ReportService reportService;
 
-    private final WebCrawlerService webCrawlerService;
+  /**
+   * 웹 사이트 크롤링 스케줄러
+   * 설정된 주기마다 웹 사이트를 크롤링하여 포인트 URL 수집
+   */
+  @Scheduled(fixedDelayString = "${schedule.crawler-fixed-delay}")
+  public void webCrawlerScheduler() {
+    log.debug("Starting web crawler scheduler");
 
-    private final ReportService reportService;
-
-
-    /**
-     * 5분 마다 웹 사이트 클롤링
-     */
-
-    @Scheduled(fixedDelay = 1000 * 60 * 5)
-    public void webCrawlerScheduler() {
-        log.info("Call webCrawlerScheduler.");
-
-        webCrawlerService.savingPointUrl();
+    try {
+      webCrawlerService.savingPointUrl();
+      log.info("Web crawler scheduler completed");
+    } catch (Exception e) {
+      log.error("Web crawler scheduler failed", e);
     }
+  }
 
-    /**
-     * 5분 마다 웹 사이트 포인트 적립 요청
-     */
-    @Scheduled(fixedDelay = 1000 * 60 * 5)
-    public void pointScheduler() {
-        log.info("Call pointScheduler.");
+  /**
+   * 포인트 적립 요청 스케줄러
+   * 설정된 주기마다 수집된 포인트 URL로 적립 요청
+   */
+  @Scheduled(fixedDelayString = "${schedule.point-fixed-delay}")
+  public void pointScheduler() {
+    log.debug("Starting point scheduler");
 
-        naverSavePointService.savePoint();
+    try {
+      naverSavePointService.savePoint();
+      log.info("Point scheduler completed");
+    } catch (Exception e) {
+      log.error("Point scheduler failed", e);
     }
+  }
 
-    /**
-     * 매일 아침 9시에 어제 하루 동안 작업 알림
-     */
-    @Scheduled(cron = "0 0 7 * * *")
-    public void dailyReport() {
-        log.info("Daily report.");
+  /**
+   * 일일 리포트 스케줄러
+   * 매일 설정된 시간에 전날 작업 내용 리포트
+   */
+  @Scheduled(cron = "${schedule.daily-report-cron}")
+  public void dailyReport() {
+    log.debug("Starting daily report");
 
-        reportService.report();
+    try {
+      reportService.report();
+      log.info("Daily report completed");
+    } catch (Exception e) {
+      log.error("Daily report failed", e);
     }
+  }
 }

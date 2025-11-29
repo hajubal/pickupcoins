@@ -14,6 +14,10 @@ import java.util.List;
 @Getter
 @DynamicInsert @DynamicUpdate
 @Entity
+@Table(indexes = {
+    @Index(name = "idx_point_url_name_permanent", columnList = "name, permanent"),
+    @Index(name = "idx_point_url_created", columnList = "created_date")
+})
 public class PointUrl extends BaseDataEntity {
 
     @Id

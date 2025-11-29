@@ -8,6 +8,9 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Table(indexes = {
+    @Index(name = "idx_saved_point_created", columnList = "created_date")
+})
 public class SavedPoint extends BaseDataEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

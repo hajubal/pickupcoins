@@ -14,6 +14,10 @@ import java.util.List;
 @DynamicInsert @DynamicUpdate
 @Getter
 @Entity
+@Table(indexes = {
+    @Index(name = "idx_cookie_site_valid", columnList = "siteName, isValid"),
+    @Index(name = "idx_cookie_site_user", columnList = "site_user_id")
+})
 public class Cookie extends BaseDataEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

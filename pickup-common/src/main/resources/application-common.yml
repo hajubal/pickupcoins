@@ -1,0 +1,32 @@
+# pickup-common 모듈 공통 설정
+
+naver:
+  point:
+    # 포인트 적립 성공 여부를 판단하는 키워드
+    save-keyword: "적립"
+
+    # 쿠키 무효화를 판단하는 키워드
+    invalid-cookie-keyword: "로그인이 필요"
+
+    # 포인트 금액을 추출하는 정규식 패턴
+    amount-pattern: "\\s\\d+원이 적립 됩니다."
+
+    # HTTP 요청 시 사용할 User-Agent
+    user-agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+
+crawler:
+  # 크롤링 타임아웃 (밀리초)
+  timeout: 10000
+
+  # 크롤링 실패 시 재시도 횟수
+  retry-count: 3
+
+schedule:
+  # 웹 크롤러 스케줄러 고정 지연 시간 (밀리초) - 5분
+  crawler-fixed-delay: 300000
+
+  # 포인트 적립 스케줄러 고정 지연 시간 (밀리초) - 5분
+  point-fixed-delay: 300000
+
+  # 일일 리포트 크론 표현식 - 매일 아침 7시
+  daily-report-cron: "0 0 7 * * *"

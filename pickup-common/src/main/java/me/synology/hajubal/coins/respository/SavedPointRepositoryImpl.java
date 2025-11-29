@@ -25,8 +25,8 @@ public class SavedPointRepositoryImpl implements SavedPointRepositoryCustom {
     @Override
     public List<SavedPoint> findBySiteUser(Long siteUserId, int dayBefore) {
         return jpaQueryFactory.selectFrom(savedPoint)
-                    .leftJoin(savedPoint.cookie, cookie1)
-                    .leftJoin(cookie1.siteUser, siteUser)
+                    .leftJoin(savedPoint.cookie, cookie1).fetchJoin()
+                    .leftJoin(cookie1.siteUser, siteUser).fetchJoin()
                 .where(siteUser.id.eq(siteUserId)
                         .and(savedPoint.createdDate.between(LocalDateTime.now().minusDays(dayBefore).with(LocalTime.MIN)
                                 , LocalDateTime.now().with(LocalTime.MIN))))
@@ -35,8 +35,8 @@ public class SavedPointRepositoryImpl implements SavedPointRepositoryCustom {
 
     public Page<SavedPoint> findAllBySiteUser(Long siteUserId, Pageable pageable) {
         List<SavedPoint> savedPoints = jpaQueryFactory.selectFrom(savedPoint)
-                .leftJoin(savedPoint.cookie, cookie1)
-                .leftJoin(cookie1.siteUser, siteUser)
+                .leftJoin(savedPoint.cookie, cookie1).fetchJoin()
+                .leftJoin(cookie1.siteUser, siteUser).fetchJoin()
                 .where(siteUser.id.eq(siteUserId))
                 .orderBy(savedPoint.createdDate.desc())
                 .offset(pageable.getOffset())

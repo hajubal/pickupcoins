@@ -9,6 +9,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    //configuration properties
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    //crawler
+    implementation 'org.jsoup:jsoup:1.15.3'
+
     //querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"

@@ -61,6 +61,20 @@ spotless {
 bootJar.enabled = false
 jar.enabled = false
 
+// 루트 프로젝트 빌드 시 모든 서브프로젝트 빌드
+task buildAll {
+    dependsOn subprojects.collect { it.tasks.withType(JavaCompile) }
+    description = 'Build all subprojects'
+    group = 'build'
+}
+
+// clean 태스크도 모든 서브프로젝트에 적용
+task cleanAll {
+    dependsOn subprojects.collect { it.tasks.named('clean') }
+    description = 'Clean all subprojects'
+    group = 'build'
+}
+
 ext.SSH_HOST = project.getProperties().getOrDefault("SSH_HOST", "127.0.0.1")
 ext.SSH_ID = project.getProperties().getOrDefault("SSH_ID", "test")
 ext.SSH_PW = project.getProperties().getOrDefault("SSH_PW", "test")
