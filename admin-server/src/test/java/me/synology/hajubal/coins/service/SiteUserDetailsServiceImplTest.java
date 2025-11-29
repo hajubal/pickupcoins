@@ -23,15 +23,6 @@ class SiteUserDetailsServiceImplTest {
     @Autowired
     private SiteUserRepository userRepository;
 
-    @Disabled
-    @DisplayName("사용자 비밀번호 암호화.")
-    @Test
-    void generatePassword() {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        String encodedPassword = encoder.encode("user");
-
-        System.out.println("encodedPassword = " + encodedPassword);
-    }
 
     @DisplayName("사용자 조회 테스트")
     @Test

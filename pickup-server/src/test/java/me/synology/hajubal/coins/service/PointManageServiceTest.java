@@ -8,7 +8,7 @@ import me.synology.hajubal.coins.config.NaverPointProperties;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.SavedPoint;
 import me.synology.hajubal.coins.respository.SavedPointRepository;
-import me.synology.hajubal.coins.service.dto.ExchangeDto;
+import me.synology.hajubal.coins.dto.ExchangeDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -34,7 +33,6 @@ class SlackServiceTest {
     @DisplayName("slack send 테스트")
     @Test
     void sendMessage() throws Exception {
-
         //given
         given(slack.send(anyString(), anyString())).willReturn(webhookResponse);
         given(webhookResponse.getCode()).willReturn(200);

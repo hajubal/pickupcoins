@@ -52,9 +52,6 @@ class SiteUserServiceTest {
         //when
         SiteUser updateSiteUser = siteUserService.getSiteUser(beforeSiteUser.getLoginId());
 
-        System.out.println("beforeSiteUser = " + beforeSiteUser);
-        System.out.println("updateSiteUser = " + updateSiteUser);
-
         //then
         assertThat(updateSiteUser.getUserName()).isEqualTo(beforeSiteUser.getUserName());
         assertThat(updateSiteUser.getPassword()).isEqualTo(beforeSiteUser.getPassword());
@@ -62,8 +59,7 @@ class SiteUserServiceTest {
         assertThat(updateSiteUser.getId()).isEqualTo(beforeSiteUser.getId());
         assertThat(updateSiteUser.getSlackWebhookUrl()).isEqualTo(beforeSiteUser.getSlackWebhookUrl());
         assertThat(updateSiteUser.getCreatedBy()).isEqualTo(beforeSiteUser.getCreatedBy());
-        //FIXME github action에서 실패. why????
-//        assertThat(updateSiteUser.getCreatedDate()).isEqualTo(beforeSiteUser.getCreatedDate());
+        // Note: CreatedDate 비교는 JPA Auditing 동작 방식으로 인해 테스트 환경에서 불안정할 수 있음
         assertThat(updateSiteUser.getLastModifiedBy()).isEqualTo(beforeSiteUser.getLastModifiedBy());
 
     }

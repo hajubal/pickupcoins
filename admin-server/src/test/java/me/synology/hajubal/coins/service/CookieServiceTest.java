@@ -70,7 +70,7 @@ class CookieServiceTest {
         updateDto.setUserName("updateUserName");
         updateDto.setSiteName(SiteName.KAKAO.name());
 
-        cookieService.updateCookie(id, updateDto);
+        cookieService.updateCookie(id, updateDto.getCookie(), updateDto.getUserName(), updateDto.getSiteName(), updateDto.getIsValid());
 
         //then
         Cookie cookie = cookieService.getCookie(id);
@@ -120,6 +120,6 @@ class CookieServiceTest {
         insertDto.setSiteName(SiteName.NAVER.name());
         insertDto.setCookie("cookie");
 
-        return cookieService.insertCookie(insertDto, siteUser.getLoginId());
+        return cookieService.insertCookie(siteUser.getLoginId(), insertDto.getCookie(), insertDto.getUserName(), insertDto.getSiteName(), Boolean.TRUE);
     }
 }

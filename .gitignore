@@ -251,8 +251,6 @@ gradle-app.setting
 *.hprof
 
 HELP.md
-.gradle
-build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -269,7 +267,10 @@ build/
 #!**/src/main/**/bin/
 #!**/src/test/**/bin/
 
+# End of https://www.toptal.com/developers/gitignore/api/java,intellij,eclipse,maven
+
 ### IntelliJ IDEA ###
+# Note: .idea/* is already covered above, but keeping .idea for complete coverage
 .idea
 *.iws
 *.iml
@@ -278,7 +279,6 @@ out/
 generated/
 !**/src/main/**/out/
 !**/src/test/**/out/
-# End of https://www.toptal.com/developers/gitignore/api/java,intellij,eclipse,maven
 
 #application-dev.yml
 #application-test.yml
@@ -295,6 +295,9 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+# Frontend build outputs
+admin-web/dist/
+
 # Tailwind CSS generated files
 admin-server/src/main/resources/static/css/output.css
 
@@ -304,3 +307,6 @@ pickup-server/bin/
 pickup-server/target/
 pickup-common/target/
 pickup-common/build/
+
+.claude
+.vscode

@@ -11,4 +11,5 @@ pluginManagement {
 rootProject.name = 'pickupcoins'
 include 'pickup-server'
 include 'admin-server'
+include 'admin-api'
 include 'pickup-common'

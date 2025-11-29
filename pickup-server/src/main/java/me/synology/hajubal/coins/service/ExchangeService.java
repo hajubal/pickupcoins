@@ -8,7 +8,7 @@ import me.synology.hajubal.coins.entity.*;
 import me.synology.hajubal.coins.exception.PointExchangeException;
 import me.synology.hajubal.coins.respository.PointUrlCallLogRepository;
 import me.synology.hajubal.coins.respository.PointUrlCookieRepository;
-import me.synology.hajubal.coins.service.dto.ExchangeDto;
+import me.synology.hajubal.coins.dto.ExchangeDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,7 @@ public class ExchangeService {
   private final PointUrlCallLogRepository pointUrlCallLogRepository;
   private final PointManageService pointManageService;
   private final CookieService cookieService;
+  private final CookieNotificationService cookieNotificationService;
   private final NaverPointProperties naverPointProperties;
 
   // WebClient를 싱글톤으로 관리
@@ -37,12 +38,14 @@ public class ExchangeService {
       PointUrlCallLogRepository pointUrlCallLogRepository,
       PointManageService pointManageService,
       CookieService cookieService,
+      CookieNotificationService cookieNotificationService,
       NaverPointProperties naverPointProperties,
       WebClient.Builder webClientBuilder) {
     this.pointUrlCookieRepository = pointUrlCookieRepository;
     this.pointUrlCallLogRepository = pointUrlCallLogRepository;
     this.pointManageService = pointManageService;
     this.cookieService = cookieService;
+    this.cookieNotificationService = cookieNotificationService;
     this.naverPointProperties = naverPointProperties;
     this.webClient = webClientBuilder.build();
   }
@@ -93,7 +96,7 @@ public class ExchangeService {
       String body, ExchangeDto exchangeDto, ResponseEntity<String> response) {
     if (isInvalidCookie(body)) {
       log.warn("Cookie is invalid. user: {}", exchangeDto.userName());
-      cookieService.invalid(exchangeDto.cookieId(), exchangeDto.webHookUrl());
+      cookieNotificationService.invalidateAndNotify(exchangeDto.cookieId(), exchangeDto.webHookUrl());
     } else if (isSavePoint(body)) {
       log.debug("Point saved successfully. user: {}", exchangeDto.userName());
       pointManageService.savePointPostProcess(exchangeDto, response);

@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * TODO db로 관리
+ * 클리앙 사이트 데이터
+ * Note: 향후 데이터베이스로 관리 예정
  */
 @Component
 public class ClientSiteData implements SiteData {

@@ -7,7 +7,7 @@ import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.respository.CookieRepository;
 import me.synology.hajubal.coins.respository.PointUrlRepository;
-import me.synology.hajubal.coins.service.dto.ExchangeDto;
+import me.synology.hajubal.coins.dto.ExchangeDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -114,9 +114,6 @@ jib {
 		tags = [project.version.toString()]
 	}
 	container {
-		// TODO 이렇게 설정하면 안되는 이유 확인.
-//		appRoot = '/app'
-//		entrypoint = ['java', 'jar', "/app/${bootJar.archiveFile.get().asFile.name}", '--spring.profiles.active=dev']
 		ports = ['8080']
 
 		environment = [
@@ -137,10 +134,7 @@ jib {
 	}
 }
 
-//도커 서버에 이미지 생성 및 컨테이너 실행
-//org.hidetake.groovy.ssh.operation.SftpException: Failed SFTP PUT: d:\~~ -> dockerServer:/var/~~: (SSH_FX_NO_SUCH_FILE: A reference was made to a file which does not exist): No such file
-//오류 나면서 안됨. 원인 파악 불가
-//==> 원인: 시놀로지의 경우 ssh로 보여지는 path와 ftp로 보는 경로가 다름. 그래서 scp로 업로도할 경로는 ftp로 접속해서 보여지는 경로로 업로드 해야 함.
+// 도커 서버에 이미지 생성 및 컨테이너 실행
 tasks.register('dockerDeploy') {
 	dependsOn('build')
 
