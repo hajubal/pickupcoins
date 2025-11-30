@@ -15,17 +15,17 @@ spring:
     show-sql: false
 
   datasource:
-    url: jdbc:mariadb://localhost:3306/pickupcoins
+    url: jdbc:mysql://localhost:3306/coin?allowPublicKeyRetrieval=true&useSSL=false
     username: root
-    password: password
-    driver-class-name: org.mariadb.jdbc.Driver
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
       connection-timeout: 30000
 
 server:
-  port: 8082
+  port: 8080
   servlet:
     context-path: /
     encoding:
@@ -59,6 +59,13 @@ spring:
   config:
     activate:
       on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
   h2:
     console:
       enabled: true

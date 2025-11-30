@@ -3,6 +3,7 @@ package me.synology.hajubal.coins.admin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "me.synology.hajubal.coins")
 @EntityScan(basePackages = "me.synology.hajubal.coins.entity")
 @EnableJpaRepositories(basePackages = "me.synology.hajubal.coins.respository")
+@EnableJpaAuditing
 public class AdminApiApplication {
 
   public static void main(String[] args) {

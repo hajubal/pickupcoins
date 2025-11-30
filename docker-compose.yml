@@ -1,19 +1,59 @@
 services:
-  coin:
+  pickup-server:
     build:
-      context: ~/dockerfile/pickupcoins
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: pickup-server/Dockerfile
       args:
-        - VERSION=${VERSION}
-    container_name: coin
-    image: coin:${VERSION}
+        - VERSION=${VERSION:-2.0.0}
+    container_name: pickup-server
+    image: pickup-server:${VERSION:-2.0.0}
     restart: on-failure:5
+    depends_on:
+      - coin-mysql
     ports:
       - "7070:8080"
     environment:
       - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=dev
     volumes:
-      - /var/services/homes/hajubal/dockerfile/pickupcoins/logs:/logs
+      - ./logs/pickup-server:/logs
+    networks:
+      - coin-network
+
+  admin-api:
+    build:
+      context: .
+      dockerfile: admin-api/Dockerfile
+      args:
+        - VERSION=${VERSION:-2.0.0}
+    container_name: admin-api
+    image: admin-api:${VERSION:-2.0.0}
+    restart: on-failure:5
+    depends_on:
+      - coin-mysql
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - ./logs/admin-api:/logs
+    networks:
+      - coin-network
+
+  admin-web:
+    build:
+      context: ./admin-web
+      dockerfile: Dockerfile
+    container_name: admin-web
+    image: admin-web:${VERSION:-2.0.0}
+    restart: on-failure:5
+    depends_on:
+      - admin-api
+    ports:
+      - "3000:80"
+    environment:
+      - TZ=Asia/Seoul
     networks:
       - coin-network
 
@@ -25,10 +65,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-admin}
+      - MYSQL_USER=${MYSQL_USER:-coin_user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-password}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-coin}
       - MYSQL_LOWER_CASE_TABLE_NAMES=1
       - TZ=Asia/Seoul
     volumes:
@@ -38,7 +78,7 @@ services:
 
 networks:
   coin-network:
-    external: true
+    driver: bridge
 
 volumes:
   mysql_data:
