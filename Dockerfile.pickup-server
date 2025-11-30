@@ -1,6 +1,5 @@
 FROM openjdk:17-alpine
 LABEL description="pickup-server"
-MAINTAINER hajubal@gmail.com
 
 ARG VERSION=2.0.0
 

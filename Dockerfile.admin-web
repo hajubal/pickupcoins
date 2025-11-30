@@ -1,6 +1,8 @@
-FROM nginx:alpine
+FROM nginx:1.27-alpine
 LABEL description="admin-web"
-MAINTAINER hajubal@gmail.com
+
+# Update packages to fix vulnerabilities
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 
 COPY ./admin-web/dist /usr/share/nginx/html
 COPY ./admin-web/nginx.conf /etc/nginx/conf.d/default.conf
