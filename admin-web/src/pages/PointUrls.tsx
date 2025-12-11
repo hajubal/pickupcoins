@@ -128,7 +128,7 @@ export default function PointUrls() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'NAVER':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-100 text-emerald-800';
       case 'OFW_NAVER':
         return 'bg-blue-100 text-blue-800';
       case 'UNSUPPORT':
@@ -162,18 +162,18 @@ export default function PointUrls() {
         </button>
       </div>
 
-      <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-muted/50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">ID</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">URL</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Type</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Permanent</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Created</th>
-                <th className="px-4 py-3 text-right text-sm font-medium">Actions</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">ID</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">URL</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Type</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Permanent</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Created</th>
+                <th className="px-6 py-4 text-right text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -185,10 +185,10 @@ export default function PointUrls() {
                 </tr>
               ) : (
                 pointUrls.map((pointUrl) => (
-                  <tr key={pointUrl.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3 text-sm">{pointUrl.id}</td>
-                    <td className="px-4 py-3 text-sm font-medium">{pointUrl.name || '-'}</td>
-                    <td className="px-4 py-3 text-sm">
+                  <tr key={pointUrl.id} className="hover:bg-muted/30 transition-all duration-150">
+                    <td className="px-6 py-4 text-sm">{pointUrl.id}</td>
+                    <td className="px-6 py-4 text-sm font-medium">{pointUrl.name || '-'}</td>
+                    <td className="px-6 py-4 text-sm">
                       <a
                         href={pointUrl.url}
                         target="_blank"
@@ -199,27 +199,27 @@ export default function PointUrls() {
                         <i className="bx bx-link-external text-xs"></i>
                       </a>
                     </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(pointUrl.pointUrlType)}`}>
+                    <td className="px-6 py-4 text-sm">
+                      <span className={`px-3 py-1.5 rounded-full text-xs font-medium ${getTypeColor(pointUrl.pointUrlType)}`}>
                         {pointUrl.pointUrlType}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-6 py-4 text-sm">
                       <button
                         onClick={() => handleTogglePermanent(pointUrl.id)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                           pointUrl.permanent
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                            ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
                             : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                         }`}
                       >
                         {pointUrl.permanent ? 'Yes' : 'No'}
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {new Date(pointUrl.createdDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-sm text-right">
+                    <td className="px-6 py-4 text-sm text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openModal(pointUrl)}

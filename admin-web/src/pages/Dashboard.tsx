@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axios';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface DashboardStats {
   savedDayPoint: number;
@@ -17,7 +20,7 @@ export default function Dashboard() {
       const response = await axiosInstance.get('/dashboard/stats');
       return response.data;
     },
-    refetchInterval: 30000, // 30초마다 자동 새로고침
+    refetchInterval: 30000,
     placeholderData: {
       savedDayPoint: 0,
       savedDayPointRatioDayBefore: 0,
@@ -38,177 +41,117 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header Section */}
-      <div className="mb-8 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back! Here's what's happening with your points.</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => refetch()}
-              disabled={isLoading}
-              className="px-3 py-2 border rounded-md text-sm hover:bg-accent disabled:opacity-50"
-            >
-              <i className={`bx bx-refresh h-4 w-4 mr-2 inline ${isLoading ? 'animate-spin' : ''}`}></i>
-              Refresh
-            </button>
-            <div className={`px-2 py-1 rounded-md text-xs ${isLoading ? 'bg-yellow-50 text-yellow-600' : 'bg-green-50 text-green-600'}`}>
-              <i className="bx bx-time h-3 w-3 mr-1 inline"></i>
-              {isLoading ? 'Loading...' : 'Live Data'}
-            </div>
-          </div>
+    <>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isLoading}>
+            <i className={`bx bx-refresh mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}></i>
+            Refresh
+          </Button>
+          <Badge variant={isLoading ? 'secondary' : 'success'} className="gap-1.5">
+            {!isLoading && <span className="h-2 w-2 rounded-full bg-white animate-pulse" />}
+            {isLoading ? 'Loading...' : 'Live'}
+          </Badge>
         </div>
       </div>
-
-      {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        {/* Day Point Card */}
-        <div className="bg-card p-6 rounded-lg border">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Today's Points</p>
-              <div className="flex items-baseline space-x-2">
-                <p className="text-2xl font-bold">{displayStats.savedDayPoint}</p>
-                <div
-                  className={`flex items-center text-xs ${
-                    displayStats.savedDayPointRatioDayBefore >= 0 ? 'text-emerald-600' : 'text-destructive'
-                  }`}
-                >
-                  <i
-                    className={`bx h-3 w-3 mr-1 ${
-                      displayStats.savedDayPointRatioDayBefore >= 0 ? 'bx-trending-up' : 'bx-trending-down'
-                    }`}
-                  ></i>
-                  <span>{displayStats.savedDayPointRatioDayBefore}%</span>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">from yesterday</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-              <i className="bx bx-trending-up h-6 w-6"></i>
-            </div>
-          </div>
-        </div>
-
-        {/* Week Point Card */}
-        <div className="bg-card p-6 rounded-lg border">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Weekly Points</p>
-              <div className="flex items-baseline space-x-2">
-                <p className="text-2xl font-bold">{displayStats.savedWeekPoint}</p>
-                <div
-                  className={`flex items-center text-xs ${
-                    displayStats.savedWeekPointRatioWeekBefore >= 0 ? 'text-emerald-600' : 'text-destructive'
-                  }`}
-                >
-                  <i
-                    className={`bx h-3 w-3 mr-1 ${
-                      displayStats.savedWeekPointRatioWeekBefore >= 0 ? 'bx-trending-up' : 'bx-trending-down'
-                    }`}
-                  ></i>
-                  <span>{displayStats.savedWeekPointRatioWeekBefore}%</span>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">from last week</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
-              <i className="bx bx-calendar h-6 w-6"></i>
-            </div>
-          </div>
-        </div>
-
-        {/* Day Point URL Card */}
-        <div className="bg-card p-6 rounded-lg border">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Daily URLs</p>
-              <div className="flex items-baseline space-x-2">
-                <p className="text-2xl font-bold">{displayStats.pointUrlDayCnt}</p>
-                <span className="text-xs text-muted-foreground">collected</span>
-              </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Today's Points</CardTitle>
+              <i className="bx bx-trending-up h-4 w-4 text-muted-foreground"></i>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{displayStats.savedDayPoint.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground flex items-center">
+                <span className={displayStats.savedDayPointRatioDayBefore >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
+                  <i className={`bx ${displayStats.savedDayPointRatioDayBefore >= 0 ? 'bx-trending-up' : 'bx-trending-down'} mr-1`}></i>
+                  {displayStats.savedDayPointRatioDayBefore}%
+                </span>
+                <span className="ml-1">from yesterday</span>
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Weekly Points</CardTitle>
+              <i className="bx bx-calendar h-4 w-4 text-muted-foreground"></i>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{displayStats.savedWeekPoint.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground flex items-center">
+                <span className={displayStats.savedWeekPointRatioWeekBefore >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
+                  <i className={`bx ${displayStats.savedWeekPointRatioWeekBefore >= 0 ? 'bx-trending-up' : 'bx-trending-down'} mr-1`}></i>
+                  {displayStats.savedWeekPointRatioWeekBefore}%
+                </span>
+                <span className="ml-1">from last week</span>
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Daily URLs</CardTitle>
+              <i className="bx bx-link h-4 w-4 text-muted-foreground"></i>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{displayStats.pointUrlDayCnt}</div>
               <p className="text-xs text-muted-foreground">URLs found today</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50 text-purple-600">
-              <i className="bx bx-link h-6 w-6"></i>
-            </div>
-          </div>
-        </div>
-
-        {/* Week Point URL Card */}
-        <div className="bg-card p-6 rounded-lg border">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Weekly URLs</p>
-              <div className="flex items-baseline space-x-2">
-                <p className="text-2xl font-bold">{displayStats.pointUrlWeekCnt}</p>
-                <span className="text-xs text-muted-foreground">collected</span>
-              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Weekly URLs</CardTitle>
+              <i className="bx bx-collection h-4 w-4 text-muted-foreground"></i>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{displayStats.pointUrlWeekCnt}</div>
               <p className="text-xs text-muted-foreground">URLs found this week</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-600">
-              <i className="bx bx-collection h-6 w-6"></i>
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
       </div>
-
-      {/* Quick Actions */}
-      <div className="bg-card rounded-lg border">
-        <div className="p-6 border-b">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-lg font-semibold">Quick Actions</div>
-              <div className="text-sm text-muted-foreground">Common tasks and shortcuts</div>
-            </div>
-          </div>
-        </div>
-        <div className="p-6">
-          <div className="grid gap-4 md:grid-cols-3">
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+        </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-3">
             <button
               onClick={() => (window.location.href = '/point-logs')}
-              className="border rounded-lg p-6 h-auto flex flex-col items-center space-y-2 hover:bg-accent transition-colors"
+              className="flex flex-col items-center space-y-2 rounded-lg border p-4 hover:bg-accent transition-colors"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50">
-                <i className="bx bx-history h-6 w-6 text-blue-600"></i>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                <i className="bx bx-history h-5 w-5"></i>
               </div>
-              <div className="text-center">
-                <div className="font-medium">View Point Log</div>
-                <div className="text-xs text-muted-foreground">Check transaction history</div>
+              <div className="space-y-0.5 text-center">
+                <div className="text-sm font-medium">View Point Logs</div>
+                <p className="text-xs text-muted-foreground">Check transaction history</p>
               </div>
             </button>
-
             <button
               onClick={() => (window.location.href = '/point-urls')}
-              className="border rounded-lg p-6 h-auto flex flex-col items-center space-y-2 hover:bg-accent transition-colors"
+              className="flex flex-col items-center space-y-2 rounded-lg border p-4 hover:bg-accent transition-colors"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
-                <i className="bx bx-link h-6 w-6 text-green-600"></i>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                <i className="bx bx-link h-5 w-5"></i>
               </div>
-              <div className="text-center">
-                <div className="font-medium">Manage URLs</div>
-                <div className="text-xs text-muted-foreground">Configure point URLs</div>
+              <div className="space-y-0.5 text-center">
+                <div className="text-sm font-medium">Manage URLs</div>
+                <p className="text-xs text-muted-foreground">Configure point URLs</p>
               </div>
             </button>
-
             <button
               onClick={() => (window.location.href = '/cookies')}
-              className="border rounded-lg p-6 h-auto flex flex-col items-center space-y-2 hover:bg-accent transition-colors"
+              className="flex flex-col items-center space-y-2 rounded-lg border p-4 hover:bg-accent transition-colors"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50">
-                <i className="bx bx-cookie h-6 w-6 text-purple-600"></i>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                <i className="bx bx-cookie h-5 w-5"></i>
               </div>
-              <div className="text-center">
-                <div className="font-medium">Manage Cookies</div>
-                <div className="text-xs text-muted-foreground">Update authentication</div>
+              <div className="space-y-0.5 text-center">
+                <div className="text-sm font-medium">Manage Cookies</div>
+                <p className="text-xs text-muted-foreground">Update authentication</p>
               </div>
             </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        </CardContent>
+      </Card>
+    </>
   );
 }

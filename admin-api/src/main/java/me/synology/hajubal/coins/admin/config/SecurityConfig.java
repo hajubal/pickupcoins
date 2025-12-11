@@ -61,6 +61,23 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated())
 
+        // 예외 처리
+        .exceptionHandling(
+            exception ->
+                exception
+                    .authenticationEntryPoint(
+                        (request, response, authException) -> {
+                          response.setStatus(401);
+                          response.setContentType("application/json");
+                          response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                        })
+                    .accessDeniedHandler(
+                        (request, response, accessDeniedException) -> {
+                          response.setStatus(403);
+                          response.setContentType("application/json");
+                          response.getWriter().write("{\"error\": \"Forbidden\"}");
+                        }))
+
         // JWT 인증 필터 추가
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

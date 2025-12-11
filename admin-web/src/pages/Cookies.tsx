@@ -159,18 +159,18 @@ export default function Cookies() {
         </button>
       </div>
 
-      <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-muted/50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">ID</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Site Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">User Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Cookie</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Created</th>
-                <th className="px-4 py-3 text-right text-sm font-medium">Actions</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">ID</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Site Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">User Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Cookie</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Created</th>
+                <th className="px-6 py-4 text-right text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -182,31 +182,31 @@ export default function Cookies() {
                 </tr>
               ) : (
                 cookies.map((cookie) => (
-                  <tr key={cookie.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3 text-sm">{cookie.id}</td>
-                    <td className="px-4 py-3 text-sm font-medium">{cookie.siteName}</td>
-                    <td className="px-4 py-3 text-sm">{cookie.userName}</td>
-                    <td className="px-4 py-3 text-sm">
-                      <div className="max-w-xs truncate font-mono text-xs bg-muted px-2 py-1 rounded">
+                  <tr key={cookie.id} className="hover:bg-muted/30 transition-all duration-150">
+                    <td className="px-6 py-4 text-sm">{cookie.id}</td>
+                    <td className="px-6 py-4 text-sm font-medium">{cookie.siteName}</td>
+                    <td className="px-6 py-4 text-sm">{cookie.userName}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <div className="max-w-xs truncate font-mono text-xs bg-muted/50 px-3 py-1.5 rounded-md">
                         {cookie.cookie}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-6 py-4 text-sm">
                       <button
                         onClick={() => handleToggleValidity(cookie.id)}
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                           cookie.isValid
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                            ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                            : 'bg-rose-100 text-rose-800 hover:bg-rose-200'
                         }`}
                       >
                         {cookie.isValid ? 'Valid' : 'Invalid'}
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {new Date(cookie.createdDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-sm text-right">
+                    <td className="px-6 py-4 text-sm text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openModal(cookie)}

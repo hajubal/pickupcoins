@@ -28,8 +28,8 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    // 401 에러 발생 시 로그아웃 처리
-    if (error.response?.status === 401) {
+    // 401 또는 403 에러 발생 시 로그아웃 처리
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user_name');

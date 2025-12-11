@@ -138,17 +138,17 @@ export default function Sites() {
         </button>
       </div>
 
-      <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-muted/50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">ID</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Domain</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">URL</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Created</th>
-                <th className="px-4 py-3 text-right text-sm font-medium">Actions</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">ID</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Domain</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">URL</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Created</th>
+                <th className="px-6 py-4 text-right text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -160,11 +160,11 @@ export default function Sites() {
                 </tr>
               ) : (
                 sites.map((site) => (
-                  <tr key={site.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3 text-sm">{site.id}</td>
-                    <td className="px-4 py-3 text-sm font-medium">{site.name}</td>
-                    <td className="px-4 py-3 text-sm">{site.domain}</td>
-                    <td className="px-4 py-3 text-sm">
+                  <tr key={site.id} className="hover:bg-muted/30 transition-all duration-150">
+                    <td className="px-6 py-4 text-sm">{site.id}</td>
+                    <td className="px-6 py-4 text-sm font-medium">{site.name}</td>
+                    <td className="px-6 py-4 text-sm">{site.domain}</td>
+                    <td className="px-6 py-4 text-sm">
                       <a
                         href={site.url}
                         target="_blank"
@@ -175,10 +175,10 @@ export default function Sites() {
                         <i className="bx bx-link-external text-xs"></i>
                       </a>
                     </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">
                       {new Date(site.createdDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-sm text-right">
+                    <td className="px-6 py-4 text-sm text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openModal(site)}
