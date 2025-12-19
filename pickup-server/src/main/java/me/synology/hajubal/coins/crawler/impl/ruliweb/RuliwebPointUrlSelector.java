@@ -18,7 +18,7 @@ public class RuliwebPointUrlSelector implements PointUrlSelector {
 
     @Override
     public String titleCssQuery() {
-        return "div.list_content>a.subject_link.deco";
+        return "a.subject_link.deco";
     }
 
 }
