@@ -1,5 +1,5 @@
 # Multi-stage build for pickup-server
-FROM gradle:8.5-jdk17-alpine AS builder
+FROM gradle:8.5-jdk17 AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ COPY pickup-server ./pickup-server
 RUN gradle :pickup-server:bootJar --no-daemon -x test
 
 # Runtime stage
-FROM bellsoft/liberica-openjdk-alpine-musl:17
+FROM eclipse-temurin:17-jre
 
 LABEL description="pickup-server with pickup-common"
 LABEL maintainer="hajubal@gmail.com"
