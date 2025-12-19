@@ -1,17 +1,12 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
   datasource:
     url: jdbc:mysql://coin-mysql:3306/coin?allowPublicKeyRetrieval=true&useSSL=false
     username: coin_user
     password: password
-  sql:
-    init:
-      mode: never
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-server:
-  port: 8080
+pickup-server:
+  base-url: http://pickup-server:8080
 
 logging:
   file:

@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/coin?allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+pickup-server:
+  base-url: http://localhost:7070

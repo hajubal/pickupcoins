@@ -17,6 +17,21 @@ interface PointUrlRequest {
   permanent?: boolean;
 }
 
+interface CrawlTriggerResponse {
+  status: string;
+  message: string;
+  durationMs?: number;
+}
+
+interface DialogState {
+  isOpen: boolean;
+  type: 'confirm' | 'alert';
+  title: string;
+  message: string;
+  variant?: 'info' | 'success' | 'error' | 'warning';
+  onConfirm?: () => void;
+}
+
 export default function PointUrls() {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +40,37 @@ export default function PointUrls() {
     url: '',
     permanent: false,
   });
+  const [dialog, setDialog] = useState<DialogState>({
+    isOpen: false,
+    type: 'alert',
+    title: '',
+    message: '',
+  });
+
+  const closeDialog = () => {
+    setDialog({ ...dialog, isOpen: false });
+  };
+
+  const showAlert = (title: string, message: string, variant: 'info' | 'success' | 'error' | 'warning' = 'info') => {
+    setDialog({
+      isOpen: true,
+      type: 'alert',
+      title,
+      message,
+      variant,
+    });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setDialog({
+      isOpen: true,
+      type: 'confirm',
+      title,
+      message,
+      variant: 'warning',
+      onConfirm,
+    });
+  };
 
   // Fetch point URLs
   const { data: pointUrls = [], isLoading } = useQuery<PointUrl[]>({
@@ -32,6 +78,29 @@ export default function PointUrls() {
     queryFn: async () => {
       const response = await axiosInstance.get('/point-urls');
       return response.data;
+    },
+  });
+
+  // Manual crawl trigger mutation
+  const crawlMutation = useMutation({
+    mutationFn: async (): Promise<CrawlTriggerResponse> => {
+      const response = await axiosInstance.post('/crawler/trigger');
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['point-urls'] });
+      showAlert(
+        '크롤링 완료',
+        `${data.message}${data.durationMs ? ` (${data.durationMs}ms)` : ''}`,
+        'success'
+      );
+    },
+    onError: (error: any) => {
+      showAlert(
+        '크롤링 실패',
+        error.response?.data?.message || error.message,
+        'error'
+      );
     },
   });
 
@@ -116,13 +185,23 @@ export default function PointUrls() {
   };
 
   const handleDelete = (id: number) => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      deleteMutation.mutate(id);
-    }
+    showConfirm(
+      '삭제 확인',
+      '정말 삭제하시겠습니까?',
+      () => deleteMutation.mutate(id)
+    );
   };
 
   const handleTogglePermanent = (id: number) => {
     togglePermanentMutation.mutate(id);
+  };
+
+  const handleManualCrawl = () => {
+    showConfirm(
+      '수동 크롤링',
+      '모든 등록된 사이트에서 포인트 URL을 수집합니다. 진행하시겠습니까?',
+      () => crawlMutation.mutate()
+    );
   };
 
   const getTypeColor = (type: string) => {
@@ -135,6 +214,19 @@ export default function PointUrls() {
         return 'bg-gray-100 text-gray-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getDialogIcon = () => {
+    switch (dialog.variant) {
+      case 'success':
+        return <i className="bx bx-check-circle text-4xl text-emerald-500"></i>;
+      case 'error':
+        return <i className="bx bx-x-circle text-4xl text-red-500"></i>;
+      case 'warning':
+        return <i className="bx bx-error text-4xl text-amber-500"></i>;
+      default:
+        return <i className="bx bx-info-circle text-4xl text-blue-500"></i>;
     }
   };
 
@@ -153,13 +245,32 @@ export default function PointUrls() {
           <h1 className="text-3xl font-bold">Point URLs Management</h1>
           <p className="text-muted-foreground mt-1">포인트 URL을 관리합니다</p>
         </div>
-        <button
-          onClick={() => openModal()}
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors flex items-center gap-2"
-        >
-          <i className="bx bx-plus"></i>
-          Add Point URL
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleManualCrawl}
+            disabled={crawlMutation.isPending}
+            className="bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {crawlMutation.isPending ? (
+              <>
+                <i className="bx bx-loader-alt bx-spin"></i>
+                Crawling...
+              </>
+            ) : (
+              <>
+                <i className="bx bx-refresh"></i>
+                Manual Crawl
+              </>
+            )}
+          </button>
+          <button
+            onClick={() => openModal()}
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors flex items-center gap-2"
+          >
+            <i className="bx bx-plus"></i>
+            Add Point URL
+          </button>
+        </div>
       </div>
 
       <div className="bg-card rounded-xl border shadow-md overflow-hidden">
@@ -243,7 +354,7 @@ export default function PointUrls() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
@@ -295,6 +406,47 @@ export default function PointUrls() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm/Alert Dialog */}
+      {dialog.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+            <div className="flex flex-col items-center text-center">
+              {getDialogIcon()}
+              <h3 className="text-lg font-semibold mt-4 text-gray-900">{dialog.title}</h3>
+              <p className="text-gray-600 mt-2">{dialog.message}</p>
+            </div>
+            <div className="flex justify-center gap-3 mt-6">
+              {dialog.type === 'confirm' ? (
+                <>
+                  <button
+                    onClick={closeDialog}
+                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-gray-700 min-w-[80px]"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={() => {
+                      dialog.onConfirm?.();
+                      closeDialog();
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors min-w-[80px]"
+                  >
+                    확인
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={closeDialog}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors min-w-[80px]"
+                >
+                  확인
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

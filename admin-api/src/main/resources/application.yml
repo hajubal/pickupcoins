@@ -1,10 +1,8 @@
 spring:
   application:
     name: admin-api
-
   profiles:
-    active: dev
-
+    active: local
   jpa:
     hibernate:
       ddl-auto: none
@@ -13,12 +11,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     show-sql: false
-
   datasource:
-    url: jdbc:mysql://localhost:3306/coin?allowPublicKeyRetrieval=true&useSSL=false
-    username: root
-    password: admin
-    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -53,38 +46,6 @@ cors:
   allowed-headers: "*"
   allow-credentials: true
 
----
-# 개발 환경
-spring:
-  config:
-    activate:
-      on-profile: dev
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
----
-# 프로덕션 환경
-spring:
-  config:
-    activate:
-      on-profile: prod
-  jpa:
-    show-sql: false
-
-logging:
-  level:
-    root: WARN
-    me.synology.hajubal.coins: INFO
+# Pickup Server 설정
+pickup-server:
+  base-url: http://localhost:7070

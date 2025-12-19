@@ -20,6 +20,13 @@ interface PointLogsResponse {
   totalPages: number;
 }
 
+interface DialogState {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  onConfirm?: () => void;
+}
+
 export default function PointLogs() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(0);
@@ -27,6 +34,24 @@ export default function PointLogs() {
   const [endDate, setEndDate] = useState('');
   const [selectedPoint, setSelectedPoint] = useState<SavedPoint | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [dialog, setDialog] = useState<DialogState>({
+    isOpen: false,
+    title: '',
+    message: '',
+  });
+
+  const closeDialog = () => {
+    setDialog({ ...dialog, isOpen: false });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setDialog({
+      isOpen: true,
+      title,
+      message,
+      onConfirm,
+    });
+  };
 
   // Fetch point logs
   const { data: pointLogsData, isLoading } = useQuery<PointLogsResponse>({
@@ -55,9 +80,11 @@ export default function PointLogs() {
   });
 
   const handleDelete = (id: number) => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      deleteMutation.mutate(id);
-    }
+    showConfirm(
+      '삭제 확인',
+      '정말 삭제하시겠습니까?',
+      () => deleteMutation.mutate(id)
+    );
   };
 
   const handleViewDetail = (point: SavedPoint) => {
@@ -234,6 +261,36 @@ export default function PointLogs() {
                 className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Dialog */}
+      {dialog.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+            <div className="flex flex-col items-center text-center">
+              <i className="bx bx-error text-4xl text-amber-500"></i>
+              <h3 className="text-lg font-semibold mt-4 text-gray-900">{dialog.title}</h3>
+              <p className="text-gray-600 mt-2">{dialog.message}</p>
+            </div>
+            <div className="flex justify-center gap-3 mt-6">
+              <button
+                onClick={closeDialog}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-gray-700 min-w-[80px]"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => {
+                  dialog.onConfirm?.();
+                  closeDialog();
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors min-w-[80px]"
+              >
+                확인
               </button>
             </div>
           </div>
