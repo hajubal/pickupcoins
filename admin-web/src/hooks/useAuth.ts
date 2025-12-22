@@ -7,13 +7,13 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async (loginId: string, password: string, rememberMe: boolean = false) => {
+  const login = async (loginId: string, password: string) => {
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await authService.login({ loginId, password });
-      authService.saveUserInfo(response, rememberMe);
+      authService.saveUserInfo(response);
       navigate('/');
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -39,7 +39,5 @@ export const useAuth = () => {
     error,
     isAuthenticated: authService.isAuthenticated(),
     userInfo: authService.getUserInfo(),
-    getRememberMe: authService.getRememberMe,
-    getSavedLoginId: authService.getSavedLoginId,
   };
 };

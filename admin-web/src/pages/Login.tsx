@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,31 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Login() {
-  const { login, isLoading, error: authError, getRememberMe, getSavedLoginId } = useAuth();
+  const { login, isLoading, error: authError } = useAuth();
   const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
-
-  // 저장된 Remember Me 설정과 로그인 ID 복원
-  useEffect(() => {
-    const savedRememberMe = getRememberMe();
-    const savedLoginId = getSavedLoginId();
-    if (savedRememberMe) {
-      setRememberMe(true);
-      if (savedLoginId) {
-        setLoginId(savedLoginId);
-      }
-    }
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      await login(loginId, password, rememberMe);
+      await login(loginId, password);
     } catch (err) {
       setError(authError || 'Login failed. Please try again.');
     }
@@ -92,19 +79,6 @@ export default function Login() {
                     <i className={`bx ${showPassword ? 'bx-show' : 'bx-hide'} text-lg`}></i>
                   </button>
                 </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                />
-                <Label htmlFor="rememberMe" className="text-sm font-normal cursor-pointer">
-                  Remember me
-                </Label>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>

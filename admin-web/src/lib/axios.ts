@@ -11,8 +11,7 @@ const axiosInstance = axios.create({
 // Request interceptor - JWT 토큰 추가
 axiosInstance.interceptors.request.use(
   (config) => {
-    // localStorage와 sessionStorage 모두 확인
-    const token = localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,15 +30,10 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     // 401 또는 403 에러 발생 시 로그아웃 처리
     if (error.response?.status === 401 || error.response?.status === 403) {
-      // 양쪽 스토리지 모두 클리어
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user_name');
       localStorage.removeItem('login_id');
-      sessionStorage.removeItem('access_token');
-      sessionStorage.removeItem('refresh_token');
-      sessionStorage.removeItem('user_name');
-      sessionStorage.removeItem('login_id');
       window.location.href = '/login';
     }
 
