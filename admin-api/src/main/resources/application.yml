@@ -38,6 +38,7 @@ jwt:
   secret: your-secret-key-change-this-in-production-at-least-256-bits-long
   access-token-validity: 900000  # 15분 (밀리초)
   refresh-token-validity: 604800000  # 7일 (밀리초)
+  remember-me-token-validity: 1296000000  # 15일 (밀리초)
 
 # CORS 설정
 cors:

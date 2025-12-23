@@ -10,6 +10,7 @@ export default function Login() {
   const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,7 +18,7 @@ export default function Login() {
     setError('');
 
     try {
-      await login(loginId, password);
+      await login(loginId, password, rememberMe);
     } catch (err) {
       setError(authError || 'Login failed. Please try again.');
     }
@@ -79,6 +80,22 @@ export default function Login() {
                     <i className={`bx ${showPassword ? 'bx-show' : 'bx-hide'} text-lg`}></i>
                   </button>
                 </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                />
+                <Label
+                  htmlFor="rememberMe"
+                  className="text-sm font-normal cursor-pointer"
+                >
+                  Remember me for 15 days
+                </Label>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>

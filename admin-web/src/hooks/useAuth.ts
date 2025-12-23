@@ -7,12 +7,12 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async (loginId: string, password: string) => {
+  const login = async (loginId: string, password: string, rememberMe: boolean = false) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await authService.login({ loginId, password });
+      const response = await authService.login({ loginId, password, rememberMe });
       authService.saveUserInfo(response);
       navigate('/');
     } catch (err: unknown) {

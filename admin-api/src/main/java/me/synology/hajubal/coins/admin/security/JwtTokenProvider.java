@@ -56,7 +56,21 @@ public class JwtTokenProvider {
    * @return JWT Refresh Token
    */
   public String createRefreshToken(String username) {
-    return createToken(username, jwtProperties.getRefreshTokenValidity(), "refresh");
+    return createRefreshToken(username, false);
+  }
+
+  /**
+   * Refresh Token 생성 (Remember Me 지원)
+   *
+   * @param username 사용자 이름
+   * @param rememberMe 로그인 유지 여부 (true: 15일, false: 7일)
+   * @return JWT Refresh Token
+   */
+  public String createRefreshToken(String username, boolean rememberMe) {
+    Long validity = rememberMe
+        ? jwtProperties.getRememberMeTokenValidity()
+        : jwtProperties.getRefreshTokenValidity();
+    return createToken(username, validity, "refresh");
   }
 
   /**

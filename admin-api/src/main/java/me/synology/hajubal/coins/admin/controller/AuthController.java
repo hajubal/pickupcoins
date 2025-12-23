@@ -50,7 +50,8 @@ public class AuthController {
 
       // JWT 토큰 생성
       String accessToken = jwtTokenProvider.createAccessToken(authentication);
-      String refreshToken = jwtTokenProvider.createRefreshToken(loginRequest.getLoginId());
+      String refreshToken = jwtTokenProvider.createRefreshToken(
+          loginRequest.getLoginId(), loginRequest.isRememberMe());
 
       // UserDetails에서 사용자 정보 추출
       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
