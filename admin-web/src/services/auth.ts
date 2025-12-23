@@ -3,6 +3,7 @@ import axiosInstance from '@/lib/axios';
 export interface LoginRequest {
   loginId: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export interface LoginResponse {

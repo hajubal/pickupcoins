@@ -24,4 +24,7 @@ public class JwtProperties {
 
   /** Refresh Token 유효기간 (밀리초) */
   private Long refreshTokenValidity;
+
+  /** Remember Me Token 유효기간 (밀리초, 15일) */
+  private Long rememberMeTokenValidity;
 }
