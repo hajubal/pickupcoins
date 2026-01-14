@@ -3,6 +3,7 @@ package me.synology.hajubal.coins.respository;
 import me.synology.hajubal.coins.entity.Cookie;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.PointUrlCookie;
+import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ class PointUrlCookieRepositoryTest {
     void saveTest() {
         PointUrl pointUrl = PointUrl.builder()
                 .url("url")
+                .pointUrlType(POINT_URL_TYPE.NAVER)
                 .build();
 
         Cookie cookie = Cookie.builder()

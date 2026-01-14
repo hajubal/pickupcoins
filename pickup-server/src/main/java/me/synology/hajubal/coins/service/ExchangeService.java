@@ -69,7 +69,7 @@ public class ExchangeService {
               .headers(httpHeaders -> setCookieHeaders(httpHeaders, exchangeDto.cookie()))
               .retrieve()
               .toEntity(String.class)
-              .block(Duration.ofSeconds(30)); // 최대 30초 대기
+              .block(naverPointProperties.getExchangeTimeout());
 
       if (response == null || !StringUtils.hasText(response.getBody())) {
         log.warn("Exchange response is empty. url: {}", url.getUrl());

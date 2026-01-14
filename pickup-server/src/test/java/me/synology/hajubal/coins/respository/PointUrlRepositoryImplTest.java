@@ -27,7 +27,7 @@ class PointUrlRepositoryImplTest {
     @DisplayName("저장 테스트")
     @Test
     void saveTest() {
-        PointUrl pointUrl = PointUrl.builder().url("url").build();
+        PointUrl pointUrl = PointUrl.builder().url("url").pointUrlType(POINT_URL_TYPE.NAVER).build();
 
         pointUrlRepository.save(pointUrl);
 
@@ -40,11 +40,11 @@ class PointUrlRepositoryImplTest {
     @DisplayName("호출안된 url 조회 테스트")
     @Test
     void findByNotCalledUrlQueryTest() {
-        PointUrl pointUrl = PointUrl.builder().url("url").build();
+        PointUrl pointUrl = PointUrl.builder().url("url").pointUrlType(POINT_URL_TYPE.NAVER).build();
 
         pointUrlRepository.save(pointUrl);
 
-        List<PointUrl> urls = pointUrlRepository.findByNotCalledUrl(POINT_URL_TYPE.UNSUPPORT.name(), "ha");
+        List<PointUrl> urls = pointUrlRepository.findByNotCalledUrl(POINT_URL_TYPE.NAVER.name(), "ha");
 
         assertThat(urls).hasSize(1);
     }

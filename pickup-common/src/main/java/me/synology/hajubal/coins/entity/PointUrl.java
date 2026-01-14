@@ -41,9 +41,9 @@ public class PointUrl extends BaseDataEntity {
     private Boolean permanent;
 
     @Builder
-    public PointUrl(String url, Boolean permanent) {
+    public PointUrl(String url, POINT_URL_TYPE pointUrlType, Boolean permanent) {
         this.url = url;
-        this.pointUrlType = POINT_URL_TYPE.classifyUrlType(url);
+        this.pointUrlType = pointUrlType;
         this.name = this.pointUrlType.name();
         this.permanent = permanent;
     }
