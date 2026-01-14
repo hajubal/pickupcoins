@@ -7,6 +7,7 @@ import me.synology.hajubal.coins.crawler.AbstractWebCrawler;
 import me.synology.hajubal.coins.crawler.PointPostUrlFetcher;
 import me.synology.hajubal.coins.crawler.SiteData;
 import me.synology.hajubal.coins.respository.SiteRepository;
+import me.synology.hajubal.coins.service.PointUrlClassifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,8 +23,9 @@ public class RuliwebCrawler extends AbstractWebCrawler {
       PointPostUrlFetcher pointPostUrlFetcher,
       SiteRepository siteRepository,
       CrawlerProperties crawlerProperties,
-      RuliwebSiteData ruliwebSiteData) {
-    super(siteRepository, crawlerProperties);
+      RuliwebSiteData ruliwebSiteData,
+      PointUrlClassifier pointUrlClassifier) {
+    super(siteRepository, crawlerProperties, pointUrlClassifier);
     this.pointPostUrlFetcher = pointPostUrlFetcher;
     this.ruliwebSiteData = ruliwebSiteData;
   }

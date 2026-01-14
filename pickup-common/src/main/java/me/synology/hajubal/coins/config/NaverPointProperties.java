@@ -1,5 +1,9 @@
 package me.synology.hajubal.coins.config;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -34,4 +38,14 @@ public class NaverPointProperties {
    */
   private String userAgent =
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
+
+  /**
+   * 포인트 교환 타임아웃
+   */
+  private Duration exchangeTimeout = Duration.ofSeconds(30);
+
+  /**
+   * 포인트 URL 타입 분류 패턴
+   */
+  private Map<String, List<String>> types = new HashMap<>();
 }

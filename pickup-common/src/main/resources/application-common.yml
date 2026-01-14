@@ -14,12 +14,28 @@ naver:
     # HTTP 요청 시 사용할 User-Agent
     user-agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
 
+    # 포인트 교환 타임아웃
+    exchange-timeout: 30s
+
+    # 포인트 URL 타입 분류 패턴
+    types:
+      NAVER:
+        - "campaign2-api.naver.com"
+      OFW_NAVER:
+        - "ofw.adison.co/u/naverpay"
+
 crawler:
   # 크롤링 타임아웃 (밀리초)
   timeout: 10000
 
   # 크롤링 실패 시 재시도 횟수
   retry-count: 3
+
+  # 포인트 URL 식별 키워드
+  point-url-keywords:
+    - "naver.com/point"
+    - "naver.me"
+    - "m.site.naver.com"
 
 schedule:
   # 웹 크롤러 스케줄러 고정 지연 시간 (밀리초) - 5분
@@ -30,3 +46,8 @@ schedule:
 
   # 일일 리포트 크론 표현식 - 매일 아침 7시
   daily-report-cron: "0 0 7 * * *"
+
+slack:
+  system:
+    # 시스템 알림용 웹훅 URL (기본값은 비어있음)
+    webhook-url: ""

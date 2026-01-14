@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.coins.config.CrawlerProperties;
 import me.synology.hajubal.coins.entity.PointUrl;
 import me.synology.hajubal.coins.entity.Site;
+import me.synology.hajubal.coins.entity.type.POINT_URL_TYPE;
 import me.synology.hajubal.coins.respository.SiteRepository;
+import me.synology.hajubal.coins.service.PointUrlClassifier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -23,11 +25,13 @@ public abstract class AbstractWebCrawler implements WebCrawler {
 
   protected final SiteRepository siteRepository;
   protected final CrawlerProperties crawlerProperties;
+  protected final PointUrlClassifier pointUrlClassifier;
 
   protected AbstractWebCrawler(
-      SiteRepository siteRepository, CrawlerProperties crawlerProperties) {
+      SiteRepository siteRepository, CrawlerProperties crawlerProperties, PointUrlClassifier pointUrlClassifier) {
     this.siteRepository = siteRepository;
     this.crawlerProperties = crawlerProperties;
+    this.pointUrlClassifier = pointUrlClassifier;
   }
 
   /**
@@ -106,9 +110,10 @@ public abstract class AbstractWebCrawler implements WebCrawler {
         for (Element element : articleElements) {
           String href = element.attr("href");
 
-          if (isNaverPointUrl(href)) {
+          if (pointUrlClassifier.isPointUrl(href)) {
             log.debug("Found point URL: {}", href);
-            pointUrls.add(PointUrl.builder().url(href).build());
+            POINT_URL_TYPE type = pointUrlClassifier.classify(href);
+            pointUrls.add(PointUrl.builder().url(href).pointUrlType(type).build());
           }
         }
       } catch (IOException e) {
@@ -118,18 +123,5 @@ public abstract class AbstractWebCrawler implements WebCrawler {
     }
 
     return pointUrls;
-  }
-
-  /**
-   * 네이버 포인트 URL인지 확인
-   *
-   * @param url URL 문자열
-   * @return 네이버 포인트 URL이면 true
-   */
-  private boolean isNaverPointUrl(String url) {
-    return url != null
-        && (url.contains("naver.com/point")
-            || url.contains("naver.me")
-            || url.contains("m.site.naver.com"));
   }
 }
