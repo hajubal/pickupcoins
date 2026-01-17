@@ -1,5 +1,0 @@
-## Git 커밋 메시지 규칙
-- 모든 Git 커밋 메시지를 한글로 작성하세요.
-- 형식: 유형: 간단한 설명 (예: feat: 로그인 기능 추가)
-- 유형: feat, fix, docs, style, refactor, test, chore
-- 본문은 필요시 한글로 자세히 설명하세요.
