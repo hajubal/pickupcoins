@@ -153,10 +153,68 @@ npm run build
 ./gradlew :admin-api:bootRun
 ```
 
-### Docker 실행
+### Docker 실행 (로컬 개발 환경)
+
+로컬 개발 환경에서 전체 스택을 Docker로 실행할 수 있습니다.
 
 ```bash
-# Docker 이미지 빌드
+# 1. Gradle 프로젝트 빌드
+./gradlew clean build -x test
+
+# 2. Docker Compose로 전체 스택 실행
+docker-compose -f docker-compose-local.yml up --build -d
+
+# 3. 컨테이너 상태 확인
+docker ps
+```
+
+#### 컨테이너 정보
+
+| 서비스 | 컨테이너명 | 포트 | 설명 |
+|--------|-----------|------|------|
+| admin-web | admin-web | 3000 | React 관리자 웹 (Nginx) |
+| admin-api | admin-api | 8080 | REST API 서버 |
+| pickup-server | pickup-server | 7070 | 포인트 수집 서버 |
+| coin-mysql | coin-mysql | 3306 | MySQL 데이터베이스 |
+
+#### 테스트 계정
+
+애플리케이션 시작 시 자동으로 테스트 계정이 생성됩니다:
+- **User ID**: `admin`
+- **Password**: `test123`
+
+#### 접속 URL
+
+```
+# 관리자 웹 페이지
+http://localhost:3000
+
+# REST API
+http://localhost:8080
+
+# 포인트 수집 서버
+http://localhost:7070
+```
+
+#### Docker 컨테이너 관리
+
+```bash
+# 로그 확인
+docker logs -f admin-api
+docker logs -f pickup-server
+docker logs -f admin-web
+
+# 컨테이너 중지
+docker-compose -f docker-compose-local.yml down
+
+# 볼륨 포함 완전 삭제
+docker-compose -f docker-compose-local.yml down -v
+```
+
+### Docker 실행 (Jib 빌드)
+
+```bash
+# Docker 이미지 빌드 (Jib)
 ./gradlew jibDockerBuild
 
 # Docker Compose 실행
