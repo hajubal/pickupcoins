@@ -14,6 +14,7 @@ import { PointModule } from './modules/point/point.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { HealthModule } from './health/health.module';
+import { SeedModule } from './modules/seed/seed.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { HealthModule } from './health/health.module';
     PointModule,
     SchedulerModule,
     NotificationModule,
+    SeedModule,
   ],
 })
 export class AppModule {}
