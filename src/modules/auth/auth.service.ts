@@ -13,7 +13,7 @@ import { LoginRequestDto, LoginResponseDto, RefreshTokenResponseDto } from './dt
  * - type: 토큰 유형 (access: 액세스 토큰, refresh: 리프레시 토큰)
  */
 export interface JwtPayload {
-  sub: bigint;
+  sub: string; // BigInt를 문자열로 직렬화
   loginId: string;
   userName: string;
   type: 'access' | 'refresh';
@@ -166,7 +166,7 @@ export class AuthService {
    */
   private createAccessToken(userId: bigint, loginId: string, userName: string): string {
     const payload: JwtPayload = {
-      sub: userId,
+      sub: userId.toString(), // BigInt를 문자열로 변환
       loginId,
       userName,
       type: 'access',
@@ -196,7 +196,7 @@ export class AuthService {
    */
   private createRefreshToken(userId: bigint, loginId: string, userName: string, rememberMe?: boolean): string {
     const payload: JwtPayload = {
-      sub: userId,
+      sub: userId.toString(), // BigInt를 문자열로 변환
       loginId,
       userName,
       type: 'refresh',
