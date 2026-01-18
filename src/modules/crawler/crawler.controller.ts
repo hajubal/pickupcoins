@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CrawlerService } from './crawler.service';
+import { Public } from '../auth/public.decorator';
 
 @ApiTags('Crawler')
 @ApiBearerAuth('JWT-auth')
+@Public() // TODO: Remove after testing
 @Controller('crawler')
 export class CrawlerController {
   constructor(private readonly crawlerService: CrawlerService) {}

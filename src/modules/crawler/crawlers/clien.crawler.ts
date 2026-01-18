@@ -29,19 +29,13 @@ export class ClienCrawler extends BaseCrawler {
       const $ = cheerio.load(html);
 
       // Find all links that might contain point URLs
-      // Clien uses 'subject' class for post titles
-      $('a.list_subject').each((_, element) => {
+      // Clien uses 'span.list_subject' containing an <a> tag for post titles
+      $('span.list_subject > a').each((_, element) => {
         const href = $(element).attr('href');
         if (href && href.includes('/service/board/jirum/')) {
-          postUrls.add(href);
-        }
-      });
-
-      // Also check for mobile view
-      $('a.subject_fixed').each((_, element) => {
-        const href = $(element).attr('href');
-        if (href && href.includes('/service/board/jirum/')) {
-          postUrls.add(href);
+          // Remove query params and anchors to get clean URL
+          const cleanHref = href.split('?')[0].split('#')[0];
+          postUrls.add(cleanHref);
         }
       });
 
