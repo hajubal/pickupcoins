@@ -290,12 +290,55 @@ export default defineConfig({
 
 ---
 
+## E2E 테스트
+
+### 테스트 프레임워크
+- **Playwright** v1.58.x
+
+### 테스트 파일 위치
+프로젝트 루트의 `e2e/` 디렉토리:
+```
+e2e/
+├── fixtures.ts           # 테스트 공통 설정 (로그인 등)
+├── auth.spec.ts          # 인증 테스트
+├── dashboard.spec.ts     # 대시보드 테스트
+├── cookies.spec.ts       # 쿠키 관리 테스트
+├── point-urls.spec.ts    # 포인트 URL 테스트
+├── point-logs.spec.ts    # 포인트 로그 테스트
+└── sites.spec.ts         # 사이트 관리 테스트
+```
+
+### 테스트 실행
+```bash
+# 모든 테스트 실행
+npx playwright test
+
+# UI 모드로 실행
+npx playwright test --ui
+
+# 특정 테스트 파일 실행
+npx playwright test e2e/auth.spec.ts
+
+# 리포트 확인
+npx playwright show-report
+```
+
+### 테스트 커버리지
+- [x] 로그인/로그아웃
+- [x] 대시보드 통계 표시
+- [x] 쿠키 CRUD + 유효성 토글
+- [x] 포인트 URL CRUD + 영구 플래그 토글
+- [x] 포인트 로그 조회/삭제/필터
+- [x] 사이트 CRUD
+
+---
+
 ## 향후 개선 사항
 
 1. **라우트 보호**: ProtectedRoute/PublicRoute 컴포넌트 추가
 2. **코드 스플리팅**: React.lazy를 이용한 동적 import 적용
 3. **다크 모드**: 테마 전환 기능 추가
-4. **테스트**: Vitest를 이용한 단위/통합 테스트
+4. **단위 테스트**: Vitest를 이용한 컴포넌트 테스트
 5. **에러 바운더리**: React Error Boundary 적용
 6. **PWA**: 오프라인 지원 및 설치 가능한 앱
 

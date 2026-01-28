@@ -29,8 +29,12 @@ pickupcoins/
 │       ├── notification/ # Slack 알림
 │       ├── point/        # 포인트 교환
 │       ├── prisma/       # Prisma ORM 서비스
-│       └── scheduler/    # 스케줄러
-└── prisma/               # Prisma 스키마 및 마이그레이션
+│       ├── scheduler/    # 스케줄러
+│       └── seed/         # 초기 데이터 시딩
+├── admin/                # React 관리자 프론트엔드
+├── e2e/                  # Playwright E2E 테스트
+├── prisma/               # Prisma 스키마 및 마이그레이션
+└── docs/design/          # 설계 문서
 ```
 
 ### 모듈 설명
@@ -66,6 +70,10 @@ pickupcoins/
 - 포인트 적립 스케줄러 (5분 주기)
 - 일일 리포트 스케줄러 (매일 오전 7시)
 
+#### modules/seed
+- 애플리케이션 시작 시 초기 데이터 생성
+- 테스트 계정 자동 생성 (admin/test123)
+
 ## 기술 스택
 
 ### Backend
@@ -81,6 +89,10 @@ pickupcoins/
 - Node.js 20.x
 - npm
 - Docker & Docker Compose
+
+### Testing
+- Jest (단위 테스트)
+- Playwright (E2E 테스트)
 
 ### External APIs
 - Slack API (@slack/web-api)
@@ -152,36 +164,22 @@ npm run start:prod
 
 ```bash
 # Docker Compose로 개발 환경 실행
-docker-compose -f docker-compose.dev.yml up --build -d
-
-# 컨테이너 상태 확인
-docker ps
-```
-
-#### 컨테이너 정보 (개발 환경)
-
-| 서비스 | 컨테이너명 | 포트 | 설명 |
-|--------|-----------|------|------|
-| app | pickupcoins-api-dev | 8080 | NestJS API 서버 |
-| db | pickupcoins-db-dev | 3306 | MySQL 데이터베이스 |
-
-### Docker 실행 (프로덕션 환경)
-
-```bash
-# Docker Compose로 프로덕션 환경 실행
 docker-compose up --build -d
 
+# 관리자 프론트엔드 포함 실행
+docker-compose --profile admin up --build -d
+
 # 컨테이너 상태 확인
 docker ps
 ```
 
-#### 컨테이너 정보 (프로덕션 환경)
+#### 컨테이너 정보
 
 | 서비스 | 컨테이너명 | 포트 | 설명 |
 |--------|-----------|------|------|
-| app | pickupcoins-api | 8080 | NestJS API 서버 |
+| app | pickupcoins-api | 8080 | NestJS API 서버 (Hot Reload) |
 | db | pickupcoins-db | 3306 | MySQL 데이터베이스 |
-| admin-web | pickupcoins-admin | 3000 | React 관리자 웹 (Nginx) |
+| admin-web | pickupcoins-admin | 5173 | React 관리자 웹 (Vite Dev Server, --profile admin 필요) |
 
 #### 테스트 계정
 
@@ -198,8 +196,8 @@ http://localhost:8080
 # API 문서 (Swagger)
 http://localhost:8080/api
 
-# 관리자 웹 페이지 (프로덕션)
-http://localhost:3000
+# 관리자 웹 페이지 (개발)
+http://localhost:5173
 ```
 
 #### Docker 컨테이너 관리
@@ -221,8 +219,8 @@ docker-compose down -v
 ### 1. 관리자 페이지 접속
 
 ```
-# React 프론트엔드
-http://localhost:3000
+# React 프론트엔드 (개발)
+http://localhost:5173
 
 # REST API 서버
 http://localhost:8080
@@ -319,8 +317,17 @@ npm run test
 # 테스트 커버리지 확인
 npm run test:cov
 
-# E2E 테스트 실행
+# NestJS E2E 테스트 실행
 npm run test:e2e
+
+# Playwright E2E 테스트 실행 (관리자 프론트엔드)
+npx playwright test
+
+# Playwright 테스트 UI 모드
+npx playwright test --ui
+
+# Playwright 테스트 리포트 확인
+npx playwright show-report
 ```
 
 ### Prisma 명령어
@@ -390,6 +397,12 @@ npm run prisma:studio
 - TypeScript 기반 개발 환경 구성
 - Swagger API 문서 자동 생성
 - 단위 테스트 추가 (Jest)
+- **관리자 프론트엔드**: React + TypeScript + Vite 기반
+  - shadcn/ui 컴포넌트 라이브러리
+  - TanStack Query/Table 적용
+  - JWT 인증 및 자동 토큰 갱신
+- **E2E 테스트**: Playwright 테스트 프레임워크 도입
+- **초기 데이터 시딩**: 애플리케이션 시작 시 테스트 계정 자동 생성
 
 ### v1.2.0
 - UI를 Tailwind CSS 기반으로 변경

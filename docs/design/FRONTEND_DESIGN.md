@@ -162,8 +162,29 @@ admin/
 - Nginx로 정적 파일 서빙
 
 ### Docker Compose
-- `docker-compose.yml`에 admin 서비스 포함
-- 포트: 5173 (개발) / 80 (프로덕션)
+- `docker-compose.yml`에 admin-web 서비스 포함
+- `--profile admin` 옵션으로 실행
+- 개발 포트: 5173
+
+## E2E 테스트
+
+### 테스트 프레임워크
+- Playwright v1.58.x
+
+### 테스트 파일
+프로젝트 루트 `e2e/` 디렉토리:
+- `auth.spec.ts` - 인증 테스트
+- `dashboard.spec.ts` - 대시보드 테스트
+- `cookies.spec.ts` - 쿠키 관리 테스트
+- `point-urls.spec.ts` - 포인트 URL 테스트
+- `point-logs.spec.ts` - 포인트 로그 테스트
+- `sites.spec.ts` - 사이트 관리 테스트
+
+### 실행 방법
+```bash
+npx playwright test
+npx playwright test --ui
+```
 
 ## 참고 문서
 
