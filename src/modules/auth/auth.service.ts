@@ -204,8 +204,8 @@ export class AuthService {
 
     // Remember Me 여부에 따라 유효 기간 결정
     const validity = rememberMe
-      ? this.configService.get<number>('jwt.rememberMeTokenValidity') || 1296000000  // 15일
-      : this.configService.get<number>('jwt.refreshTokenValidity') || 604800000;     // 7일
+      ? this.configService.get<number>('jwt.rememberMeTokenValidity') || 1296000000 // 15일
+      : this.configService.get<number>('jwt.refreshTokenValidity') || 604800000; // 7일
 
     return this.jwtService.sign(payload, {
       expiresIn: Math.floor(validity / 1000), // ms를 초로 변환

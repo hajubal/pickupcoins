@@ -109,9 +109,7 @@ describe('AuthService', () => {
     it('should return tokens on successful login', async () => {
       prismaService.siteUser.findUnique = jest.fn().mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-      jwtService.sign = jest.fn()
-        .mockReturnValueOnce('access_token')
-        .mockReturnValueOnce('refresh_token');
+      jwtService.sign = jest.fn().mockReturnValueOnce('access_token').mockReturnValueOnce('refresh_token');
       configService.get = jest.fn().mockReturnValue(900000);
 
       const result = await service.login({
@@ -130,21 +128,18 @@ describe('AuthService', () => {
     it('should throw UnauthorizedException on invalid credentials', async () => {
       prismaService.siteUser.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(
-        service.login({ loginId: 'testuser', password: 'wrong' }),
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(service.login({ loginId: 'testuser', password: 'wrong' })).rejects.toThrow(UnauthorizedException);
     });
 
     it('should create refresh token with extended validity when rememberMe is true', async () => {
       prismaService.siteUser.findUnique = jest.fn().mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       jwtService.sign = jest.fn().mockReturnValue('token');
-      configService.get = jest.fn()
-        .mockImplementation((key: string) => {
-          if (key === 'jwt.rememberMeTokenValidity') return 1296000000; // 15 days
-          if (key === 'jwt.accessTokenValidity') return 900000;
-          return 604800000; // 7 days
-        });
+      configService.get = jest.fn().mockImplementation((key: string) => {
+        if (key === 'jwt.rememberMeTokenValidity') return 1296000000; // 15 days
+        if (key === 'jwt.accessTokenValidity') return 900000;
+        return 604800000; // 7 days
+      });
 
       await service.login({
         loginId: 'testuser',
@@ -159,7 +154,7 @@ describe('AuthService', () => {
   describe('refreshTokens', () => {
     it('should return new tokens on valid refresh token', async () => {
       const mockPayload: JwtPayload = {
-        sub: BigInt(1),
+        sub: '1',
         loginId: 'testuser',
         userName: 'Test User',
         type: 'refresh',
@@ -167,9 +162,7 @@ describe('AuthService', () => {
 
       jwtService.verify = jest.fn().mockReturnValue(mockPayload);
       prismaService.siteUser.findUnique = jest.fn().mockResolvedValue(mockUser);
-      jwtService.sign = jest.fn()
-        .mockReturnValueOnce('new_access_token')
-        .mockReturnValueOnce('new_refresh_token');
+      jwtService.sign = jest.fn().mockReturnValueOnce('new_access_token').mockReturnValueOnce('new_refresh_token');
       configService.get = jest.fn().mockReturnValue(900000);
 
       const result = await service.refreshTokens('valid_refresh_token');
@@ -182,7 +175,7 @@ describe('AuthService', () => {
 
     it('should throw UnauthorizedException when token type is not refresh', async () => {
       const mockPayload: JwtPayload = {
-        sub: BigInt(1),
+        sub: '1',
         loginId: 'testuser',
         userName: 'Test User',
         type: 'access',
@@ -190,14 +183,12 @@ describe('AuthService', () => {
 
       jwtService.verify = jest.fn().mockReturnValue(mockPayload);
 
-      await expect(service.refreshTokens('access_token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('access_token')).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw UnauthorizedException when user is not found', async () => {
       const mockPayload: JwtPayload = {
-        sub: BigInt(999),
+        sub: '999',
         loginId: 'testuser',
         userName: 'Test User',
         type: 'refresh',
@@ -206,14 +197,12 @@ describe('AuthService', () => {
       jwtService.verify = jest.fn().mockReturnValue(mockPayload);
       prismaService.siteUser.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.refreshTokens('valid_refresh_token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('valid_refresh_token')).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw UnauthorizedException when user is inactive', async () => {
       const mockPayload: JwtPayload = {
-        sub: BigInt(1),
+        sub: '1',
         loginId: 'testuser',
         userName: 'Test User',
         type: 'refresh',
@@ -225,9 +214,7 @@ describe('AuthService', () => {
         active: false,
       });
 
-      await expect(service.refreshTokens('valid_refresh_token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('valid_refresh_token')).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw UnauthorizedException on invalid token', async () => {
@@ -235,16 +222,14 @@ describe('AuthService', () => {
         throw new Error('Invalid token');
       });
 
-      await expect(service.refreshTokens('invalid_token')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshTokens('invalid_token')).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('validateJwtPayload', () => {
     it('should return user info on valid payload', async () => {
       const mockPayload: JwtPayload = {
-        sub: BigInt(1),
+        sub: '1',
         loginId: 'testuser',
         userName: 'Test User',
         type: 'access',
@@ -263,7 +248,7 @@ describe('AuthService', () => {
 
     it('should throw UnauthorizedException when user is not found', async () => {
       const mockPayload: JwtPayload = {
-        sub: BigInt(999),
+        sub: '999',
         loginId: 'testuser',
         userName: 'Test User',
         type: 'access',
@@ -271,9 +256,7 @@ describe('AuthService', () => {
 
       prismaService.siteUser.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.validateJwtPayload(mockPayload)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.validateJwtPayload(mockPayload)).rejects.toThrow(UnauthorizedException);
     });
   });
 });

@@ -33,7 +33,7 @@ export class CookieService {
     this.logger.log('Getting all cookies');
 
     const cookies = await this.prisma.cookie.findMany({
-      orderBy: { createdDate: 'desc' },  // 최신순 정렬
+      orderBy: { createdDate: 'desc' }, // 최신순 정렬
     });
 
     // 엔티티를 DTO로 변환
@@ -77,11 +77,11 @@ export class CookieService {
 
     const cookie = await this.prisma.cookie.create({
       data: {
-        userName: dto.userName,       // 네이버 계정 사용자명
-        siteName: dto.siteName,       // 사이트 이름 (예: 'naver')
-        cookie: dto.cookie,           // 쿠키 문자열
+        userName: dto.userName, // 네이버 계정 사용자명
+        siteName: dto.siteName, // 사이트 이름 (예: 'naver')
+        cookie: dto.cookie, // 쿠키 문자열
         isValid: dto.isValid ?? true, // 유효성 (기본: 활성)
-        siteUserId,                   // 소유자 ID
+        siteUserId, // 소유자 ID
       },
     });
 
@@ -190,7 +190,7 @@ export class CookieService {
    */
   async findValidCookies(): Promise<CookieResponseDto[]> {
     const cookies = await this.prisma.cookie.findMany({
-      where: { isValid: true },       // 유효한 쿠키만
+      where: { isValid: true }, // 유효한 쿠키만
       orderBy: { createdDate: 'desc' },
     });
 

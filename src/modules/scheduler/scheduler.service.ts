@@ -22,8 +22,9 @@ export class SchedulerService {
     this.crawlerDelay = this.configService.get<number>('schedule.crawlerFixedDelay') || 300000;
     this.pointDelay = this.configService.get<number>('schedule.pointFixedDelay') || 300000;
     this.dailyReportCron = this.configService.get<string>('schedule.dailyReportCron') || '0 0 7 * * *';
-    this.isEnabled = this.configService.get<string>('nodeEnv') === 'development' ||
-                     this.configService.get<string>('nodeEnv') === 'production';
+    this.isEnabled =
+      this.configService.get<string>('nodeEnv') === 'development' ||
+      this.configService.get<string>('nodeEnv') === 'production';
 
     this.logger.log(`Scheduler initialized - Enabled: ${this.isEnabled}`);
     this.logger.log(`Crawler delay: ${this.crawlerDelay}ms, Point delay: ${this.pointDelay}ms`);

@@ -142,9 +142,7 @@ describe('CookieService', () => {
     it('should throw NotFoundException when cookie not found', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(
-        service.update(BigInt(999), { userName: 'updateduser' }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.update(BigInt(999), { userName: 'updateduser' })).rejects.toThrow(NotFoundException);
     });
 
     it('should preserve existing values when not provided', async () => {
@@ -213,9 +211,7 @@ describe('CookieService', () => {
     it('should throw NotFoundException when cookie not found', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.toggleValidity(BigInt(999))).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.toggleValidity(BigInt(999))).rejects.toThrow(NotFoundException);
     });
   });
 

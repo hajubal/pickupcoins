@@ -35,13 +35,15 @@ describe('DashboardService', () => {
   describe('getStats', () => {
     it('should return dashboard statistics', async () => {
       // Mock today's points
-      prismaService.savedPoint.aggregate = jest.fn()
+      prismaService.savedPoint.aggregate = jest
+        .fn()
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Today
-        .mockResolvedValueOnce({ _sum: { amount: 50 } })  // Yesterday
+        .mockResolvedValueOnce({ _sum: { amount: 50 } }) // Yesterday
         .mockResolvedValueOnce({ _sum: { amount: 500 } }) // This week
         .mockResolvedValueOnce({ _sum: { amount: 400 } }); // Last week
 
-      prismaService.pointUrl.count = jest.fn()
+      prismaService.pointUrl.count = jest
+        .fn()
         .mockResolvedValueOnce(10) // Today's URLs
         .mockResolvedValueOnce(50); // This week's URLs
 
@@ -54,9 +56,10 @@ describe('DashboardService', () => {
     });
 
     it('should calculate day-over-day ratio correctly', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
+      prismaService.savedPoint.aggregate = jest
+        .fn()
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Today
-        .mockResolvedValueOnce({ _sum: { amount: 50 } })  // Yesterday
+        .mockResolvedValueOnce({ _sum: { amount: 50 } }) // Yesterday
         .mockResolvedValueOnce({ _sum: { amount: 500 } }) // This week
         .mockResolvedValueOnce({ _sum: { amount: 400 } }); // Last week
 
@@ -69,7 +72,8 @@ describe('DashboardService', () => {
     });
 
     it('should calculate week-over-week ratio correctly', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
+      prismaService.savedPoint.aggregate = jest
+        .fn()
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Today
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Yesterday
         .mockResolvedValueOnce({ _sum: { amount: 600 } }) // This week
@@ -84,11 +88,12 @@ describe('DashboardService', () => {
     });
 
     it('should return 100% ratio when previous period has zero points but current has points', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
+      prismaService.savedPoint.aggregate = jest
+        .fn()
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Today
-        .mockResolvedValueOnce({ _sum: { amount: 0 } })   // Yesterday (no points)
+        .mockResolvedValueOnce({ _sum: { amount: 0 } }) // Yesterday (no points)
         .mockResolvedValueOnce({ _sum: { amount: 500 } }) // This week
-        .mockResolvedValueOnce({ _sum: { amount: 0 } });  // Last week (no points)
+        .mockResolvedValueOnce({ _sum: { amount: 0 } }); // Last week (no points)
 
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(0);
 
@@ -99,10 +104,11 @@ describe('DashboardService', () => {
     });
 
     it('should return 0% ratio when both periods have zero points', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValueOnce({ _sum: { amount: 0 } })  // Today
-        .mockResolvedValueOnce({ _sum: { amount: 0 } })  // Yesterday
-        .mockResolvedValueOnce({ _sum: { amount: 0 } })  // This week
+      prismaService.savedPoint.aggregate = jest
+        .fn()
+        .mockResolvedValueOnce({ _sum: { amount: 0 } }) // Today
+        .mockResolvedValueOnce({ _sum: { amount: 0 } }) // Yesterday
+        .mockResolvedValueOnce({ _sum: { amount: 0 } }) // This week
         .mockResolvedValueOnce({ _sum: { amount: 0 } }); // Last week
 
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(0);
@@ -114,7 +120,8 @@ describe('DashboardService', () => {
     });
 
     it('should handle null sums as zero', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
+      prismaService.savedPoint.aggregate = jest
+        .fn()
         .mockResolvedValueOnce({ _sum: { amount: null } }) // Today
         .mockResolvedValueOnce({ _sum: { amount: null } }) // Yesterday
         .mockResolvedValueOnce({ _sum: { amount: null } }) // This week
@@ -129,9 +136,10 @@ describe('DashboardService', () => {
     });
 
     it('should round ratio to one decimal place', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
+      prismaService.savedPoint.aggregate = jest
+        .fn()
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Today
-        .mockResolvedValueOnce({ _sum: { amount: 30 } })  // Yesterday
+        .mockResolvedValueOnce({ _sum: { amount: 30 } }) // Yesterday
         .mockResolvedValueOnce({ _sum: { amount: 500 } }) // This week
         .mockResolvedValueOnce({ _sum: { amount: 300 } }); // Last week
 
@@ -146,8 +154,9 @@ describe('DashboardService', () => {
     });
 
     it('should handle negative ratios correctly', async () => {
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValueOnce({ _sum: { amount: 50 } })  // Today
+      prismaService.savedPoint.aggregate = jest
+        .fn()
+        .mockResolvedValueOnce({ _sum: { amount: 50 } }) // Today
         .mockResolvedValueOnce({ _sum: { amount: 100 } }) // Yesterday
         .mockResolvedValueOnce({ _sum: { amount: 200 } }) // This week
         .mockResolvedValueOnce({ _sum: { amount: 400 } }); // Last week
@@ -169,8 +178,7 @@ describe('DashboardService', () => {
       const mockDate = new Date('2024-03-15T10:00:00Z'); // Friday
       jest.useFakeTimers().setSystemTime(mockDate);
 
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValue({ _sum: { amount: 0 } });
+      prismaService.savedPoint.aggregate = jest.fn().mockResolvedValue({ _sum: { amount: 0 } });
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(0);
 
       await service.getStats();
@@ -187,8 +195,7 @@ describe('DashboardService', () => {
       const mockDate = new Date('2024-03-11T10:00:00Z'); // Monday
       jest.useFakeTimers().setSystemTime(mockDate);
 
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValue({ _sum: { amount: 100 } });
+      prismaService.savedPoint.aggregate = jest.fn().mockResolvedValue({ _sum: { amount: 100 } });
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(5);
 
       const result = await service.getStats();
@@ -204,8 +211,7 @@ describe('DashboardService', () => {
       const mockDate = new Date('2024-03-17T10:00:00Z'); // Sunday
       jest.useFakeTimers().setSystemTime(mockDate);
 
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValue({ _sum: { amount: 100 } });
+      prismaService.savedPoint.aggregate = jest.fn().mockResolvedValue({ _sum: { amount: 100 } });
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(5);
 
       const result = await service.getStats();
@@ -222,8 +228,7 @@ describe('DashboardService', () => {
       const mockDate = new Date('2024-03-15T10:00:00Z');
       jest.useFakeTimers().setSystemTime(mockDate);
 
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValue({ _sum: { amount: 0 } });
+      prismaService.savedPoint.aggregate = jest.fn().mockResolvedValue({ _sum: { amount: 0 } });
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(0);
 
       await service.getStats();
@@ -242,8 +247,7 @@ describe('DashboardService', () => {
       const mockDate = new Date('2024-03-15T10:00:00Z');
       jest.useFakeTimers().setSystemTime(mockDate);
 
-      prismaService.savedPoint.aggregate = jest.fn()
-        .mockResolvedValue({ _sum: { amount: 0 } });
+      prismaService.savedPoint.aggregate = jest.fn().mockResolvedValue({ _sum: { amount: 0 } });
       prismaService.pointUrl.count = jest.fn().mockResolvedValue(0);
 
       await service.getStats();

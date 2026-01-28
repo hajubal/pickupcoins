@@ -47,19 +47,19 @@ export abstract class BaseCrawler {
   protected readonly logger: Logger;
 
   // HTTP 요청 설정
-  protected readonly timeout: number;      // 요청 타임아웃 (ms)
-  protected readonly retryCount: number;   // 재시도 횟수
-  protected readonly userAgent: string;    // User-Agent 헤더
+  protected readonly timeout: number; // 요청 타임아웃 (ms)
+  protected readonly retryCount: number; // 재시도 횟수
+  protected readonly userAgent: string; // User-Agent 헤더
 
   constructor(
     protected readonly configService: ConfigService,
-    loggerContext: string,  // 로거 컨텍스트 (클래스명)
+    loggerContext: string, // 로거 컨텍스트 (클래스명)
   ) {
     this.logger = new Logger(loggerContext);
 
     // 설정에서 값 로드 (기본값 제공)
-    this.timeout = this.configService.get<number>('crawler.timeout') || 10000;       // 10초
-    this.retryCount = this.configService.get<number>('crawler.retryCount') || 3;     // 3회
+    this.timeout = this.configService.get<number>('crawler.timeout') || 10000; // 10초
+    this.retryCount = this.configService.get<number>('crawler.retryCount') || 3; // 3회
     this.userAgent =
       this.configService.get<string>('naver.userAgent') ||
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
@@ -196,8 +196,7 @@ export abstract class BaseCrawler {
    */
   protected isNaverPointUrl(url: string): boolean {
     return (
-      url != null &&
-      (url.includes('naver.com/point') || url.includes('naver.me') || url.includes('m.site.naver.com'))
+      url != null && (url.includes('naver.com/point') || url.includes('naver.me') || url.includes('m.site.naver.com'))
     );
   }
 

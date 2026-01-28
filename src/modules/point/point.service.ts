@@ -68,14 +68,16 @@ export class PointService {
       }
     }
 
-    this.logger.log(`Point collection completed. Processed: ${totalProcessed}, Points: ${totalPoints}, Errors: ${totalErrors}`);
+    this.logger.log(
+      `Point collection completed. Processed: ${totalProcessed}, Points: ${totalPoints}, Errors: ${totalErrors}`,
+    );
     return { processed: totalProcessed, points: totalPoints, errors: totalErrors };
   }
 
   /**
    * Get point URLs not yet processed for this cookie
    */
-  private async getUnprocessedUrls(cookieId: bigint, userName: string) {
+  private async getUnprocessedUrls(cookieId: bigint, _userName: string) {
     // Get already processed URLs
     const processedUrls = await this.prisma.pointUrlCookie.findMany({
       where: { cookieId },

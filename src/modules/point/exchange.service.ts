@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
 import { PrismaService } from '../prisma/prisma.service';
-import { PointUrl, Cookie } from '@prisma/client';
+import { PointUrl } from '@prisma/client';
 
 /**
  * 포인트 교환 요청 DTO
@@ -54,10 +54,10 @@ export class ExchangeService {
   private readonly logger = new Logger(ExchangeService.name);
 
   // 응답 분석에 사용되는 키워드 및 패턴
-  private readonly saveKeyword: string;           // 포인트 적립 성공 키워드
-  private readonly invalidCookieKeyword: string;  // 쿠키 무효 키워드
-  private readonly amountPattern: RegExp;         // 포인트 금액 추출 정규식
-  private readonly userAgent: string;             // HTTP 요청 User-Agent
+  private readonly saveKeyword: string; // 포인트 적립 성공 키워드
+  private readonly invalidCookieKeyword: string; // 쿠키 무효 키워드
+  private readonly amountPattern: RegExp; // 포인트 금액 추출 정규식
+  private readonly userAgent: string; // HTTP 요청 User-Agent
 
   constructor(
     private readonly prisma: PrismaService,
@@ -66,7 +66,9 @@ export class ExchangeService {
     // 설정에서 키워드 및 패턴 로드 (기본값 제공)
     this.saveKeyword = this.configService.get<string>('naver.saveKeyword') || '적립';
     this.invalidCookieKeyword = this.configService.get<string>('naver.invalidCookieKeyword') || '로그인이 필요';
-    this.amountPattern = new RegExp(this.configService.get<string>('naver.amountPattern') || '\\s\\d+원이 적립 됩니다.');
+    this.amountPattern = new RegExp(
+      this.configService.get<string>('naver.amountPattern') || '\\s\\d+원이 적립 됩니다.',
+    );
     this.userAgent =
       this.configService.get<string>('naver.userAgent') ||
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
@@ -99,8 +101,8 @@ export class ExchangeService {
           Cookie: exchangeDto.cookie,
           'User-Agent': this.userAgent,
         },
-        timeout: 30000,      // 30초 타임아웃
-        maxRedirects: 5,     // 최대 5회 리다이렉트
+        timeout: 30000, // 30초 타임아웃
+        maxRedirects: 5, // 최대 5회 리다이렉트
       });
 
       const body = response.data as string;
@@ -151,7 +153,7 @@ export class ExchangeService {
     body: string,
     exchangeDto: ExchangeDto,
     response: AxiosResponse,
-    pointUrl: PointUrl,
+    _pointUrl: PointUrl,
   ): Promise<ExchangeResult> {
     // 1. 쿠키 무효 여부 확인 (최우선 처리)
     if (this.isInvalidCookie(body)) {

@@ -141,9 +141,9 @@ export class CrawlerService {
       const pointUrlType = classifyUrlType(url);
       return {
         url,
-        name: pointUrlType,           // 타입을 이름으로 사용
-        pointUrlType,                  // URL 타입 (NAVER, OFW_NAVER, UNSUPPORT)
-        permanent: false,              // 기본값: 일회성 URL
+        name: pointUrlType, // 타입을 이름으로 사용
+        pointUrlType, // URL 타입 (NAVER, OFW_NAVER, UNSUPPORT)
+        permanent: false, // 기본값: 일회성 URL
       };
     });
 

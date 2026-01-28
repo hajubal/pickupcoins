@@ -55,10 +55,10 @@ export class DashboardService {
     // 이번 주 월요일 계산
     // getDay(): 0=일요일, 1=월요일, ..., 6=토요일
     const dayOfWeek = today.getDay();
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;  // 일요일이면 -6, 아니면 월요일까지 오프셋
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // 일요일이면 -6, 아니면 월요일까지 오프셋
     const thisWeekStart = new Date(today);
     thisWeekStart.setDate(thisWeekStart.getDate() + mondayOffset);
-    const thisWeekEnd = tomorrow;  // 오늘까지 포함
+    const thisWeekEnd = tomorrow; // 오늘까지 포함
 
     // 지난 주 범위: 지난 주 월요일 ~ 이번 주 월요일
     const lastWeekStart = new Date(thisWeekStart);
@@ -145,7 +145,7 @@ export class DashboardService {
     // ===== 결과 반환 =====
     return {
       savedDayPoint,
-      savedDayPointRatioDayBefore: Math.round(savedDayPointRatioDayBefore * 10) / 10,   // 소수점 1자리
+      savedDayPointRatioDayBefore: Math.round(savedDayPointRatioDayBefore * 10) / 10, // 소수점 1자리
       savedWeekPoint,
       savedWeekPointRatioWeekBefore: Math.round(savedWeekPointRatioWeekBefore * 10) / 10, // 소수점 1자리
       pointUrlDayCnt,

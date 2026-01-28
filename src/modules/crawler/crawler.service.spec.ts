@@ -93,9 +93,9 @@ describe('CrawlerService', () => {
       prismaService.site.findFirst = jest.fn().mockResolvedValue(mockSite);
       clienCrawler.crawl = jest.fn().mockResolvedValue(mockCrawledUrls);
       ruliwebCrawler.crawl = jest.fn().mockResolvedValue([]);
-      prismaService.pointUrl.findMany = jest.fn().mockResolvedValue([
-        { url: 'https://campaign2-api.naver.com/point/123' },
-      ]);
+      prismaService.pointUrl.findMany = jest
+        .fn()
+        .mockResolvedValue([{ url: 'https://campaign2-api.naver.com/point/123' }]);
       prismaService.pointUrl.createMany = jest.fn().mockResolvedValue({ count: 1 });
 
       const result = await service.savingPointUrl();
@@ -107,9 +107,7 @@ describe('CrawlerService', () => {
       prismaService.site.findFirst = jest.fn().mockResolvedValue(mockSite);
       clienCrawler.crawl = jest.fn().mockResolvedValue(mockCrawledUrls);
       ruliwebCrawler.crawl = jest.fn().mockResolvedValue([]);
-      prismaService.pointUrl.findMany = jest.fn().mockResolvedValue(
-        mockCrawledUrls.map((u) => ({ url: u.url })),
-      );
+      prismaService.pointUrl.findMany = jest.fn().mockResolvedValue(mockCrawledUrls.map((u) => ({ url: u.url })));
 
       const result = await service.savingPointUrl();
 
@@ -176,17 +174,13 @@ describe('CrawlerService', () => {
     });
 
     it('should throw error when crawler not found', async () => {
-      await expect(service.crawlSite('unknown')).rejects.toThrow(
-        'Crawler not found for site: unknown',
-      );
+      await expect(service.crawlSite('unknown')).rejects.toThrow('Crawler not found for site: unknown');
     });
 
     it('should throw error when site not found in database', async () => {
       prismaService.site.findFirst = jest.fn().mockResolvedValue(null);
 
-      await expect(service.crawlSite('clien')).rejects.toThrow(
-        'Site not found in database: clien',
-      );
+      await expect(service.crawlSite('clien')).rejects.toThrow('Site not found in database: clien');
     });
   });
 

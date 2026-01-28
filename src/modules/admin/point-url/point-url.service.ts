@@ -95,8 +95,8 @@ export class PointUrlService {
     const pointUrl = await this.prisma.pointUrl.create({
       data: {
         url: dto.url,
-        name: pointUrlType,              // 타입을 이름으로 사용
-        pointUrlType,                     // 분류된 URL 타입
+        name: pointUrlType, // 타입을 이름으로 사용
+        pointUrlType, // 분류된 URL 타입
         permanent: dto.permanent ?? false, // 영구 URL 여부 (기본: 일회성)
       },
     });
@@ -276,8 +276,8 @@ export class PointUrlService {
     // 2. 미처리 URL 중 지원 타입만 조회
     return this.prisma.pointUrl.findMany({
       where: {
-        id: { notIn: processedUrlIds },                // 처리되지 않은 URL
-        pointUrlType: { in: ['NAVER', 'OFW_NAVER'] },  // 지원 타입만
+        id: { notIn: processedUrlIds }, // 처리되지 않은 URL
+        pointUrlType: { in: ['NAVER', 'OFW_NAVER'] }, // 지원 타입만
       },
       orderBy: { createdDate: 'desc' },
     });
@@ -296,8 +296,8 @@ export class PointUrlService {
     return this.prisma.pointUrl.findMany({
       where: {
         createdDate: {
-          gte: start,  // 시작 날짜 이상
-          lte: end,    // 종료 날짜 이하
+          gte: start, // 시작 날짜 이상
+          lte: end, // 종료 날짜 이하
         },
       },
     });
