@@ -38,7 +38,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { formatDate } from '@/lib/utils';
-import { Plus, Pencil, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, Pencil, Trash2, ExternalLink, RefreshCw } from 'lucide-react';
 
 const pointUrlSchema = z.object({
   url: z.string().url('올바른 URL을 입력해주세요'),
@@ -103,6 +103,17 @@ export function PointUrlsPage() {
     },
     onError: () => {
       toast({ variant: 'destructive', title: '영구 상태 변경에 실패했습니다.' });
+    },
+  });
+
+  const crawlMutation = useMutation({
+    mutationFn: pointUrlsApi.triggerCrawl,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['point-urls'] });
+      toast({ title: `크롤링 완료: ${data.savedCount}개의 URL이 저장되었습니다.` });
+    },
+    onError: () => {
+      toast({ variant: 'destructive', title: '크롤링 실행에 실패했습니다.' });
     },
   });
 
@@ -189,10 +200,20 @@ export function PointUrlsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Point URLs</h2>
-        <Button onClick={handleOpenCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Point URL
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => crawlMutation.mutate()}
+            disabled={crawlMutation.isPending}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${crawlMutation.isPending ? 'animate-spin' : ''}`} />
+            {crawlMutation.isPending ? '크롤링 중...' : '크롤링'}
+          </Button>
+          <Button onClick={handleOpenCreate}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Point URL
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-md border">

@@ -30,4 +30,9 @@ export const pointUrlsApi = {
     const response = await apiClient.patch<PointUrl>(`/point-urls/${id}/toggle-permanent`);
     return response.data;
   },
+
+  triggerCrawl: async (): Promise<{ savedCount: number; message: string }> => {
+    const response = await apiClient.post<{ savedCount: number; message: string }>('/crawler/trigger');
+    return response.data;
+  },
 };
