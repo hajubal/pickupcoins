@@ -59,4 +59,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/v1/health || exit 1
 
 # Start the application (prisma db push on first run for SQLite)
-CMD ["sh", "-c", "npx prisma db push --skip-generate && node dist/main"]
+CMD ["sh", "-c", "npx prisma db push --skip-generate --accept-data-loss && node dist/main"]
