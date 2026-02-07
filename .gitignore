@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+*.tsbuildinfo
 
 # Environment files
 .env
@@ -29,9 +30,20 @@ yarn-error.log*
 # Test coverage
 coverage/
 
+# Playwright
+playwright-report/
+test-results/
+playwright.config.js
+playwright.config.js.map
+playwright.config.d.ts
+e2e/*.js
+e2e/*.js.map
+
 # Prisma
 prisma/*.db
+prisma/**/*.db
 prisma/*.db-journal
+prisma/**/*.db-journal
 
 # Docker
 docker-compose.override.yml
@@ -39,3 +51,6 @@ docker-compose.override.yml
 # Gemini CLI (run-gemini-cli code review)
 .gemini/
 gha-creds-*.json
+
+# Claude local settings
+.claude/settings.local.json
