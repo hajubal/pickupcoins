@@ -9,12 +9,12 @@ describe('CookieService', () => {
   let prismaService: jest.Mocked<PrismaService>;
 
   const mockCookie: Cookie = {
-    id: BigInt(1),
+    id: 1,
     userName: 'testuser',
     siteName: 'naver',
     cookie: 'NID=123;JSESSIONID=abc',
     isValid: true,
-    siteUserId: BigInt(1),
+    siteUserId: 1,
     createdDate: new Date(),
     modifiedDate: new Date(),
     createdBy: null,
@@ -50,7 +50,7 @@ describe('CookieService', () => {
 
   describe('findAll', () => {
     it('should return all cookies', async () => {
-      const mockCookies = [mockCookie, { ...mockCookie, id: BigInt(2) }];
+      const mockCookies = [mockCookie, { ...mockCookie, id: 2 }];
       prismaService.cookie.findMany = jest.fn().mockResolvedValue(mockCookies);
 
       const result = await service.findAll();
@@ -74,7 +74,7 @@ describe('CookieService', () => {
     it('should return a cookie by id', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(mockCookie);
 
-      const result = await service.findOne(BigInt(1));
+      const result = await service.findOne(1);
 
       expect(result.id).toBe(mockCookie.id.toString());
       expect(result.userName).toBe(mockCookie.userName);
@@ -83,7 +83,7 @@ describe('CookieService', () => {
     it('should throw NotFoundException when cookie not found', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.findOne(BigInt(999))).rejects.toThrow(NotFoundException);
+      await expect(service.findOne(999)).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -91,7 +91,7 @@ describe('CookieService', () => {
     it('should create a new cookie', async () => {
       prismaService.cookie.create = jest.fn().mockResolvedValue(mockCookie);
 
-      const result = await service.create(BigInt(1), {
+      const result = await service.create(1, {
         userName: 'testuser',
         siteName: 'naver',
         cookie: 'NID=123;JSESSIONID=abc',
@@ -104,7 +104,7 @@ describe('CookieService', () => {
           siteName: 'naver',
           cookie: 'NID=123;JSESSIONID=abc',
           isValid: true,
-          siteUserId: BigInt(1),
+          siteUserId: 1,
         },
       });
     });
@@ -113,7 +113,7 @@ describe('CookieService', () => {
       const inactiveCookie = { ...mockCookie, isValid: false };
       prismaService.cookie.create = jest.fn().mockResolvedValue(inactiveCookie);
 
-      await service.create(BigInt(1), {
+      await service.create(1, {
         userName: 'testuser',
         siteName: 'naver',
         cookie: 'NID=123;JSESSIONID=abc',
@@ -134,7 +134,7 @@ describe('CookieService', () => {
       const updatedCookie = { ...mockCookie, userName: 'updateduser' };
       prismaService.cookie.update = jest.fn().mockResolvedValue(updatedCookie);
 
-      const result = await service.update(BigInt(1), { userName: 'updateduser' });
+      const result = await service.update(1, { userName: 'updateduser' });
 
       expect(result.userName).toBe('updateduser');
     });
@@ -142,17 +142,17 @@ describe('CookieService', () => {
     it('should throw NotFoundException when cookie not found', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.update(BigInt(999), { userName: 'updateduser' })).rejects.toThrow(NotFoundException);
+      await expect(service.update(999, { userName: 'updateduser' })).rejects.toThrow(NotFoundException);
     });
 
     it('should preserve existing values when not provided', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(mockCookie);
       prismaService.cookie.update = jest.fn().mockResolvedValue(mockCookie);
 
-      await service.update(BigInt(1), { userName: 'newuser' });
+      await service.update(1, { userName: 'newuser' });
 
       expect(prismaService.cookie.update).toHaveBeenCalledWith({
-        where: { id: BigInt(1) },
+        where: { id: 1 },
         data: {
           userName: 'newuser',
           siteName: mockCookie.siteName,
@@ -168,17 +168,17 @@ describe('CookieService', () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(mockCookie);
       prismaService.cookie.delete = jest.fn().mockResolvedValue(mockCookie);
 
-      await service.delete(BigInt(1));
+      await service.delete(1);
 
       expect(prismaService.cookie.delete).toHaveBeenCalledWith({
-        where: { id: BigInt(1) },
+        where: { id: 1 },
       });
     });
 
     it('should throw NotFoundException when cookie not found', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.delete(BigInt(999))).rejects.toThrow(NotFoundException);
+      await expect(service.delete(999)).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -188,11 +188,11 @@ describe('CookieService', () => {
       const toggledCookie = { ...mockCookie, isValid: false };
       prismaService.cookie.update = jest.fn().mockResolvedValue(toggledCookie);
 
-      const result = await service.toggleValidity(BigInt(1));
+      const result = await service.toggleValidity(1);
 
       expect(result.isValid).toBe(false);
       expect(prismaService.cookie.update).toHaveBeenCalledWith({
-        where: { id: BigInt(1) },
+        where: { id: 1 },
         data: { isValid: false },
       });
     });
@@ -203,7 +203,7 @@ describe('CookieService', () => {
       const toggledCookie = { ...mockCookie, isValid: true };
       prismaService.cookie.update = jest.fn().mockResolvedValue(toggledCookie);
 
-      const result = await service.toggleValidity(BigInt(1));
+      const result = await service.toggleValidity(1);
 
       expect(result.isValid).toBe(true);
     });
@@ -211,7 +211,7 @@ describe('CookieService', () => {
     it('should throw NotFoundException when cookie not found', async () => {
       prismaService.cookie.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.toggleValidity(BigInt(999))).rejects.toThrow(NotFoundException);
+      await expect(service.toggleValidity(999)).rejects.toThrow(NotFoundException);
     });
   });
 

@@ -77,7 +77,7 @@ export class PointService {
   /**
    * Get point URLs not yet processed for this cookie
    */
-  private async getUnprocessedUrls(cookieId: bigint, _userName: string) {
+  private async getUnprocessedUrls(cookieId: number, _userName: string) {
     // Get already processed URLs
     const processedUrls = await this.prisma.pointUrlCookie.findMany({
       where: { cookieId },

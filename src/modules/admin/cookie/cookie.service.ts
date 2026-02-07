@@ -47,7 +47,7 @@ export class CookieService {
    * @returns 쿠키 정보
    * @throws NotFoundException - 쿠키가 없을 때
    */
-  async findOne(id: bigint): Promise<CookieResponseDto> {
+  async findOne(id: number): Promise<CookieResponseDto> {
     this.logger.log(`Getting cookie: ${id}`);
 
     const cookie = await this.prisma.cookie.findUnique({
@@ -72,7 +72,7 @@ export class CookieService {
    * - isValid 기본값: true (활성 상태)
    * - siteUserId로 소유자 연결
    */
-  async create(siteUserId: bigint, dto: CreateCookieDto): Promise<CookieResponseDto> {
+  async create(siteUserId: number, dto: CreateCookieDto): Promise<CookieResponseDto> {
     this.logger.log(`Creating cookie for site: ${dto.siteName}`);
 
     const cookie = await this.prisma.cookie.create({
@@ -101,7 +101,7 @@ export class CookieService {
    * - 제공된 필드만 업데이트 (null 병합 연산자 사용)
    * - 기존 값 유지 가능
    */
-  async update(id: bigint, dto: UpdateCookieDto): Promise<CookieResponseDto> {
+  async update(id: number, dto: UpdateCookieDto): Promise<CookieResponseDto> {
     this.logger.log(`Updating cookie: ${id}`);
 
     // 기존 쿠키 조회
@@ -133,7 +133,7 @@ export class CookieService {
    *
    * 주의: 연관된 PointUrlCookie, SavedPoint도 함께 삭제됨 (CASCADE)
    */
-  async delete(id: bigint): Promise<void> {
+  async delete(id: number): Promise<void> {
     this.logger.log(`Deleting cookie: ${id}`);
 
     const existing = await this.prisma.cookie.findUnique({ where: { id } });
@@ -160,7 +160,7 @@ export class CookieService {
    * - true → false (비활성화)
    * - false → true (재활성화)
    */
-  async toggleValidity(id: bigint): Promise<CookieResponseDto> {
+  async toggleValidity(id: number): Promise<CookieResponseDto> {
     this.logger.log(`Toggling validity for cookie: ${id}`);
 
     const existing = await this.prisma.cookie.findUnique({ where: { id } });

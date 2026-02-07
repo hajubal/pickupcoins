@@ -42,7 +42,7 @@ export class SavedPointService {
     };
   }
 
-  async findOne(id: bigint): Promise<SavedPointResponseDto> {
+  async findOne(id: number): Promise<SavedPointResponseDto> {
     this.logger.log(`Getting saved point: ${id}`);
     const savedPoint = await this.prisma.savedPoint.findUnique({
       where: { id },
@@ -54,7 +54,7 @@ export class SavedPointService {
     return SavedPointResponseDto.from(savedPoint);
   }
 
-  async delete(id: bigint): Promise<void> {
+  async delete(id: number): Promise<void> {
     this.logger.log(`Deleting saved point: ${id}`);
 
     const existing = await this.prisma.savedPoint.findUnique({ where: { id } });
@@ -66,7 +66,7 @@ export class SavedPointService {
     this.logger.log(`Saved point deleted successfully: ${id}`);
   }
 
-  async create(cookieId: bigint, amount: number, responseBody?: string): Promise<SavedPointResponseDto> {
+  async create(cookieId: number, amount: number, responseBody?: string): Promise<SavedPointResponseDto> {
     const savedPoint = await this.prisma.savedPoint.create({
       data: {
         cookieId,

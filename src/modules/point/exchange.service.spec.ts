@@ -3,7 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { ExchangeService, ExchangeDto } from './exchange.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { PointUrl, PointUrlType } from '@prisma/client';
+import { PointUrl } from '@prisma/client';
+import { PointUrlType } from '../admin/point-url/dto/point-url.dto';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -13,7 +14,7 @@ describe('ExchangeService', () => {
   let prismaService: jest.Mocked<PrismaService>;
 
   const mockPointUrl: PointUrl = {
-    id: BigInt(1),
+    id: 1,
     name: 'NAVER',
     url: 'https://campaign2-api.naver.com/point/123',
     pointUrlType: 'NAVER' as PointUrlType,
@@ -25,7 +26,7 @@ describe('ExchangeService', () => {
   };
 
   const mockExchangeDto: ExchangeDto = {
-    cookieId: BigInt(1),
+    cookieId: 1,
     userName: 'testuser',
     siteName: 'naver',
     cookie: 'NID=123;JSESSIONID=abc',

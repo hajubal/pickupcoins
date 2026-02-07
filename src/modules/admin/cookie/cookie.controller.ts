@@ -22,7 +22,7 @@ export class CookieController {
   @ApiResponse({ status: 200, description: '쿠키 정보', type: CookieResponseDto })
   @ApiResponse({ status: 404, description: '쿠키를 찾을 수 없음' })
   async findOne(@Param('id') id: string): Promise<CookieResponseDto> {
-    return this.cookieService.findOne(BigInt(id));
+    return this.cookieService.findOne(Number(id));
   }
 
   @Post()
@@ -40,7 +40,7 @@ export class CookieController {
   @ApiResponse({ status: 200, description: '수정된 쿠키', type: CookieResponseDto })
   @ApiResponse({ status: 404, description: '쿠키를 찾을 수 없음' })
   async update(@Param('id') id: string, @Body() updateDto: UpdateCookieDto): Promise<CookieResponseDto> {
-    return this.cookieService.update(BigInt(id), updateDto);
+    return this.cookieService.update(Number(id), updateDto);
   }
 
   @Delete(':id')
@@ -49,7 +49,7 @@ export class CookieController {
   @ApiResponse({ status: 204, description: '삭제 성공' })
   @ApiResponse({ status: 404, description: '쿠키를 찾을 수 없음' })
   async delete(@Param('id') id: string): Promise<void> {
-    return this.cookieService.delete(BigInt(id));
+    return this.cookieService.delete(Number(id));
   }
 
   @Patch(':id/toggle-validity')
@@ -57,6 +57,6 @@ export class CookieController {
   @ApiResponse({ status: 200, description: '토글된 쿠키', type: CookieResponseDto })
   @ApiResponse({ status: 404, description: '쿠키를 찾을 수 없음' })
   async toggleValidity(@Param('id') id: string): Promise<CookieResponseDto> {
-    return this.cookieService.toggleValidity(BigInt(id));
+    return this.cookieService.toggleValidity(Number(id));
   }
 }

@@ -83,7 +83,7 @@ pickupcoins/
 - Passport.js + JWT
 
 ### Database
-- MySQL 8.0
+- SQLite (파일 기반, 서버 불필요)
 
 ### Build & Deploy
 - Node.js 20.x
@@ -105,7 +105,6 @@ pickupcoins/
 
 - Node.js 20.x 이상
 - npm 10.x 이상
-- MySQL 8.0 이상
 
 ### 환경 설정
 
@@ -118,8 +117,8 @@ cp .env.example .env
 
 `.env` 파일 수정:
 ```env
-# Database
-DATABASE_URL="mysql://root:password@localhost:3306/pickupcoins"
+# Database (SQLite 파일 경로)
+DATABASE_URL="file:./prisma/dev.db"
 
 # JWT Configuration
 JWT_SECRET="your-super-secret-jwt-key-minimum-256-bits-for-hmac-sha256"
@@ -132,10 +131,12 @@ NODE_ENV=development
 CORS_ORIGINS="http://localhost:5173,http://localhost:3000"
 ```
 
-2. 데이터베이스 설정
+2. 데이터베이스 (SQLite)
 
-```sql
-CREATE DATABASE pickupcoins DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+별도 DB 서버 없이 파일로 동작합니다. `.env`의 `DATABASE_URL`이 가리키는 경로에 스키마를 적용하려면:
+
+```bash
+npm run prisma:push
 ```
 
 ### 설치 및 실행
@@ -147,10 +148,10 @@ npm install
 # Prisma 클라이언트 생성
 npm run prisma:generate
 
-# 데이터베이스 스키마 동기화
+# 데이터베이스 스키마 동기화 (SQLite 파일 생성/갱신)
 npm run prisma:push
 
-# 개발 서버 실행
+# 개발 서버 실행 (또는 한 번에: npm run dev)
 npm run start:dev
 
 # 프로덕션 빌드
@@ -177,8 +178,7 @@ docker ps
 
 | 서비스 | 컨테이너명 | 포트 | 설명 |
 |--------|-----------|------|------|
-| app | pickupcoins-api | 8080 | NestJS API 서버 (Hot Reload) |
-| db | pickupcoins-db | 3306 | MySQL 데이터베이스 |
+| app | pickupcoins-api | 8080 | NestJS API 서버 (Hot Reload, SQLite DB 파일은 prisma 볼륨에 저장) |
 | admin-web | pickupcoins-admin | 5173 | React 관리자 웹 (Vite Dev Server, --profile admin 필요) |
 
 #### 테스트 계정
@@ -205,7 +205,6 @@ http://localhost:5173
 ```bash
 # 로그 확인
 docker logs -f pickupcoins-api
-docker logs -f pickupcoins-db
 
 # 컨테이너 중지
 docker-compose down
@@ -256,7 +255,7 @@ http://localhost:8080
 
 | 변수명 | 설명 | 기본값 |
 |--------|------|--------|
-| DATABASE_URL | MySQL 연결 URL | - |
+| DATABASE_URL | SQLite DB 파일 경로 (예: file:./prisma/dev.db) | - |
 | JWT_SECRET | JWT 서명 키 | - |
 | PORT | 서버 포트 | 8080 |
 | CORS_ORIGINS | 허용 CORS 오리진 | - |
@@ -320,7 +319,7 @@ npm run test:cov
 # NestJS E2E 테스트 실행
 npm run test:e2e
 
-# Playwright E2E 테스트 실행 (관리자 프론트엔드)
+# Playwright E2E 테스트 실행 (관리자 프론트엔드, SQLite 사용으로 DB 서버 불필요)
 npx playwright test
 
 # Playwright 테스트 UI 모드

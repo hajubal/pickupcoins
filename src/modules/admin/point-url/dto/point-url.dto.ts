@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { PointUrl, PointUrlType } from '@prisma/client';
+import { PointUrl } from '@prisma/client';
+
+export type PointUrlType = 'NAVER' | 'OFW_NAVER' | 'UNSUPPORT';
 
 export class PointUrlResponseDto {
   @ApiProperty()
@@ -12,7 +14,7 @@ export class PointUrlResponseDto {
   @ApiProperty()
   url: string;
 
-  @ApiPropertyOptional({ enum: PointUrlType })
+  @ApiPropertyOptional({ enum: ['NAVER', 'OFW_NAVER', 'UNSUPPORT'] })
   pointUrlType: PointUrlType | null;
 
   @ApiProperty()
@@ -29,7 +31,7 @@ export class PointUrlResponseDto {
       id: pointUrl.id.toString(),
       name: pointUrl.name,
       url: pointUrl.url,
-      pointUrlType: pointUrl.pointUrlType,
+      pointUrlType: pointUrl.pointUrlType as PointUrlType | null,
       permanent: pointUrl.permanent,
       createdDate: pointUrl.createdDate,
       modifiedDate: pointUrl.modifiedDate,

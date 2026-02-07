@@ -13,7 +13,7 @@ import { PointUrl } from '@prisma/client';
  * - webHookUrl: Slack 알림 URL (선택)
  */
 export interface ExchangeDto {
-  cookieId: bigint;
+  cookieId: number;
   userName: string;
   siteName: string;
   cookie: string;
@@ -206,7 +206,7 @@ export class ExchangeService {
    * DB에서 해당 쿠키의 isValid를 false로 업데이트
    * → 이후 포인트 수집에서 해당 쿠키 제외됨
    */
-  private async invalidateCookie(cookieId: bigint): Promise<void> {
+  private async invalidateCookie(cookieId: number): Promise<void> {
     await this.prisma.cookie.update({
       where: { id: cookieId },
       data: { isValid: false },

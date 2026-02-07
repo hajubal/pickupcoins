@@ -15,7 +15,7 @@ describe('AuthService', () => {
   let configService: jest.Mocked<ConfigService>;
 
   const mockUser = {
-    id: BigInt(1),
+    id: 1,
     loginId: 'testuser',
     userName: 'Test User',
     password: 'hashedPassword',

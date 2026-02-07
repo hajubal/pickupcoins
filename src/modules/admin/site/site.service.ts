@@ -16,7 +16,7 @@ export class SiteService {
     return sites.map(SiteResponseDto.from);
   }
 
-  async findOne(id: bigint): Promise<SiteResponseDto> {
+  async findOne(id: number): Promise<SiteResponseDto> {
     this.logger.log(`Getting site: ${id}`);
     const site = await this.prisma.site.findUnique({
       where: { id },
@@ -46,7 +46,7 @@ export class SiteService {
     return SiteResponseDto.from(site);
   }
 
-  async update(id: bigint, dto: UpdateSiteDto): Promise<SiteResponseDto> {
+  async update(id: number, dto: UpdateSiteDto): Promise<SiteResponseDto> {
     this.logger.log(`Updating site: ${id}`);
 
     const existing = await this.prisma.site.findUnique({ where: { id } });
@@ -67,7 +67,7 @@ export class SiteService {
     return SiteResponseDto.from(site);
   }
 
-  async delete(id: bigint): Promise<void> {
+  async delete(id: number): Promise<void> {
     this.logger.log(`Deleting site: ${id}`);
 
     const existing = await this.prisma.site.findUnique({ where: { id } });

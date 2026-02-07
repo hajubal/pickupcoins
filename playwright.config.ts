@@ -30,10 +30,13 @@ export default defineConfig({
 
   webServer: [
     {
-      command: 'npm run start:prod',
+      command: 'npx prisma db push --skip-generate && npm run start:prod',
       url: 'http://localhost:8080/api/v1/health',
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
+      env: {
+        DATABASE_URL: 'file:./prisma/e2e.db',
+      },
     },
     {
       command: 'cd admin && npm run dev',

@@ -21,7 +21,7 @@ export class SavedPointController {
   @ApiResponse({ status: 200, description: '저장된 포인트 정보', type: SavedPointResponseDto })
   @ApiResponse({ status: 404, description: '저장된 포인트를 찾을 수 없음' })
   async findOne(@Param('id') id: string): Promise<SavedPointResponseDto> {
-    return this.savedPointService.findOne(BigInt(id));
+    return this.savedPointService.findOne(Number(id));
   }
 
   @Delete(':id')
@@ -30,6 +30,6 @@ export class SavedPointController {
   @ApiResponse({ status: 204, description: '삭제 성공' })
   @ApiResponse({ status: 404, description: '저장된 포인트를 찾을 수 없음' })
   async delete(@Param('id') id: string): Promise<void> {
-    return this.savedPointService.delete(BigInt(id));
+    return this.savedPointService.delete(Number(id));
   }
 }

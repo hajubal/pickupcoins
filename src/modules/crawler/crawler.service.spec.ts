@@ -12,7 +12,7 @@ describe('CrawlerService', () => {
   let ruliwebCrawler: jest.Mocked<RuliwebCrawler>;
 
   const mockSite = {
-    id: BigInt(1),
+    id: 1,
     name: 'clien',
     domain: 'clien.net',
     url: 'https://www.clien.net/service/board/jirum',
@@ -157,7 +157,6 @@ describe('CrawlerService', () => {
             pointUrlType: 'OFW_NAVER',
           }),
         ]),
-        skipDuplicates: true,
       });
     });
   });

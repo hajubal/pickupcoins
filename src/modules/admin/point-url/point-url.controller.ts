@@ -21,7 +21,7 @@ export class PointUrlController {
   @ApiResponse({ status: 200, description: '포인트 URL 정보', type: PointUrlResponseDto })
   @ApiResponse({ status: 404, description: '포인트 URL을 찾을 수 없음' })
   async findOne(@Param('id') id: string): Promise<PointUrlResponseDto> {
-    return this.pointUrlService.findOne(BigInt(id));
+    return this.pointUrlService.findOne(Number(id));
   }
 
   @Post()
@@ -36,7 +36,7 @@ export class PointUrlController {
   @ApiResponse({ status: 200, description: '수정된 포인트 URL', type: PointUrlResponseDto })
   @ApiResponse({ status: 404, description: '포인트 URL을 찾을 수 없음' })
   async update(@Param('id') id: string, @Body() updateDto: UpdatePointUrlDto): Promise<PointUrlResponseDto> {
-    return this.pointUrlService.update(BigInt(id), updateDto);
+    return this.pointUrlService.update(Number(id), updateDto);
   }
 
   @Delete(':id')
@@ -45,7 +45,7 @@ export class PointUrlController {
   @ApiResponse({ status: 204, description: '삭제 성공' })
   @ApiResponse({ status: 404, description: '포인트 URL을 찾을 수 없음' })
   async delete(@Param('id') id: string): Promise<void> {
-    return this.pointUrlService.delete(BigInt(id));
+    return this.pointUrlService.delete(Number(id));
   }
 
   @Patch(':id/toggle-permanent')
@@ -53,6 +53,6 @@ export class PointUrlController {
   @ApiResponse({ status: 200, description: '토글된 포인트 URL', type: PointUrlResponseDto })
   @ApiResponse({ status: 404, description: '포인트 URL을 찾을 수 없음' })
   async togglePermanent(@Param('id') id: string): Promise<PointUrlResponseDto> {
-    return this.pointUrlService.togglePermanent(BigInt(id));
+    return this.pointUrlService.togglePermanent(Number(id));
   }
 }
