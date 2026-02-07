@@ -14,6 +14,10 @@ on:
     types:
       - 'created'
 
+concurrency:
+  group: gemini-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: 'bash'
@@ -52,7 +56,8 @@ jobs:
             const eventType = process.env.EVENT_TYPE;
             const request = (process.env.REQUEST || '');
             core.setOutput('request', request);
-            if (eventType === 'pull_request.opened') {
+            const prReviewEvents = ['pull_request.opened', 'pull_request.synchronize', 'pull_request.reopened'];
+            if (prReviewEvents.includes(eventType)) {
               core.setOutput('command', 'review');
             } else if (request.startsWith('@gemini-cli /review')) {
               core.setOutput('command', 'review');
@@ -83,19 +88,72 @@ jobs:
   review:
     needs: dispatch
     if: ${{ needs.dispatch.outputs.command == 'review' }}
-    uses: ./.github/workflows/gemini-review.yml
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
     permissions:
       contents: read
       id-token: write
       issues: write
       pull-requests: write
-    with:
-      additional_context: ${{ needs.dispatch.outputs.additional_context }}
-      pull_request_number: ${{ needs.dispatch.outputs.pull_request_number }}
-      issue_title: ${{ needs.dispatch.outputs.issue_title }}
-      issue_body: ${{ needs.dispatch.outputs.issue_body }}
-      repository: ${{ needs.dispatch.outputs.repository }}
-    secrets: inherit
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Gemini pull request review
+        id: gemini_pr_review
+        uses: google-github-actions/run-gemini-cli@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_TITLE: ${{ needs.dispatch.outputs.issue_title }}
+          ISSUE_BODY: ${{ needs.dispatch.outputs.issue_body }}
+          PULL_REQUEST_NUMBER: ${{ needs.dispatch.outputs.pull_request_number }}
+          REPOSITORY: ${{ needs.dispatch.outputs.repository }}
+          ADDITIONAL_CONTEXT: ${{ needs.dispatch.outputs.additional_context }}
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          workflow_name: gemini-review
+          settings: |
+            {
+              "model": {
+                "maxSessionTurns": 25
+              },
+              "telemetry": {
+                "enabled": true,
+                "target": "local",
+                "outfile": ".gemini/telemetry.log"
+              },
+              "mcpServers": {
+                "github": {
+                  "command": "docker",
+                  "args": [
+                    "run",
+                    "-i",
+                    "--rm",
+                    "-e",
+                    "GITHUB_PERSONAL_ACCESS_TOKEN",
+                    "ghcr.io/github/github-mcp-server:v0.27.0"
+                  ],
+                  "includeTools": [
+                    "add_comment_to_pending_review",
+                    "pull_request_read",
+                    "pull_request_review_write"
+                  ],
+                  "env": {
+                    "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+                  }
+                }
+              },
+              "tools": {
+                "core": [
+                  "run_shell_command(cat)",
+                  "run_shell_command(echo)",
+                  "run_shell_command(grep)",
+                  "run_shell_command(head)",
+                  "run_shell_command(tail)"
+                ]
+              }
+            }
+          prompt: '/gemini-review'
 
   fallthrough:
     needs: [dispatch, review]
