@@ -61,8 +61,11 @@ export class SeedService implements OnApplicationBootstrap {
       const defaultSites = [
         {
           name: '클리앙',
-          domain: 'clien.net',
           url: 'https://www.clien.net/service/board/jirum',
+        },
+        {
+          name: '루리웹',
+          url: 'https://bbs.ruliweb.com/ps/board/1020',
         },
       ];
 

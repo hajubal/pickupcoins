@@ -14,7 +14,6 @@ describe('CrawlerService', () => {
   const mockSite = {
     id: 1,
     name: 'clien',
-    domain: 'clien.net',
     url: 'https://www.clien.net/service/board/jirum',
     createdDate: new Date(),
     modifiedDate: new Date(),

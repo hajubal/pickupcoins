@@ -109,7 +109,6 @@ export interface SavedPointListResponse {
 export interface Site {
   id: string;
   name: string;
-  domain: string;
   url: string;
   createdDate: string;
   modifiedDate: string;
@@ -117,13 +116,11 @@ export interface Site {
 
 export interface CreateSiteRequest {
   name: string;
-  domain: string;
   url: string;
 }
 
 export interface UpdateSiteRequest {
   name?: string;
-  domain?: string;
   url?: string;
 }
 

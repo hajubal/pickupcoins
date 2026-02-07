@@ -46,10 +46,9 @@ test.describe('SITES: Site Management', () => {
     const addButton = page.locator('button:has-text("Add"), button:has([class*="Plus"])').first();
     await addButton.click();
 
-    // Fill form (name, domain, url are required)
+    // Fill form (name, url are required)
     const testSiteName = `TestSite_${Date.now()}`;
     await page.fill('input[name="name"]', testSiteName);
-    await page.fill('input[name="domain"]', 'test.example.com');
     await page.fill('input[name="url"]', 'https://test.example.com');
 
     // Submit

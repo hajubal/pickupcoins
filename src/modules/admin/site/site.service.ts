@@ -38,7 +38,6 @@ export class SiteService {
     const site = await this.prisma.site.create({
       data: {
         name: dto.name,
-        domain: dto.domain,
         url: dto.url,
       },
     });
@@ -58,7 +57,6 @@ export class SiteService {
       where: { id },
       data: {
         name: dto.name ?? existing.name,
-        domain: dto.domain ?? existing.domain,
         url: dto.url ?? existing.url,
       },
     });
