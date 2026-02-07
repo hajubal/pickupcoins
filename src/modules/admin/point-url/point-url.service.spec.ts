@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { PointUrlService } from './point-url.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { PointUrl, PointUrlType } from '@prisma/client';
+import { PointUrl } from '@prisma/client';
+import { PointUrlType } from './dto/point-url.dto';
 import { classifyUrlType } from './dto/point-url.dto';
 
 describe('PointUrlService', () => {
@@ -10,7 +11,7 @@ describe('PointUrlService', () => {
   let prismaService: jest.Mocked<PrismaService>;
 
   const mockPointUrl: PointUrl = {
-    id: BigInt(1),
+    id: 1,
     name: 'NAVER',
     url: 'https://campaign2-api.naver.com/point/123',
     pointUrlType: 'NAVER' as PointUrlType,
@@ -72,7 +73,7 @@ describe('PointUrlService', () => {
 
   describe('findAll', () => {
     it('should return all point URLs', async () => {
-      const mockPointUrls = [mockPointUrl, { ...mockPointUrl, id: BigInt(2) }];
+      const mockPointUrls = [mockPointUrl, { ...mockPointUrl, id: 2 }];
       prismaService.pointUrl.findMany = jest.fn().mockResolvedValue(mockPointUrls);
 
       const result = await service.findAll();
@@ -88,7 +89,7 @@ describe('PointUrlService', () => {
     it('should return a point URL by id', async () => {
       prismaService.pointUrl.findUnique = jest.fn().mockResolvedValue(mockPointUrl);
 
-      const result = await service.findOne(BigInt(1));
+      const result = await service.findOne(1);
 
       expect(result.id).toBe(mockPointUrl.id.toString());
       expect(result.url).toBe(mockPointUrl.url);
@@ -97,7 +98,7 @@ describe('PointUrlService', () => {
     it('should throw NotFoundException when point URL not found', async () => {
       prismaService.pointUrl.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.findOne(BigInt(999))).rejects.toThrow(NotFoundException);
+      await expect(service.findOne(999)).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -201,7 +202,7 @@ describe('PointUrlService', () => {
       };
       prismaService.pointUrl.update = jest.fn().mockResolvedValue(updatedUrl);
 
-      const result = await service.update(BigInt(1), {
+      const result = await service.update(1, {
         url: 'https://campaign2-api.naver.com/point/999',
       });
 
@@ -211,7 +212,7 @@ describe('PointUrlService', () => {
     it('should throw NotFoundException when point URL not found', async () => {
       prismaService.pointUrl.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.update(BigInt(999), { url: 'test' })).rejects.toThrow(NotFoundException);
+      await expect(service.update(999, { url: 'test' })).rejects.toThrow(NotFoundException);
     });
 
     it('should reclassify URL type when URL is updated', async () => {
@@ -223,12 +224,12 @@ describe('PointUrlService', () => {
       };
       prismaService.pointUrl.update = jest.fn().mockResolvedValue(updatedUrl);
 
-      await service.update(BigInt(1), {
+      await service.update(1, {
         url: 'https://ofw.adison.co/u/naverpay/456',
       });
 
       expect(prismaService.pointUrl.update).toHaveBeenCalledWith({
-        where: { id: BigInt(1) },
+        where: { id: 1 },
         data: expect.objectContaining({
           pointUrlType: 'OFW_NAVER',
         }),
@@ -241,17 +242,17 @@ describe('PointUrlService', () => {
       prismaService.pointUrl.findUnique = jest.fn().mockResolvedValue(mockPointUrl);
       prismaService.pointUrl.delete = jest.fn().mockResolvedValue(mockPointUrl);
 
-      await service.delete(BigInt(1));
+      await service.delete(1);
 
       expect(prismaService.pointUrl.delete).toHaveBeenCalledWith({
-        where: { id: BigInt(1) },
+        where: { id: 1 },
       });
     });
 
     it('should throw NotFoundException when point URL not found', async () => {
       prismaService.pointUrl.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.delete(BigInt(999))).rejects.toThrow(NotFoundException);
+      await expect(service.delete(999)).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -261,7 +262,7 @@ describe('PointUrlService', () => {
       const toggledUrl = { ...mockPointUrl, permanent: true };
       prismaService.pointUrl.update = jest.fn().mockResolvedValue(toggledUrl);
 
-      const result = await service.togglePermanent(BigInt(1));
+      const result = await service.togglePermanent(1);
 
       expect(result.permanent).toBe(true);
     });
@@ -272,7 +273,7 @@ describe('PointUrlService', () => {
       const toggledUrl = { ...mockPointUrl, permanent: false };
       prismaService.pointUrl.update = jest.fn().mockResolvedValue(toggledUrl);
 
-      const result = await service.togglePermanent(BigInt(1));
+      const result = await service.togglePermanent(1);
 
       expect(result.permanent).toBe(false);
     });
@@ -280,22 +281,22 @@ describe('PointUrlService', () => {
     it('should throw NotFoundException when point URL not found', async () => {
       prismaService.pointUrl.findUnique = jest.fn().mockResolvedValue(null);
 
-      await expect(service.togglePermanent(BigInt(999))).rejects.toThrow(NotFoundException);
+      await expect(service.togglePermanent(999)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('findUnprocessedUrls', () => {
     it('should return URLs not processed for given cookie', async () => {
-      prismaService.pointUrlCookie.findMany = jest.fn().mockResolvedValue([{ pointUrlId: BigInt(1) }]);
-      const unprocessedUrls = [{ ...mockPointUrl, id: BigInt(2) }];
+      prismaService.pointUrlCookie.findMany = jest.fn().mockResolvedValue([{ pointUrlId: 1 }]);
+      const unprocessedUrls = [{ ...mockPointUrl, id: 2 }];
       prismaService.pointUrl.findMany = jest.fn().mockResolvedValue(unprocessedUrls);
 
-      const result = await service.findUnprocessedUrls(BigInt(1));
+      const result = await service.findUnprocessedUrls(1);
 
       expect(result).toHaveLength(1);
       expect(prismaService.pointUrl.findMany).toHaveBeenCalledWith({
         where: {
-          id: { notIn: [BigInt(1)] },
+          id: { notIn: [1] },
           pointUrlType: { in: ['NAVER', 'OFW_NAVER'] },
         },
         orderBy: { createdDate: 'desc' },
@@ -306,7 +307,7 @@ describe('PointUrlService', () => {
       prismaService.pointUrlCookie.findMany = jest.fn().mockResolvedValue([]);
       prismaService.pointUrl.findMany = jest.fn().mockResolvedValue([mockPointUrl]);
 
-      const result = await service.findUnprocessedUrls(BigInt(1));
+      const result = await service.findUnprocessedUrls(1);
 
       expect(result).toHaveLength(1);
       expect(prismaService.pointUrl.findMany).toHaveBeenCalledWith({

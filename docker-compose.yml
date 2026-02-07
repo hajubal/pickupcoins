@@ -10,7 +10,7 @@ services:
       - "8080:8080"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=mysql://root:password@db:3306/pickupcoins
+      - DATABASE_URL=file:./prisma/dev.db
       - JWT_SECRET=dev-jwt-secret-key-minimum-256-bits-for-hmac-sha256
       - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
       - SLACK_WEBHOOK_URL=
@@ -25,30 +25,6 @@ services:
       timeout: 10s
       start_period: 30s
       retries: 3
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - pickupcoins-network
-
-  db:
-    image: mysql:8.0
-    container_name: pickupcoins-db
-    restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=pickupcoins
-      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
-      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - pickupcoins-network
 
@@ -72,6 +48,3 @@ services:
 networks:
   pickupcoins-network:
     driver: bridge
-
-volumes:
-  mysql_data:

@@ -54,7 +54,7 @@ export class ReportService {
    * Send report for a specific user
    */
   private async sendUserReport(
-    siteUser: { id: bigint; loginId: string; userName: string; slackWebhookUrl: string | null },
+    siteUser: { id: number; loginId: string; userName: string; slackWebhookUrl: string | null },
     urlCount: number,
     startDate: Date,
     endDate: Date,

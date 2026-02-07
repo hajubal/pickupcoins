@@ -150,7 +150,6 @@ export class CrawlerService {
     // 5. 벌크 INSERT (skipDuplicates로 중복 무시)
     const result = await this.prisma.pointUrl.createMany({
       data,
-      skipDuplicates: true,
     });
 
     this.logger.log(`Saved ${result.count} new point URLs`);

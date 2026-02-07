@@ -132,7 +132,7 @@ export class AuthService {
 
       // DB에서 사용자 조회 (토큰의 sub 값 = 사용자 ID)
       const user = await this.prisma.siteUser.findUnique({
-        where: { id: BigInt(payload.sub) },
+        where: { id: Number(payload.sub) },
       });
 
       // 사용자가 없거나 비활성화된 경우 거부
@@ -164,9 +164,9 @@ export class AuthService {
    * 유효 기간: 15분 (900,000ms)
    * 용도: API 요청 인증
    */
-  private createAccessToken(userId: bigint, loginId: string, userName: string): string {
+  private createAccessToken(userId: number, loginId: string, userName: string): string {
     const payload: JwtPayload = {
-      sub: userId.toString(), // BigInt를 문자열로 변환
+      sub: String(userId),
       loginId,
       userName,
       type: 'access',
@@ -194,9 +194,9 @@ export class AuthService {
    * - Remember Me 비활성화: 7일 (604,800,000ms)
    * 용도: Access Token 갱신
    */
-  private createRefreshToken(userId: bigint, loginId: string, userName: string, rememberMe?: boolean): string {
+  private createRefreshToken(userId: number, loginId: string, userName: string, rememberMe?: boolean): string {
     const payload: JwtPayload = {
-      sub: userId.toString(), // BigInt를 문자열로 변환
+      sub: String(userId),
       loginId,
       userName,
       type: 'refresh',
@@ -223,7 +223,7 @@ export class AuthService {
    */
   async validateJwtPayload(payload: JwtPayload) {
     const user = await this.prisma.siteUser.findUnique({
-      where: { id: BigInt(payload.sub) },
+      where: { id: Number(payload.sub) },
     });
 
     if (!user || !user.active) {

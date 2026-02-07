@@ -48,7 +48,7 @@ export class PointUrlService {
    * @returns URL 정보
    * @throws NotFoundException - URL이 없을 때
    */
-  async findOne(id: bigint): Promise<PointUrlResponseDto> {
+  async findOne(id: number): Promise<PointUrlResponseDto> {
     this.logger.log(`Getting point URL: ${id}`);
 
     const pointUrl = await this.prisma.pointUrl.findUnique({
@@ -149,7 +149,6 @@ export class PointUrlService {
     // 4. 벌크 INSERT
     const result = await this.prisma.pointUrl.createMany({
       data,
-      skipDuplicates: true,
     });
 
     this.logger.log(`Created ${result.count} new point URLs`);
@@ -168,7 +167,7 @@ export class PointUrlService {
    * - URL 변경 시 타입 재분류
    * - 부분 업데이트 지원
    */
-  async update(id: bigint, dto: UpdatePointUrlDto): Promise<PointUrlResponseDto> {
+  async update(id: number, dto: UpdatePointUrlDto): Promise<PointUrlResponseDto> {
     this.logger.log(`Updating point URL: ${id}`);
 
     const existing = await this.prisma.pointUrl.findUnique({ where: { id } });
@@ -202,7 +201,7 @@ export class PointUrlService {
    *
    * 주의: 연관된 PointUrlCookie도 함께 삭제됨
    */
-  async delete(id: bigint): Promise<void> {
+  async delete(id: number): Promise<void> {
     this.logger.log(`Deleting point URL: ${id}`);
 
     const existing = await this.prisma.pointUrl.findUnique({ where: { id } });
@@ -229,7 +228,7 @@ export class PointUrlService {
    * - false → true (영구로 변경)
    * - true → false (일회성으로 변경)
    */
-  async togglePermanent(id: bigint): Promise<PointUrlResponseDto> {
+  async togglePermanent(id: number): Promise<PointUrlResponseDto> {
     this.logger.log(`Toggling permanent status for point URL: ${id}`);
 
     const existing = await this.prisma.pointUrl.findUnique({ where: { id } });
@@ -264,7 +263,7 @@ export class PointUrlService {
    * - 지원 타입만 (NAVER, OFW_NAVER)
    * - UNSUPPORT 타입 제외
    */
-  async findUnprocessedUrls(cookieId: bigint) {
+  async findUnprocessedUrls(cookieId: number) {
     // 1. 해당 쿠키로 이미 처리한 URL ID 조회
     const processedUrls = await this.prisma.pointUrlCookie.findMany({
       where: { cookieId },

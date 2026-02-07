@@ -21,7 +21,7 @@ export class SiteController {
   @ApiResponse({ status: 200, description: '사이트 정보', type: SiteResponseDto })
   @ApiResponse({ status: 404, description: '사이트를 찾을 수 없음' })
   async findOne(@Param('id') id: string): Promise<SiteResponseDto> {
-    return this.siteService.findOne(BigInt(id));
+    return this.siteService.findOne(Number(id));
   }
 
   @Post()
@@ -36,7 +36,7 @@ export class SiteController {
   @ApiResponse({ status: 200, description: '수정된 사이트', type: SiteResponseDto })
   @ApiResponse({ status: 404, description: '사이트를 찾을 수 없음' })
   async update(@Param('id') id: string, @Body() updateDto: UpdateSiteDto): Promise<SiteResponseDto> {
-    return this.siteService.update(BigInt(id), updateDto);
+    return this.siteService.update(Number(id), updateDto);
   }
 
   @Delete(':id')
@@ -45,6 +45,6 @@ export class SiteController {
   @ApiResponse({ status: 204, description: '삭제 성공' })
   @ApiResponse({ status: 404, description: '사이트를 찾을 수 없음' })
   async delete(@Param('id') id: string): Promise<void> {
-    return this.siteService.delete(BigInt(id));
+    return this.siteService.delete(Number(id));
   }
 }
