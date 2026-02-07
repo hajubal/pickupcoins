@@ -29,8 +29,6 @@ services:
       - pickupcoins-network
 
   admin-web:
-    profiles:
-      - admin
     image: node:20-alpine
     container_name: pickupcoins-admin
     working_dir: /app
