@@ -35,3 +35,7 @@ prisma/*.db-journal
 
 # Docker
 docker-compose.override.yml
+
+# Gemini CLI (run-gemini-cli code review)
+.gemini/
+gha-creds-*.json
