@@ -47,8 +47,11 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 # Copy built application
 COPY --from=builder /app/dist ./dist
 
+# Create data directory for SQLite volume
+RUN mkdir -p /data
+
 # Set ownership
-RUN chown -R nestjs:nodejs /app
+RUN chown -R nestjs:nodejs /app /data
 USER nestjs
 
 # Expose port
