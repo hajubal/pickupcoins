@@ -72,7 +72,7 @@ pickupcoins/
 
 #### modules/seed
 - 애플리케이션 시작 시 초기 데이터 생성
-- 테스트 계정 자동 생성 (admin/test123)
+- 테스트 계정 자동 생성 (admin/admin123)
 
 ## 기술 스택
 
@@ -81,6 +81,15 @@ pickupcoins/
 - TypeScript 5.x
 - Prisma ORM 5.x
 - Passport.js + JWT
+- Swagger (API 문서 자동 생성)
+
+### Frontend (Admin)
+- React 18.x + TypeScript
+- Vite 5.x (빌드 도구)
+- Tailwind CSS + shadcn/ui (UI 컴포넌트)
+- TanStack React Query / React Table
+- React Hook Form + Zod (폼 검증)
+- React Router DOM 6.x
 
 ### Database
 - SQLite (파일 기반, 서버 불필요)
@@ -93,6 +102,10 @@ pickupcoins/
 ### Testing
 - Jest (단위 테스트)
 - Playwright (E2E 테스트)
+
+### CI/CD
+- GitHub Actions (빌드, 린트, 테스트)
+- Gemini AI 코드 리뷰
 
 ### External APIs
 - Slack API (@slack/web-api)
@@ -185,7 +198,7 @@ docker ps
 
 애플리케이션 시작 시 자동으로 테스트 계정이 생성됩니다:
 - **User ID**: `admin`
-- **Password**: `test123`
+- **Password**: `admin123`
 
 #### 접속 URL
 
@@ -194,7 +207,7 @@ docker ps
 http://localhost:8080
 
 # API 문서 (Swagger)
-http://localhost:8080/api
+http://localhost:8080/api-docs
 
 # 관리자 웹 페이지 (개발)
 http://localhost:5173
@@ -243,11 +256,15 @@ http://localhost:8080
 - 발견된 포인트 URL로 자동 적립
 - 매일 오전 7시 일일 리포트 전송 (Slack)
 
+수동 크롤링도 가능합니다:
+- 관리자 페이지 Point URLs에서 "크롤링" 버튼 클릭
+- `POST /api/v1/crawler/trigger` API 직접 호출
+
 ### 5. 대시보드 확인
 
-- 포인트 적립 현황
-- 일별/주별 통계
-- 최근 적립 내역
+- 오늘/이번 주 적립 포인트
+- 오늘/이번 주 수집 URL 수
+- 전일/전주 대비 증감률
 
 ## 주요 설정
 
@@ -257,12 +274,18 @@ http://localhost:8080
 |--------|------|--------|
 | DATABASE_URL | SQLite DB 파일 경로 (예: file:./prisma/dev.db) | - |
 | JWT_SECRET | JWT 서명 키 | - |
+| JWT_ACCESS_TOKEN_VALIDITY | 액세스 토큰 유효기간 (ms) | 900000 (15분) |
+| JWT_REFRESH_TOKEN_VALIDITY | 리프레시 토큰 유효기간 (ms) | 604800000 (7일) |
+| JWT_REMEMBER_ME_TOKEN_VALIDITY | 로그인 유지 토큰 유효기간 (ms) | 1296000000 (15일) |
 | PORT | 서버 포트 | 8080 |
+| NODE_ENV | 실행 환경 | development |
 | CORS_ORIGINS | 허용 CORS 오리진 | - |
 | CRAWLER_TIMEOUT | 크롤링 타임아웃 (ms) | 10000 |
+| CRAWLER_RETRY_COUNT | 크롤링 재시도 횟수 | 3 |
 | SCHEDULE_CRAWLER_FIXED_DELAY | 크롤링 주기 (ms) | 300000 |
 | SCHEDULE_POINT_FIXED_DELAY | 포인트 적립 주기 (ms) | 300000 |
 | SCHEDULE_DAILY_REPORT_CRON | 일일 리포트 크론 | 0 0 7 * * * |
+| SLACK_WEBHOOK_URL | Slack 알림 웹훅 URL | - |
 
 ### 네이버 포인트 설정
 
@@ -271,26 +294,36 @@ http://localhost:8080
 | NAVER_SAVE_KEYWORD | 적립 성공 키워드 |
 | NAVER_INVALID_COOKIE_KEYWORD | 쿠키 만료 키워드 |
 | NAVER_AMOUNT_PATTERN | 금액 추출 정규식 |
+| NAVER_USER_AGENT | 요청 시 사용할 User-Agent |
 
 ## API 문서
 
 Swagger UI를 통해 API 문서를 확인할 수 있습니다:
 
 ```
-http://localhost:8080/api
+http://localhost:8080/api-docs
 ```
 
 ### 주요 엔드포인트
 
 | Method | Path | 설명 |
 |--------|------|------|
-| POST | /auth/login | 로그인 |
-| GET | /admin/dashboard | 대시보드 통계 |
-| GET | /admin/cookies | 쿠키 목록 |
-| POST | /admin/cookies | 쿠키 등록 |
-| GET | /admin/point-urls | 포인트 URL 목록 |
-| GET | /admin/saved-points | 적립 포인트 목록 |
-| GET | /health | 헬스 체크 |
+| POST | /api/v1/auth/login | 로그인 |
+| POST | /api/v1/auth/refresh | 토큰 갱신 |
+| GET | /api/v1/dashboard/stats | 대시보드 통계 |
+| GET | /api/v1/cookies | 쿠키 목록 |
+| POST | /api/v1/cookies | 쿠키 등록 |
+| PATCH | /api/v1/cookies/:id/toggle-validity | 쿠키 유효성 토글 |
+| GET | /api/v1/point-urls | 포인트 URL 목록 |
+| POST | /api/v1/point-urls | 포인트 URL 등록 |
+| PATCH | /api/v1/point-urls/:id/toggle-permanent | 영구 상태 토글 |
+| GET | /api/v1/point-logs | 적립 포인트 목록 (페이지네이션) |
+| GET | /api/v1/sites | 사이트 목록 |
+| POST | /api/v1/sites | 사이트 등록 |
+| POST | /api/v1/crawler/trigger | 수동 크롤링 실행 |
+| POST | /api/v1/crawler/trigger/:siteName | 특정 사이트 크롤링 실행 |
+| GET | /api/v1/crawler/sites | 지원 크롤러 목록 |
+| GET | /api/v1/health | 헬스 체크 |
 
 ## 개발 가이드
 
@@ -363,7 +396,20 @@ npm run prisma:studio
 
 - Cookie: (siteName, isValid), (siteUserId)
 - PointUrl: (name, permanent), (createdDate)
+- PointUrlCookie: (pointUrlId, cookieId) UNIQUE
 - SavedPoint: (createdDate)
+
+## 관리자 프론트엔드
+
+React 기반의 관리자 페이지는 다음 기능을 제공합니다:
+
+| 페이지 | 주요 기능 |
+|--------|----------|
+| Dashboard | 오늘/이번 주 적립 포인트, 수집 URL 수, 전일/전주 대비 증감률 |
+| Cookies | 네이버 쿠키 CRUD, 유효성 토글 |
+| Point URLs | 포인트 URL CRUD, 영구 상태 토글, 수동 크롤링 실행 |
+| Point Logs | 적립 포인트 내역 조회 (페이지네이션), 삭제 |
+| Sites | 크롤링 대상 사이트 CRUD |
 
 ## 트러블슈팅
 
@@ -380,6 +426,16 @@ npm run prisma:studio
 3. **포인트 적립 실패**
    - 응답 본문에서 금액 추출 실패 시 0원으로 저장
    - 로그 확인: `Failed to extract amount`
+
+## CI/CD
+
+### GitHub Actions 워크플로우
+
+| 워크플로우 | 트리거 | 설명 |
+|-----------|--------|------|
+| Node.js CI | push (main), PR | 린트, 테스트, 빌드 실행 |
+| Gemini Code Review | PR 생성/업데이트 | Google Gemini AI를 통한 자동 코드 리뷰 |
+| Release | 수동/태그 | 릴리즈 자동화 |
 
 ## 버전 정보
 
@@ -402,6 +458,8 @@ npm run prisma:studio
   - JWT 인증 및 자동 토큰 갱신
 - **E2E 테스트**: Playwright 테스트 프레임워크 도입
 - **초기 데이터 시딩**: 애플리케이션 시작 시 테스트 계정 자동 생성
+- **수동 크롤링**: 관리자 페이지에서 즉시 크롤링 실행 기능
+- **Gemini AI 코드 리뷰**: PR 자동 리뷰 워크플로우 추가
 
 ### v1.2.0
 - UI를 Tailwind CSS 기반으로 변경
