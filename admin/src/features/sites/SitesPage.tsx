@@ -40,7 +40,6 @@ import { Plus, Pencil, Trash2, ExternalLink } from 'lucide-react';
 
 const siteSchema = z.object({
   name: z.string().min(1, '사이트 이름을 입력해주세요'),
-  domain: z.string().min(1, '도메인을 입력해주세요'),
   url: z.string().url('올바른 URL을 입력해주세요'),
 });
 
@@ -106,7 +105,7 @@ export function SitesPage() {
 
   const handleOpenCreate = () => {
     setEditingSite(null);
-    reset({ name: '', domain: '', url: '' });
+    reset({ name: '', url: '' });
     setIsDialogOpen(true);
   };
 
@@ -114,7 +113,6 @@ export function SitesPage() {
     setEditingSite(site);
     reset({
       name: site.name,
-      domain: site.domain,
       url: site.url,
     });
     setIsDialogOpen(true);
@@ -170,7 +168,6 @@ export function SitesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>이름</TableHead>
-              <TableHead>도메인</TableHead>
               <TableHead>URL</TableHead>
               <TableHead>생성일</TableHead>
               <TableHead>수정일</TableHead>
@@ -181,7 +178,6 @@ export function SitesPage() {
             {sites?.map((site) => (
               <TableRow key={site.id}>
                 <TableCell className="font-medium">{site.name}</TableCell>
-                <TableCell>{site.domain}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2 max-w-xs">
                     <span className="truncate text-sm">{site.url}</span>
@@ -219,7 +215,7 @@ export function SitesPage() {
             ))}
             {(!sites || sites.length === 0) && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
                   No sites found
                 </TableCell>
               </TableRow>
@@ -243,13 +239,6 @@ export function SitesPage() {
                 <Input id="name" {...register('name')} />
                 {errors.name && (
                   <p className="text-sm text-destructive">{errors.name.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="domain">도메인</Label>
-                <Input id="domain" placeholder="example.com" {...register('domain')} />
-                {errors.domain && (
-                  <p className="text-sm text-destructive">{errors.domain.message}</p>
                 )}
               </div>
               <div className="space-y-2">
